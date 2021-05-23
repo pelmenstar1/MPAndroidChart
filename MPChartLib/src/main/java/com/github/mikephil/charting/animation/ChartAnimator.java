@@ -6,6 +6,8 @@ import androidx.annotation.RequiresApi;
 
 import com.github.mikephil.charting.animation.Easing.EasingFunction;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Object responsible for all animations in the Chart. Animations require API level 11.
  *
@@ -13,7 +15,6 @@ import com.github.mikephil.charting.animation.Easing.EasingFunction;
  * @author Mick Ashton
  */
 public class ChartAnimator {
-
     /** object that is updated upon animation update */
     private AnimatorUpdateListener mListener;
 
@@ -28,13 +29,13 @@ public class ChartAnimator {
     public ChartAnimator() { }
 
     @RequiresApi(11)
-    public ChartAnimator(AnimatorUpdateListener listener) {
+    public ChartAnimator(@NotNull AnimatorUpdateListener listener) {
         mListener = listener;
     }
 
     @RequiresApi(11)
-    private ObjectAnimator xAnimator(int duration, EasingFunction easing) {
-
+    @NotNull
+    private ObjectAnimator xAnimator(int duration, @NotNull EasingFunction easing) {
         ObjectAnimator animatorX = ObjectAnimator.ofFloat(this, "phaseX", 0f, 1f);
         animatorX.setInterpolator(easing);
         animatorX.setDuration(duration);
@@ -43,8 +44,8 @@ public class ChartAnimator {
     }
 
     @RequiresApi(11)
-    private ObjectAnimator yAnimator(int duration, EasingFunction easing) {
-
+    @NotNull
+    private ObjectAnimator yAnimator(int duration, @NotNull EasingFunction easing) {
         ObjectAnimator animatorY = ObjectAnimator.ofFloat(this, "phaseY", 0f, 1f);
         animatorY.setInterpolator(easing);
         animatorY.setDuration(duration);
@@ -69,8 +70,7 @@ public class ChartAnimator {
      * @param easing EasingFunction
      */
     @RequiresApi(11)
-    public void animateX(int durationMillis, EasingFunction easing) {
-
+    public void animateX(int durationMillis, @NotNull EasingFunction easing) {
         ObjectAnimator animatorX = xAnimator(durationMillis, easing);
         animatorX.addUpdateListener(mListener);
         animatorX.start();
@@ -95,8 +95,7 @@ public class ChartAnimator {
      * @param easing EasingFunction for both axes
      */
     @RequiresApi(11)
-    public void animateXY(int durationMillisX, int durationMillisY, EasingFunction easing) {
-
+    public void animateXY(int durationMillisX, int durationMillisY, @NotNull EasingFunction easing) {
         ObjectAnimator xAnimator = xAnimator(durationMillisX, easing);
         ObjectAnimator yAnimator = yAnimator(durationMillisY, easing);
 
@@ -119,8 +118,10 @@ public class ChartAnimator {
      * @param easingY EasingFunction for the Y axis
      */
     @RequiresApi(11)
-    public void animateXY(int durationMillisX, int durationMillisY, EasingFunction easingX,
-                          EasingFunction easingY) {
+    public void animateXY(
+            int durationMillisX, int durationMillisY,
+            @NotNull EasingFunction easingX, @NotNull EasingFunction easingY
+    ) {
 
         ObjectAnimator xAnimator = xAnimator(durationMillisX, easingX);
         ObjectAnimator yAnimator = yAnimator(durationMillisY, easingY);
@@ -152,8 +153,7 @@ public class ChartAnimator {
      * @param easing EasingFunction
      */
     @RequiresApi(11)
-    public void animateY(int durationMillis, EasingFunction easing) {
-
+    public void animateY(int durationMillis, @NotNull EasingFunction easing) {
         ObjectAnimator animatorY = yAnimator(durationMillis, easing);
         animatorY.addUpdateListener(mListener);
         animatorY.start();
