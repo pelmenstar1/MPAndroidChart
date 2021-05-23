@@ -1,7 +1,7 @@
 
 package com.github.mikephil.charting.buffer;
 
-import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Buffer class to boost performance while drawing. Concept: Replace instead of
@@ -11,9 +11,8 @@ import java.util.List;
  * @param <T> The data the buffer accepts to be fed with.
  */
 public abstract class AbstractBuffer<T> {
-
     /** index in the buffer */
-    protected int index = 0;
+    protected int index;
 
     /** float-buffer that holds the data points to draw, order: x,y,x,y,... */
     public final float[] buffer;
@@ -32,8 +31,6 @@ public abstract class AbstractBuffer<T> {
 
     /**
      * Initialization with buffer-size.
-     * 
-     * @param size
      */
     public AbstractBuffer(int size) {
         index = 0;
@@ -63,8 +60,6 @@ public abstract class AbstractBuffer<T> {
 
     /**
      * Returns the size (length) of the buffer array.
-     * 
-     * @return
      */
     public int size() {
         return buffer.length;
@@ -72,9 +67,6 @@ public abstract class AbstractBuffer<T> {
 
     /**
      * Set the phases used for animations.
-     * 
-     * @param phaseX
-     * @param phaseY
      */
     public void setPhases(float phaseX, float phaseY) {
         this.phaseX = phaseX;
@@ -84,8 +76,6 @@ public abstract class AbstractBuffer<T> {
     /**
      * Builds up the buffer with the provided data and resets the buffer-index
      * after feed-completion. This needs to run FAST.
-     * 
-     * @param data
      */
-    public abstract void feed(T data);
+    public abstract void feed(@NotNull T data);
 }

@@ -4,11 +4,12 @@ package com.github.mikephil.charting.buffer;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 
-public class BarBuffer extends AbstractBuffer<IBarDataSet> {
+import org.jetbrains.annotations.NotNull;
 
+public class BarBuffer extends AbstractBuffer<IBarDataSet> {
     protected int mDataSetIndex = 0;
-    protected int mDataSetCount = 1;
-    protected boolean mContainsStacks = false;
+    protected int mDataSetCount;
+    protected boolean mContainsStacks;
     protected boolean mInverted = false;
 
     /** width of the bar on the x-axis, in values (not pixels) */
@@ -33,7 +34,6 @@ public class BarBuffer extends AbstractBuffer<IBarDataSet> {
     }
 
     protected void addBar(float left, float top, float right, float bottom) {
-
         buffer[index++] = left;
         buffer[index++] = top;
         buffer[index++] = right;
@@ -41,13 +41,11 @@ public class BarBuffer extends AbstractBuffer<IBarDataSet> {
     }
 
     @Override
-    public void feed(IBarDataSet data) {
-
+    public void feed(@NotNull IBarDataSet data) {
         float size = data.getEntryCount() * phaseX;
         float barWidthHalf = mBarWidth / 2f;
 
         for (int i = 0; i < size; i++) {
-
             BarEntry e = data.getEntryForIndex(i);
 
             if(e == null)
@@ -83,13 +81,10 @@ public class BarBuffer extends AbstractBuffer<IBarDataSet> {
 
                 float posY = 0f;
                 float negY = -e.getNegativeSum();
-                float yStart = 0f;
+                float yStart;
 
                 // fill the stack
-                for (int k = 0; k < vals.length; k++) {
-
-                    float value = vals[k];
-
+                for (float value : vals) {
                     if (value == 0.0f && (posY == 0.0f || negY == 0.0f)) {
                         // Take care of the situation of a 0.0 value, which overlaps a non-zero bar
                         y = value;
@@ -109,11 +104,11 @@ public class BarBuffer extends AbstractBuffer<IBarDataSet> {
                     float bottom, top;
 
                     if (mInverted) {
-                        bottom = y >= yStart ? y : yStart;
-                        top = y <= yStart ? y : yStart;
+                        bottom = Math.max(y, yStart);
+                        top = Math.min(y, yStart);
                     } else {
-                        top = y >= yStart ? y : yStart;
-                        bottom = y <= yStart ? y : yStart;
+                        top = Math.max(y, yStart);
+                        bottom = Math.min(y, yStart);
                     }
 
                     // multiply the height of the rect with the phase
