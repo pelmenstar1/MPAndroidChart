@@ -4,6 +4,10 @@ package com.github.mikephil.charting.utils;
 import android.content.res.Resources;
 import android.graphics.Color;
 
+import androidx.annotation.ColorInt;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +19,6 @@ import java.util.List;
  * @author Philipp Jahoda
  */
 public class ColorTemplate {
-
     /**
      * an "invalid" color that indicates that no color is set
      */
@@ -52,27 +55,11 @@ public class ColorTemplate {
             Color.rgb(140, 234, 255), Color.rgb(255, 140, 157)
     };
     public static final int[] MATERIAL_COLORS = {
-            rgb("#2ecc71"), rgb("#f1c40f"), rgb("#e74c3c"), rgb("#3498db")
+            0x2ecc71, 0xf1c40f, 0xe74c3c, 0x3498db
     };
 
     /**
-     * Converts the given hex-color-string to rgb.
-     *
-     * @param hex
-     * @return
-     */
-    public static int rgb(String hex) {
-        int color = (int) Long.parseLong(hex.replace("#", ""), 16);
-        int r = (color >> 16) & 0xFF;
-        int g = (color >> 8) & 0xFF;
-        int b = (color >> 0) & 0xFF;
-        return Color.rgb(r, g, b);
-    }
-
-    /**
      * Returns the Android ICS holo blue light color.
-     *
-     * @return
      */
     public static int getHoloBlue() {
         return Color.rgb(51, 181, 229);
@@ -81,25 +68,21 @@ public class ColorTemplate {
     /**
      * Sets the alpha component of the given color.
      *
-     * @param color
      * @param alpha 0 - 255
-     * @return
      */
-    public static int colorWithAlpha(int color, int alpha) {
+    public static int colorWithAlpha(@ColorInt int color, int alpha) {
         return (color & 0xffffff) | ((alpha & 0xff) << 24);
     }
 
     /**
-     * turn an array of resource-colors (contains resource-id integers) into an
+     * Turn an array of resource-colors (contains resource-id integers) into an
      * array list of actual color integers
      *
-     * @param r
      * @param colors an integer array of resource id's of colors
-     * @return
      */
-    public static List<Integer> createColors(Resources r, int[] colors) {
-
-        List<Integer> result = new ArrayList<Integer>();
+    @NotNull
+    public static List<Integer> createColors(@NotNull Resources r, @NotNull int[] colors) {
+        List<Integer> result = new ArrayList<>(colors.length);
 
         for (int i : colors) {
             result.add(r.getColor(i));
@@ -111,13 +94,10 @@ public class ColorTemplate {
     /**
      * Turns an array of colors (integer color values) into an ArrayList of
      * colors.
-     *
-     * @param colors
-     * @return
      */
-    public static List<Integer> createColors(int[] colors) {
-
-        List<Integer> result = new ArrayList<Integer>();
+    @NotNull
+    public static List<Integer> createColors(@NotNull int[] colors) {
+        List<Integer> result = new ArrayList<>(colors.length);
 
         for (int i : colors) {
             result.add(i);

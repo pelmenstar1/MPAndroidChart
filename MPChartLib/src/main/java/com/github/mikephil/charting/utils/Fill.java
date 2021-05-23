@@ -6,38 +6,29 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.annotation.ColorInt;
 
-public class Fill
-{
-    public enum Type
-    {
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+public class Fill {
+    public enum Type {
         EMPTY, COLOR, LINEAR_GRADIENT, DRAWABLE
     }
 
-    public enum Direction
-    {
+    public enum Direction {
         DOWN, UP, RIGHT, LEFT
     }
 
-    /**
-     * the type of fill
-     */
     private Type mType = Type.EMPTY;
 
-    /**
-     * the color that is used for filling
-     */
     @Nullable
     private Integer mColor = null;
 
     private Integer mFinalColor = null;
 
-    /**
-     * the drawable to be used for filling
-     */
     @Nullable
     protected Drawable mDrawable;
 
@@ -47,53 +38,46 @@ public class Fill
     @Nullable
     private float[] mGradientPositions;
 
-    /**
-     * transparency used for filling
-     */
     private int mAlpha = 255;
 
-    public Fill()
-    {
+    public Fill() {
     }
 
-    public Fill(int color)
-    {
-        this.mType = Type.COLOR;
-        this.mColor = color;
+    public Fill(@ColorInt int color) {
+        mType = Type.COLOR;
+        mColor = color;
         calculateFinalColor();
     }
 
-    public Fill(int startColor, int endColor)
-    {
+    public Fill(int startColor, int endColor) {
         this.mType = Type.LINEAR_GRADIENT;
         this.mGradientColors = new int[]{startColor, endColor};
     }
 
-    public Fill(@NonNull int[] gradientColors)
-    {
+    public Fill(@NotNull int[] gradientColors) {
         this.mType = Type.LINEAR_GRADIENT;
         this.mGradientColors = gradientColors;
     }
 
-    public Fill(@NonNull int[] gradientColors, @NonNull float[] gradientPositions)
-    {
+    public Fill(@NotNull int[] gradientColors, @NotNull float[] gradientPositions) {
         this.mType = Type.LINEAR_GRADIENT;
         this.mGradientColors = gradientColors;
         this.mGradientPositions = gradientPositions;
     }
 
-    public Fill(@NonNull Drawable drawable)
+    public Fill(@NotNull Drawable drawable)
     {
         this.mType = Type.DRAWABLE;
         this.mDrawable = drawable;
     }
 
+    @NotNull
     public Type getType()
     {
         return mType;
     }
 
-    public void setType(Type type)
+    public void setType(@NotNull Type type)
     {
         this.mType = type;
     }
@@ -104,34 +88,32 @@ public class Fill
         return mColor;
     }
 
-    public void setColor(int color)
-    {
+    public void setColor(@ColorInt int color) {
         this.mColor = color;
         calculateFinalColor();
     }
 
+    @NotNull
     public int[] getGradientColors()
     {
         return mGradientColors;
     }
 
-    public void setGradientColors(int[] colors)
-    {
+    public void setGradientColors(@NotNull int[] colors) {
         this.mGradientColors = colors;
     }
 
+    @NotNull
     public float[] getGradientPositions()
     {
         return mGradientPositions;
     }
 
-    public void setGradientPositions(float[] positions)
-    {
+    public void setGradientPositions(@NotNull float[] positions) {
         this.mGradientPositions = positions;
     }
 
-    public void setGradientColors(int startColor, int endColor)
-    {
+    public void setGradientColors(@ColorInt int startColor, @ColorInt int endColor) {
         this.mGradientColors = new int[]{startColor, endColor};
     }
 
@@ -140,48 +122,38 @@ public class Fill
         return mAlpha;
     }
 
-    public void setAlpha(int alpha)
-    {
+    public void setAlpha(int alpha) {
         this.mAlpha = alpha;
         calculateFinalColor();
     }
 
-    private void calculateFinalColor()
-    {
-        if (mColor == null)
-        {
+    private void calculateFinalColor() {
+        if (mColor == null) {
             mFinalColor = null;
-        } else
-        {
+        } else {
             int alpha = (int) Math.floor(((mColor >> 24) / 255.0) * (mAlpha / 255.0) * 255.0);
             mFinalColor = (alpha << 24) | (mColor & 0xffffff);
         }
     }
 
-    public void fillRect(Canvas c, Paint paint,
+    public void fillRect(@NotNull Canvas c, @NotNull Paint paint,
                          float left, float top, float right, float bottom,
-                         Direction gradientDirection)
-    {
-        switch (mType)
-        {
+                         @NotNull Direction gradientDirection) {
+        switch (mType) {
             case EMPTY:
                 return;
 
-            case COLOR:
-            {
+            case COLOR: {
                 if (mFinalColor == null) return;
 
-                if (isClipPathSupported())
-                {
+                if (isClipPathSupported()) {
                     int save = c.save();
 
                     c.clipRect(left, top, right, bottom);
                     c.drawColor(mFinalColor);
 
                     c.restoreToCount(save);
-                }
-                else
-                {
+                } else {
                     // save
                     Paint.Style previous = paint.getStyle();
                     int previousColor = paint.getColor();
@@ -199,8 +171,7 @@ public class Fill
             }
             break;
 
-            case LINEAR_GRADIENT:
-            {
+            case LINEAR_GRADIENT: {
                 if (mGradientColors == null) return;
 
                 LinearGradient gradient = new LinearGradient(
@@ -234,8 +205,7 @@ public class Fill
             }
             break;
 
-            case DRAWABLE:
-            {
+            case DRAWABLE: {
                 if (mDrawable == null) return;
 
                 mDrawable.setBounds((int) left, (int) top, (int) right, (int) bottom);
@@ -245,29 +215,23 @@ public class Fill
         }
     }
 
-    public void fillPath(Canvas c, Path path, Paint paint,
-                         @Nullable RectF clipRect)
-    {
-        switch (mType)
-        {
+    public void fillPath(@NotNull Canvas c, @NotNull Path path, @NotNull Paint paint,
+                         @Nullable RectF clipRect) {
+        switch (mType) {
             case EMPTY:
                 return;
 
-            case COLOR:
-            {
+            case COLOR: {
                 if (mFinalColor == null) return;
 
-                if (clipRect != null && isClipPathSupported())
-                {
+                if (clipRect != null && isClipPathSupported()) {
                     int save = c.save();
 
                     c.clipPath(path);
                     c.drawColor(mFinalColor);
 
                     c.restoreToCount(save);
-                }
-                else
-                {
+                } else {
                     // save
                     Paint.Style previous = paint.getStyle();
                     int previousColor = paint.getColor();
@@ -285,8 +249,7 @@ public class Fill
             }
             break;
 
-            case LINEAR_GRADIENT:
-            {
+            case LINEAR_GRADIENT: {
                 if (mGradientColors == null) return;
 
                 LinearGradient gradient = new LinearGradient(
@@ -304,8 +267,7 @@ public class Fill
             }
             break;
 
-            case DRAWABLE:
-            {
+            case DRAWABLE: {
                 if (mDrawable == null) return;
 
                 ensureClipPathSupported();
@@ -326,17 +288,14 @@ public class Fill
         }
     }
 
-    private boolean isClipPathSupported()
-    {
-        return Utils.getSDKInt() >= 18;
+    private boolean isClipPathSupported() {
+        return Build.VERSION.SDK_INT >= 18;
     }
 
-    private void ensureClipPathSupported()
-    {
-        if (Utils.getSDKInt() < 18)
-        {
+    private void ensureClipPathSupported() {
+        if (Build.VERSION.SDK_INT < 18) {
             throw new RuntimeException("Fill-drawables not (yet) supported below API level 18, " +
-                    "this code was run on API level " + Utils.getSDKInt() + ".");
+                    "this code was run on API level " + Build.VERSION.SDK_INT + ".");
         }
     }
 }
