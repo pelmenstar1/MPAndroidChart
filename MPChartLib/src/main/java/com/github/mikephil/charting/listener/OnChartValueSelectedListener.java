@@ -3,6 +3,8 @@ package com.github.mikephil.charting.listener;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Listener for callbacks when selecting values inside the chart by
  * touch-gesture.
@@ -10,7 +12,6 @@ import com.github.mikephil.charting.highlight.Highlight;
  * @author Philipp Jahoda
  */
 public interface OnChartValueSelectedListener {
-
     /**
      * Called when a value has been selected inside the chart.
      *
@@ -18,7 +19,7 @@ public interface OnChartValueSelectedListener {
      * @param h The corresponding highlight object that contains information
      *          about the highlighted position such as dataSetIndex, ...
      */
-    void onValueSelected(Entry e, Highlight h);
+    void onValueSelected(@NotNull Entry e, @NotNull Highlight h);
 
     /**
      * Called when nothing has been selected or an "un-select" has been made.

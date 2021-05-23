@@ -7,13 +7,24 @@ import android.view.View;
 import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.highlight.Highlight;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 /**
  * Created by philipp on 12/06/15.
  */
 public abstract class ChartTouchListener<T extends Chart<?>> extends GestureDetector.SimpleOnGestureListener implements View.OnTouchListener {
-
     public enum ChartGesture {
-        NONE, DRAG, X_ZOOM, Y_ZOOM, PINCH_ZOOM, ROTATE, SINGLE_TAP, DOUBLE_TAP, LONG_PRESS, FLING
+        NONE,
+        DRAG,
+        X_ZOOM,
+        Y_ZOOM,
+        PINCH_ZOOM,
+        ROTATE,
+        SINGLE_TAP,
+        DOUBLE_TAP,
+        LONG_PRESS,
+        FLING
     }
 
     /**
@@ -58,43 +69,35 @@ public abstract class ChartTouchListener<T extends Chart<?>> extends GestureDete
 
     /**
      * Calls the OnChartGestureListener to do the start callback
-     *
-     * @param me
      */
-    public void startAction(MotionEvent me) {
-
+    public void startAction(@NotNull MotionEvent me) {
         OnChartGestureListener l = mChart.getOnChartGestureListener();
 
-        if (l != null)
+        if (l != null) {
             l.onChartGestureStart(me, mLastGesture);
+        }
     }
 
     /**
      * Calls the OnChartGestureListener to do the end callback
-     *
-     * @param me
      */
-    public void endAction(MotionEvent me) {
-
+    public void endAction(@NotNull MotionEvent me) {
         OnChartGestureListener l = mChart.getOnChartGestureListener();
 
-        if (l != null)
+        if (l != null) {
             l.onChartGestureEnd(me, mLastGesture);
+        }
     }
 
     /**
      * Sets the last value that was highlighted via touch.
-     *
-     * @param high
      */
-    public void setLastHighlighted(Highlight high) {
+    public void setLastHighlighted(@Nullable Highlight high) {
         mLastHighlighted = high;
     }
 
     /**
      * returns the touch mode the listener is currently in
-     *
-     * @return
      */
     public int getTouchMode() {
         return mTouchMode;
@@ -102,21 +105,16 @@ public abstract class ChartTouchListener<T extends Chart<?>> extends GestureDete
 
     /**
      * Returns the last gesture that has been performed on the chart.
-     *
-     * @return
      */
+    @NotNull
     public ChartGesture getLastGesture() {
         return mLastGesture;
     }
 
-
     /**
      * Perform a highlight operation.
-     *
-     * @param e
      */
-    protected void performHighlight(Highlight h, MotionEvent e) {
-
+    protected void performHighlight(@Nullable Highlight h, @NotNull MotionEvent e) {
         if (h == null || h.equalTo(mLastHighlighted)) {
             mChart.highlightValue(null, true);
             mLastHighlighted = null;
@@ -128,12 +126,6 @@ public abstract class ChartTouchListener<T extends Chart<?>> extends GestureDete
 
     /**
      * returns the distance between two points
-     *
-     * @param eventX
-     * @param startX
-     * @param eventY
-     * @param startY
-     * @return
      */
     protected static float distance(float eventX, float startX, float eventY, float startY) {
         float dx = eventX - startX;
