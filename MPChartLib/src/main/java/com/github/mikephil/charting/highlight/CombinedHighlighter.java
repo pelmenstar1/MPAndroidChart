@@ -8,20 +8,20 @@ import com.github.mikephil.charting.interfaces.dataprovider.BarDataProvider;
 import com.github.mikephil.charting.interfaces.dataprovider.CombinedDataProvider;
 import com.github.mikephil.charting.interfaces.datasets.IDataSet;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 /**
  * Created by Philipp Jahoda on 12/09/15.
  */
-public class CombinedHighlighter extends ChartHighlighter<CombinedDataProvider> implements IHighlighter
-{
-
+public class CombinedHighlighter extends ChartHighlighter<CombinedDataProvider> implements IHighlighter {
     /**
      * bar highlighter for supporting stacked highlighting
      */
     protected BarHighlighter barHighlighter;
 
-    public CombinedHighlighter(CombinedDataProvider chart, BarDataProvider barChart) {
+    public CombinedHighlighter(@NotNull CombinedDataProvider chart, @NotNull BarDataProvider barChart) {
         super(chart);
 
         // if there is BarData, create a BarHighlighter
@@ -29,14 +29,13 @@ public class CombinedHighlighter extends ChartHighlighter<CombinedDataProvider> 
     }
 
     @Override
+    @NotNull
     protected List<Highlight> getHighlightsAtXValue(float xVal, float x, float y) {
-
         mHighlightBuffer.clear();
 
         List<BarLineScatterCandleBubbleData> dataObjects = mChart.getCombinedData().getAllData();
 
         for (int i = 0; i < dataObjects.size(); i++) {
-
             ChartData dataObject = dataObjects.get(i);
 
             // in case of BarData, let the BarHighlighter take over
@@ -48,9 +47,7 @@ public class CombinedHighlighter extends ChartHighlighter<CombinedDataProvider> 
                     mHighlightBuffer.add(high);
                 }
             } else {
-
                 for (int j = 0, dataSetCount = dataObject.getDataSetCount(); j < dataSetCount; j++) {
-
                     IDataSet dataSet = dataObjects.get(i).getDataSetByIndex(j);
 
                     // don't include datasets that cannot be highlighted
@@ -69,25 +66,4 @@ public class CombinedHighlighter extends ChartHighlighter<CombinedDataProvider> 
 
         return mHighlightBuffer;
     }
-
-//    protected Highlight getClosest(float x, float y, Highlight... highs) {
-//
-//        Highlight closest = null;
-//        float minDistance = Float.MAX_VALUE;
-//
-//        for (Highlight high : highs) {
-//
-//            if (high == null)
-//                continue;
-//
-//            float tempDistance = getDistance(x, y, high.getXPx(), high.getYPx());
-//
-//            if (tempDistance < minDistance) {
-//                minDistance = tempDistance;
-//                closest = high;
-//            }
-//        }
-//
-//        return closest;
-//    }
 }

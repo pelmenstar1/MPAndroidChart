@@ -8,15 +8,16 @@ import com.github.mikephil.charting.interfaces.dataprovider.BarLineScatterCandle
 import com.github.mikephil.charting.interfaces.datasets.IDataSet;
 import com.github.mikephil.charting.utils.MPPointD;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Philipp Jahoda on 21/07/15.
  */
-public class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> implements IHighlighter
-{
-
+public class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> implements IHighlighter {
     /**
      * instance of the data-provider
      */
@@ -25,48 +26,36 @@ public class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
     /**
      * buffer for storing previously highlighted values
      */
-    protected List<Highlight> mHighlightBuffer = new ArrayList<Highlight>();
+    protected List<Highlight> mHighlightBuffer = new ArrayList<>();
 
-    public ChartHighlighter(T chart) {
+    public ChartHighlighter(@NotNull T chart) {
         this.mChart = chart;
     }
 
     @Override
     public Highlight getHighlight(float x, float y) {
-
         MPPointD pos = getValsForTouch(x, y);
         float xVal = (float) pos.x;
         MPPointD.recycleInstance(pos);
 
-        Highlight high = getHighlightForX(xVal, x, y);
-        return high;
+        return getHighlightForX(xVal, x, y);
     }
 
     /**
      * Returns a recyclable MPPointD instance.
      * Returns the corresponding xPos for a given touch-position in pixels.
-     *
-     * @param x
-     * @param y
-     * @return
      */
+    @NotNull
     protected MPPointD getValsForTouch(float x, float y) {
-
         // take any transformer to determine the x-axis value
-        MPPointD pos = mChart.getTransformer(YAxis.AxisDependency.LEFT).getValuesByTouchPoint(x, y);
-        return pos;
+        return mChart.getTransformer(YAxis.AxisDependency.LEFT).getValuesByTouchPoint(x, y);
     }
 
     /**
      * Returns the corresponding Highlight for a given xVal and x- and y-touch position in pixels.
-     *
-     * @param xVal
-     * @param x
-     * @param y
-     * @return
      */
+    @Nullable
     protected Highlight getHighlightForX(float xVal, float x, float y) {
-
         List<Highlight> closestValues = getHighlightsAtXValue(xVal, x, y);
 
         if(closestValues.isEmpty()) {
@@ -78,22 +67,18 @@ public class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
 
         YAxis.AxisDependency axis = leftAxisMinDist < rightAxisMinDist ? YAxis.AxisDependency.LEFT : YAxis.AxisDependency.RIGHT;
 
-        Highlight detail = getClosestHighlightByPixel(closestValues, x, y, axis, mChart.getMaxHighlightDistance());
-
-        return detail;
+        return getClosestHighlightByPixel(closestValues, x, y, axis, mChart.getMaxHighlightDistance());
     }
 
     /**
      * Returns the minimum distance from a touch value (in pixels) to the
      * closest value (in pixels) that is displayed in the chart.
-     *
-     * @param closestValues
-     * @param pos
-     * @param axis
-     * @return
      */
-    protected float getMinimumDistance(List<Highlight> closestValues, float pos, YAxis.AxisDependency axis) {
-
+    protected float getMinimumDistance(
+            @NotNull List<Highlight> closestValues,
+            float pos,
+            @NotNull YAxis.AxisDependency axis
+    ) {
         float distance = Float.MAX_VALUE;
 
         for (int i = 0; i < closestValues.size(); i++) {
@@ -112,7 +97,7 @@ public class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
         return distance;
     }
 
-    protected float getHighlightPos(Highlight h) {
+    protected float getHighlightPos(@NotNull Highlight h) {
         return h.getYPx();
     }
 
@@ -123,10 +108,9 @@ public class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
      * @param xVal the transformed x-value of the x-touch position
      * @param x    touch position
      * @param y    touch position
-     * @return
      */
+    @NotNull
     protected List<Highlight> getHighlightsAtXValue(float xVal, float x, float y) {
-
         mHighlightBuffer.clear();
 
         BarLineScatterCandleBubbleData data = getData();
@@ -135,7 +119,6 @@ public class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
             return mHighlightBuffer;
 
         for (int i = 0, dataSetCount = data.getDataSetCount(); i < dataSetCount; i++) {
-
             IDataSet dataSet = data.getDataSetByIndex(i);
 
             // don't include DataSets that cannot be highlighted
@@ -150,20 +133,18 @@ public class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
 
     /**
      * An array of `Highlight` objects corresponding to the selected xValue and dataSetIndex.
-     *
-     * @param set
-     * @param dataSetIndex
-     * @param xVal
-     * @param rounding
-     * @return
      */
-    protected List<Highlight> buildHighlights(IDataSet set, int dataSetIndex, float xVal, DataSet.Rounding rounding) {
-
+    protected List<Highlight> buildHighlights(
+            @NotNull IDataSet set,
+            int dataSetIndex,
+            float xVal,
+            @NotNull DataSet.Rounding rounding
+    ) {
         ArrayList<Highlight> highlights = new ArrayList<>();
 
         //noinspection unchecked
         List<Entry> entries = set.getEntriesForXValue(xVal);
-        if (entries.size() == 0) {
+        if (entries.isEmpty()) {
             // Try to find closest x-value and take all entries for that x-value
             final Entry closest = set.getEntryForXValue(xVal, Float.NaN, rounding);
             if (closest != null)
@@ -173,7 +154,7 @@ public class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
             }
         }
 
-        if (entries.size() == 0)
+        if (entries.isEmpty())
             return highlights;
 
         for (Entry e : entries) {
@@ -195,24 +176,21 @@ public class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
      *
      * @param closestValues        contains two Highlight objects per DataSet closest to the selected x-position (determined by
      *                             rounding up an down)
-     * @param x
-     * @param y
      * @param axis                 the closest axis
-     * @param minSelectionDistance
-     * @return
      */
-    public Highlight getClosestHighlightByPixel(List<Highlight> closestValues, float x, float y,
-                                                YAxis.AxisDependency axis, float minSelectionDistance) {
-
+    @Nullable
+    public Highlight getClosestHighlightByPixel(
+            @NotNull List<Highlight> closestValues,
+            float x, float y,
+            @Nullable YAxis.AxisDependency axis,
+            float minSelectionDistance) {
         Highlight closest = null;
         float distance = minSelectionDistance;
 
         for (int i = 0; i < closestValues.size(); i++) {
-
             Highlight high = closestValues.get(i);
 
             if (axis == null || high.getAxis() == axis) {
-
                 float cDistance = getDistance(x, y, high.getXPx(), high.getYPx());
 
                 if (cDistance < distance) {
@@ -227,19 +205,15 @@ public class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
 
     /**
      * Calculates the distance between the two given points.
-     *
-     * @param x1
-     * @param y1
-     * @param x2
-     * @param y2
-     * @return
      */
     protected float getDistance(float x1, float y1, float x2, float y2) {
-        //return Math.abs(y1 - y2);
-        //return Math.abs(x1 - x2);
-        return (float) Math.hypot(x1 - x2, y1 - y2);
+        float xDist = x2 - x1;
+        float yDist = y2 - y1;
+
+        return (float)Math.sqrt(xDist * xDist + yDist * yDist);
     }
 
+    @Nullable
     protected BarLineScatterCandleBubbleData getData() {
         return mChart.getData();
     }

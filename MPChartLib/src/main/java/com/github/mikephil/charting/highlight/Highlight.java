@@ -3,22 +3,24 @@ package com.github.mikephil.charting.highlight;
 
 import com.github.mikephil.charting.components.YAxis;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 /**
  * Contains information needed to determine the highlighted value.
  *
  * @author Philipp Jahoda
  */
 public class Highlight {
-
     /**
      * the x-value of the highlighted value
      */
-    private float mX = Float.NaN;
+    private final float mX;
 
     /**
      * the y-value of the highlighted value
      */
-    private float mY = Float.NaN;
+    private final float mY;
 
     /**
      * the x-pixel of the highlight
@@ -38,7 +40,7 @@ public class Highlight {
     /**
      * the index of the dataset the highlighted value is in
      */
-    private int mDataSetIndex;
+    private final int mDataSetIndex;
 
     /**
      * index which value of a stacked bar entry is highlighted, default -1
@@ -86,7 +88,7 @@ public class Highlight {
      * @param y            the y-value of the highlighted value
      * @param dataSetIndex the index of the DataSet the highlighted value belongs to
      */
-    public Highlight(float x, float y, float xPx, float yPx, int dataSetIndex, YAxis.AxisDependency axis) {
+    public Highlight(float x, float y, float xPx, float yPx, int dataSetIndex, @NotNull YAxis.AxisDependency axis) {
         this.mX = x;
         this.mY = y;
         this.mXPx = xPx;
@@ -104,15 +106,17 @@ public class Highlight {
      * @param stackIndex   references which value of a stacked-bar entry has been
      *                     selected
      */
-    public Highlight(float x, float y, float xPx, float yPx, int dataSetIndex, int stackIndex, YAxis.AxisDependency axis) {
+    public Highlight(
+            float x, float y,
+            float xPx, float yPx,
+            int dataSetIndex, int stackIndex,
+            @NotNull YAxis.AxisDependency axis) {
         this(x, y, xPx, yPx, dataSetIndex, axis);
         this.mStackIndex = stackIndex;
     }
 
     /**
      * returns the x-value of the highlighted value
-     *
-     * @return
      */
     public float getX() {
         return mX;
@@ -120,8 +124,6 @@ public class Highlight {
 
     /**
      * returns the y-value of the highlighted value
-     *
-     * @return
      */
     public float getY() {
         return mY;
@@ -143,8 +145,6 @@ public class Highlight {
 
     /**
      * the index of the data object - in case it refers to more than one
-     *
-     * @return
      */
     public int getDataIndex() {
         return mDataIndex;
@@ -156,8 +156,6 @@ public class Highlight {
 
     /**
      * returns the index of the DataSet the highlighted value is in
-     *
-     * @return
      */
     public int getDataSetIndex() {
         return mDataSetIndex;
@@ -166,8 +164,6 @@ public class Highlight {
     /**
      * Only needed if a stacked-barchart entry was highlighted. References the
      * selected value within the stacked-entry.
-     *
-     * @return
      */
     public int getStackIndex() {
         return mStackIndex;
@@ -179,18 +175,14 @@ public class Highlight {
 
     /**
      * Returns the axis the highlighted value belongs to.
-     *
-     * @return
      */
+    @NotNull
     public YAxis.AxisDependency getAxis() {
         return axis;
     }
 
     /**
      * Sets the x- and y-position (pixels) where this highlight was last drawn.
-     *
-     * @param x
-     * @param y
      */
     public void setDraw(float x, float y) {
         this.mDrawX = x;
@@ -199,8 +191,6 @@ public class Highlight {
 
     /**
      * Returns the x-position in pixels where this highlight object was last drawn.
-     *
-     * @return
      */
     public float getDrawX() {
         return mDrawX;
@@ -208,8 +198,6 @@ public class Highlight {
 
     /**
      * Returns the y-position in pixels where this highlight object was last drawn.
-     *
-     * @return
      */
     public float getDrawY() {
         return mDrawY;
@@ -218,24 +206,20 @@ public class Highlight {
     /**
      * Returns true if this highlight object is equal to the other (compares
      * xIndex and dataSetIndex)
-     *
-     * @param h
-     * @return
      */
-    public boolean equalTo(Highlight h) {
-
-        if (h == null)
+    public boolean equalTo(@Nullable Highlight h) {
+        if (h == null) {
             return false;
-        else {
-            if (this.mDataSetIndex == h.mDataSetIndex && this.mX == h.mX
-                    && this.mStackIndex == h.mStackIndex && this.mDataIndex == h.mDataIndex)
-                return true;
-            else
-                return false;
+        } else {
+            return mDataSetIndex == h.mDataSetIndex &&
+                    mX == h.mX &&
+                    mStackIndex == h.mStackIndex &&
+                    mDataIndex == h.mDataIndex;
         }
     }
 
     @Override
+    @NotNull
     public String toString() {
         return "Highlight, x: " + mX + ", y: " + mY + ", dataSetIndex: " + mDataSetIndex
                 + ", stackIndex (only stacked barentry): " + mStackIndex;
