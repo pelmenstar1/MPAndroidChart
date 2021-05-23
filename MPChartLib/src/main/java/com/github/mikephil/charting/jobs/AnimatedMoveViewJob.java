@@ -8,19 +8,29 @@ import com.github.mikephil.charting.utils.ObjectPool;
 import com.github.mikephil.charting.utils.Transformer;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Created by Philipp Jahoda on 19/02/16.
  */
 @SuppressLint("NewApi")
 public class AnimatedMoveViewJob extends AnimatedViewPortJob {
-
-    private static ObjectPool<AnimatedMoveViewJob> pool;
+    private static final ObjectPool<AnimatedMoveViewJob> pool;
 
     static {
-        pool = ObjectPool.create(4, new AnimatedMoveViewJob(null,0,0,null,null,0,0,0));
+        pool = ObjectPool.create(4, AnimatedMoveViewJob::new);
         pool.setReplenishPercentage(0.5f);
     }
 
+    private AnimatedMoveViewJob() {
+        super(null, 0,0, null, null, 0, 0, 0);
+    }
+
+    public AnimatedMoveViewJob(ViewPortHandler viewPortHandler, float xValue, float yValue, Transformer trans, View v, float xOrigin, float yOrigin, long duration) {
+        super(viewPortHandler, xValue, yValue, trans, v, xOrigin, yOrigin, duration);
+    }
+
+    @NotNull
     public static AnimatedMoveViewJob getInstance(ViewPortHandler viewPortHandler, float xValue, float yValue, Transformer trans, View v, float xOrigin, float yOrigin, long duration){
         AnimatedMoveViewJob result = pool.get();
         result.mViewPortHandler = viewPortHandler;
@@ -39,9 +49,8 @@ public class AnimatedMoveViewJob extends AnimatedViewPortJob {
         pool.recycle(instance);
     }
 
-
-    public AnimatedMoveViewJob(ViewPortHandler viewPortHandler, float xValue, float yValue, Transformer trans, View v, float xOrigin, float yOrigin, long duration) {
-        super(viewPortHandler, xValue, yValue, trans, v, xOrigin, yOrigin, duration);
+    public void recycleSelf(){
+        recycleInstance(this);
     }
 
     @Override
@@ -54,12 +63,5 @@ public class AnimatedMoveViewJob extends AnimatedViewPortJob {
         mViewPortHandler.centerViewPort(pts, view);
     }
 
-    public void recycleSelf(){
-        recycleInstance(this);
-    }
 
-    @Override
-    protected ObjectPool.Poolable instantiate() {
-        return new AnimatedMoveViewJob(null,0,0,null,null,0,0,0);
-    }
 }

@@ -12,32 +12,17 @@ import com.github.mikephil.charting.utils.ObjectPool;
 import com.github.mikephil.charting.utils.Transformer;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Created by Philipp Jahoda on 19/02/16.
  */
 @SuppressLint("NewApi")
 public class AnimatedZoomJob extends AnimatedViewPortJob implements Animator.AnimatorListener {
-
-    private static ObjectPool<AnimatedZoomJob> pool;
+    private static final ObjectPool<AnimatedZoomJob> pool;
 
     static {
-        pool = ObjectPool.create(8, new AnimatedZoomJob(null,null,null,null,0,0,0,0,0,0,0,0,0,0));
-    }
-
-    public static AnimatedZoomJob getInstance(ViewPortHandler viewPortHandler, View v, Transformer trans, YAxis axis, float xAxisRange, float scaleX, float scaleY, float xOrigin, float yOrigin, float zoomCenterX, float zoomCenterY, float zoomOriginX, float zoomOriginY, long duration) {
-        AnimatedZoomJob result = pool.get();
-        result.mViewPortHandler = viewPortHandler;
-        result.xValue = scaleX;
-        result.yValue = scaleY;
-        result.mTrans = trans;
-        result.view = v;
-        result.xOrigin = xOrigin;
-        result.yOrigin = yOrigin;
-        result.yAxis = axis;
-        result.xAxisRange = xAxisRange;
-        result.resetAnimator();
-        result.animator.setDuration(duration);
-        return result;
+        pool = ObjectPool.create(8, AnimatedZoomJob::new);
     }
 
     protected float zoomOriginX;
@@ -50,8 +35,22 @@ public class AnimatedZoomJob extends AnimatedViewPortJob implements Animator.Ani
 
     protected float xAxisRange;
 
+    private AnimatedZoomJob() {
+        super(null, 0, 0, null, null, 0,0,0);
+    }
+
     @SuppressLint("NewApi")
-    public AnimatedZoomJob(ViewPortHandler viewPortHandler, View v, Transformer trans, YAxis axis, float xAxisRange, float scaleX, float scaleY, float xOrigin, float yOrigin, float zoomCenterX, float zoomCenterY, float zoomOriginX, float zoomOriginY, long duration) {
+    public AnimatedZoomJob(
+            @NotNull ViewPortHandler viewPortHandler,
+            @NotNull View v,
+            @NotNull Transformer trans,
+            @NotNull YAxis axis,
+            float xAxisRange,
+            float scaleX, float scaleY,
+            float xOrigin, float yOrigin,
+            float zoomCenterX, float zoomCenterY,
+            float zoomOriginX, float zoomOriginY,
+            long duration) {
         super(viewPortHandler, scaleX, scaleY, trans, v, xOrigin, yOrigin, duration);
 
         this.zoomCenterX = zoomCenterX;
@@ -64,6 +63,7 @@ public class AnimatedZoomJob extends AnimatedViewPortJob implements Animator.Ani
     }
 
     protected Matrix mOnAnimationUpdateMatrixBuffer = new Matrix();
+
     @Override
     public void onAnimationUpdate(ValueAnimator animation) {
 
@@ -84,6 +84,22 @@ public class AnimatedZoomJob extends AnimatedViewPortJob implements Animator.Ani
 
         mViewPortHandler.translate(pts, save);
         mViewPortHandler.refresh(save, view, true);
+    }
+
+    public static AnimatedZoomJob getInstance(ViewPortHandler viewPortHandler, View v, Transformer trans, YAxis axis, float xAxisRange, float scaleX, float scaleY, float xOrigin, float yOrigin, float zoomCenterX, float zoomCenterY, float zoomOriginX, float zoomOriginY, long duration) {
+        AnimatedZoomJob result = pool.get();
+        result.mViewPortHandler = viewPortHandler;
+        result.xValue = scaleX;
+        result.yValue = scaleY;
+        result.mTrans = trans;
+        result.view = v;
+        result.xOrigin = xOrigin;
+        result.yOrigin = yOrigin;
+        result.yAxis = axis;
+        result.xAxisRange = xAxisRange;
+        result.resetAnimator();
+        result.animator.setDuration(duration);
+        return result;
     }
 
     @Override
@@ -110,10 +126,5 @@ public class AnimatedZoomJob extends AnimatedViewPortJob implements Animator.Ani
     @Override
     public void onAnimationStart(Animator animation) {
 
-    }
-
-    @Override
-    protected ObjectPool.Poolable instantiate() {
-        return new AnimatedZoomJob(null,null,null,null,0,0,0,0,0,0,0,0,0,0);
     }
 }

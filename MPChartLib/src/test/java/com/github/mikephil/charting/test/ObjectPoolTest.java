@@ -4,6 +4,7 @@ import com.github.mikephil.charting.utils.ObjectPool;
 
 import junit.framework.Assert;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -13,20 +14,17 @@ import java.util.List;
  * Created by otheruser on 6/28/16.
  */
 public class ObjectPoolTest {
-
     static class TestPoolable extends ObjectPool.Poolable{
-
-        private static ObjectPool<TestPoolable> pool;
+        private static final ObjectPool<TestPoolable> pool;
 
         static {
-            pool = ObjectPool.create(4, new TestPoolable(0,0));
+            pool = ObjectPool.create(4, TestPoolable::new);
         }
 
         public int foo = 0;
         public int bar = 0;
 
-        protected ObjectPool.Poolable instantiate(){
-            return new TestPoolable(0,0);
+        private TestPoolable() {
         }
 
         private TestPoolable(int foo, int bar){
@@ -34,6 +32,7 @@ public class ObjectPoolTest {
             this.bar = bar;
         }
 
+        @NotNull
         public static TestPoolable getInstance(int foo, int bar){
             TestPoolable result = pool.get();
             result.foo = foo;
@@ -49,10 +48,10 @@ public class ObjectPoolTest {
             pool.recycle(instances);
         }
 
-        public static ObjectPool getPool(){
+        @NotNull
+        public static ObjectPool<TestPoolable> getPool(){
             return pool;
         }
-
     }
 
     @Test

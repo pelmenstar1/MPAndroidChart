@@ -7,30 +7,21 @@ import com.github.mikephil.charting.utils.ObjectPool;
 import com.github.mikephil.charting.utils.Transformer;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Created by Philipp Jahoda on 19/02/16.
  */
 public class MoveViewJob extends ViewPortJob {
-
-    private static ObjectPool<MoveViewJob> pool;
+    private static final ObjectPool<MoveViewJob> pool;
 
     static {
-        pool = ObjectPool.create(2, new MoveViewJob(null,0,0,null,null));
+        pool = ObjectPool.create(2, MoveViewJob::new);
         pool.setReplenishPercentage(0.5f);
     }
 
-    public static MoveViewJob getInstance(ViewPortHandler viewPortHandler, float xValue, float yValue, Transformer trans, View v){
-        MoveViewJob result = pool.get();
-        result.mViewPortHandler = viewPortHandler;
-        result.xValue = xValue;
-        result.yValue = yValue;
-        result.mTrans = trans;
-        result.view = v;
-        return result;
-    }
-
-    public static void recycleInstance(MoveViewJob instance){
-        pool.recycle(instance);
+    private MoveViewJob() {
+        super(null, 0,0, null, null);
     }
 
     public MoveViewJob(ViewPortHandler viewPortHandler, float xValue, float yValue, Transformer trans, View v) {
@@ -39,18 +30,32 @@ public class MoveViewJob extends ViewPortJob {
 
     @Override
     public void run() {
-
         pts[0] = xValue;
         pts[1] = yValue;
 
         mTrans.pointValuesToPixel(pts);
         mViewPortHandler.centerViewPort(pts, view);
 
-        this.recycleInstance(this);
+        recycleInstance(this);
     }
 
-    @Override
-    protected ObjectPool.Poolable instantiate() {
-        return new MoveViewJob(mViewPortHandler, xValue, yValue, mTrans, view);
+    @NotNull
+    public static MoveViewJob getInstance(
+            @NotNull ViewPortHandler viewPortHandler,
+            float xValue, float yValue,
+            @NotNull Transformer trans,
+            @NotNull View v){
+        MoveViewJob result = pool.get();
+        result.mViewPortHandler = viewPortHandler;
+        result.xValue = xValue;
+        result.yValue = yValue;
+        result.mTrans = trans;
+        result.view = v;
+
+        return result;
+    }
+
+    public static void recycleInstance(MoveViewJob instance){
+        pool.recycle(instance);
     }
 }

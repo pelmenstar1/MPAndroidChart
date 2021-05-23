@@ -14,7 +14,6 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
  */
 @SuppressLint("NewApi")
 public abstract class AnimatedViewPortJob extends ViewPortJob implements ValueAnimator.AnimatorUpdateListener, Animator.AnimatorListener {
-
     protected ObjectAnimator animator;
 
     protected float phase;

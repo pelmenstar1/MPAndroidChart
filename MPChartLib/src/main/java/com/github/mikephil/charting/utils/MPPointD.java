@@ -1,6 +1,8 @@
 
 package com.github.mikephil.charting.utils;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 /**
@@ -9,14 +11,25 @@ import java.util.List;
  * @author Philipp Jahoda
  */
 public class MPPointD extends ObjectPool.Poolable {
-
-    private static ObjectPool<MPPointD> pool;
+    private static final ObjectPool<MPPointD> pool;
 
     static {
-        pool = ObjectPool.create(64, new MPPointD(0,0));
+        pool = ObjectPool.create(64, MPPointD::new);
         pool.setReplenishPercentage(0.5f);
     }
 
+    public double x;
+    public double y;
+
+    public MPPointD() {
+    }
+
+    public MPPointD(double x, double y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    @NotNull
     public static MPPointD getInstance(double x, double y){
         MPPointD result = pool.get();
         result.x = x;
@@ -24,29 +37,16 @@ public class MPPointD extends ObjectPool.Poolable {
         return result;
     }
 
-    public static void recycleInstance(MPPointD instance){
+    public static void recycleInstance(@NotNull MPPointD instance){
         pool.recycle(instance);
     }
 
-    public static void recycleInstances(List<MPPointD> instances){
+    public static void recycleInstances(@NotNull List<MPPointD> instances){
         pool.recycle(instances);
     }
 
-    public double x;
-    public double y;
-
-    protected ObjectPool.Poolable instantiate(){
-        return new MPPointD(0,0);
-    }
-
-    private MPPointD(double x, double y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    /**
-     * returns a string representation of the object
-     */
+    @Override
+    @NotNull
     public String toString() {
         return "MPPointD, x: " + x + ", y: " + y;
     }

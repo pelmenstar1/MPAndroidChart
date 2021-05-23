@@ -10,20 +10,46 @@ import com.github.mikephil.charting.utils.ObjectPool;
 import com.github.mikephil.charting.utils.Transformer;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Created by Philipp Jahoda on 19/02/16.
  */
 public class ZoomJob extends ViewPortJob {
 
-    private static ObjectPool<ZoomJob> pool;
+    private static final ObjectPool<ZoomJob> pool;
 
     static {
-        pool = ObjectPool.create(1, new ZoomJob(null, 0, 0, 0, 0, null, null, null));
+        pool = ObjectPool.create(1, ZoomJob::new);
         pool.setReplenishPercentage(0.5f);
     }
 
-    public static ZoomJob getInstance(ViewPortHandler viewPortHandler, float scaleX, float scaleY, float xValue, float yValue,
-                                      Transformer trans, YAxis.AxisDependency axis, View v) {
+    protected float scaleX;
+    protected float scaleY;
+
+    protected YAxis.AxisDependency axisDependency;
+
+    private ZoomJob() {
+        super(null, 0, 0, null, null);
+    }
+
+    public ZoomJob(ViewPortHandler viewPortHandler, float scaleX, float scaleY, float xValue, float yValue, Transformer trans,
+                   YAxis.AxisDependency axis, View v) {
+        super(viewPortHandler, xValue, yValue, trans, v);
+
+        this.scaleX = scaleX;
+        this.scaleY = scaleY;
+        this.axisDependency = axis;
+    }
+
+    @NotNull
+    public static ZoomJob getInstance(
+            @NotNull ViewPortHandler viewPortHandler,
+            float scaleX, float scaleY,
+            float xValue, float yValue,
+            @NotNull Transformer trans,
+            @NotNull YAxis.AxisDependency axis,
+            @NotNull View v) {
         ZoomJob result = pool.get();
         result.xValue = xValue;
         result.yValue = yValue;
@@ -33,25 +59,12 @@ public class ZoomJob extends ViewPortJob {
         result.mTrans = trans;
         result.axisDependency = axis;
         result.view = v;
+
         return result;
     }
 
-    public static void recycleInstance(ZoomJob instance) {
+    public static void recycleInstance(@NotNull ZoomJob instance) {
         pool.recycle(instance);
-    }
-
-    protected float scaleX;
-    protected float scaleY;
-
-    protected YAxis.AxisDependency axisDependency;
-
-    public ZoomJob(ViewPortHandler viewPortHandler, float scaleX, float scaleY, float xValue, float yValue, Transformer trans,
-                   YAxis.AxisDependency axis, View v) {
-        super(viewPortHandler, xValue, yValue, trans, v);
-
-        this.scaleX = scaleX;
-        this.scaleY = scaleY;
-        this.axisDependency = axis;
     }
 
     protected Matrix mRunMatrixBuffer = new Matrix();
@@ -78,10 +91,5 @@ public class ZoomJob extends ViewPortJob {
         view.postInvalidate();
 
         recycleInstance(this);
-    }
-
-    @Override
-    protected ObjectPool.Poolable instantiate() {
-        return new ZoomJob(null, 0, 0, 0, 0, null, null, null);
     }
 }

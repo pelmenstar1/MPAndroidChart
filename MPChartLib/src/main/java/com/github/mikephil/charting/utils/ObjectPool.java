@@ -1,5 +1,7 @@
 package com.github.mikephil.charting.utils;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 /**
@@ -16,16 +18,15 @@ import java.util.List;
  * Created by Tony Patino on 6/20/16.
  */
 public class ObjectPool<T extends ObjectPool.Poolable> {
-
     private static int ids = 0;
 
     private int poolId;
     private int desiredCapacity;
     private Object[] objects;
     private int objectsPointer;
-    private T modelObject;
-    private float replenishPercentage;
+    private final Creator<T> creator;
 
+    private float replenishPercentage;
 
     /**
      * Returns the id of the given pool instance.
@@ -39,26 +40,24 @@ public class ObjectPool<T extends ObjectPool.Poolable> {
     /**
      * Returns an ObjectPool instance, of a given starting capacity, that recycles instances of a given Poolable object.
      *
-     * @param withCapacity A positive integer value.
-     * @param object An instance of the object that the pool should recycle.
-     * @return
+     * @param capacity A positive integer value.
      */
-    public static synchronized ObjectPool create(int withCapacity, Poolable object){
-        ObjectPool result = new ObjectPool(withCapacity, object);
+    public static synchronized<T extends Poolable> ObjectPool<T> create(int capacity, @NotNull Creator<T> creator){
+        ObjectPool<T> result = new ObjectPool<>(capacity, creator);
         result.poolId = ids;
         ids++;
 
         return result;
     }
 
-    private ObjectPool(int withCapacity, T object){
-        if(withCapacity <= 0){
+    private ObjectPool(int capacity, @NotNull Creator<T> creator){
+        if(capacity <= 0){
             throw new IllegalArgumentException("Object Pool must be instantiated with a capacity greater than 0!");
         }
-        this.desiredCapacity = withCapacity;
+        this.desiredCapacity = capacity;
         this.objects = new Object[this.desiredCapacity];
         this.objectsPointer = 0;
-        this.modelObject = object;
+        this.creator = creator;
         this.replenishPercentage = 1.0f;
         this.refillPool();
     }
@@ -71,12 +70,12 @@ public class ObjectPool<T extends ObjectPool.Poolable> {
      */
     public void setReplenishPercentage(float percentage){
         float p = percentage;
-        if(p > 1){
+        if(p > 1) {
             p = 1;
-        }
-        else if(p < 0f){
+        } else if(p < 0f) {
             p = 0f;
         }
+
         this.replenishPercentage = p;
     }
 
@@ -91,15 +90,16 @@ public class ObjectPool<T extends ObjectPool.Poolable> {
     private void refillPool(float percentage){
         int portionOfCapacity = (int) (desiredCapacity * percentage);
 
-        if(portionOfCapacity < 1){
+        if(portionOfCapacity < 1) {
             portionOfCapacity = 1;
-        }else if(portionOfCapacity > desiredCapacity){
+        } else if(portionOfCapacity > desiredCapacity) {
             portionOfCapacity = desiredCapacity;
         }
 
         for(int i = 0 ; i < portionOfCapacity ; i++){
-            this.objects[i] = modelObject.instantiate();
+            objects[i] = creator.newInstance();
         }
+
         objectsPointer = portionOfCapacity - 1;
     }
 
@@ -110,8 +110,9 @@ public class ObjectPool<T extends ObjectPool.Poolable> {
      *
      * @return An instance of Poolable object T
      */
+    @SuppressWarnings("unchecked")
+    @NotNull
     public synchronized T get(){
-
         if(this.objectsPointer == -1 && this.replenishPercentage > 0.0f){
             this.refillPool();
         }
@@ -129,22 +130,22 @@ public class ObjectPool<T extends ObjectPool.Poolable> {
      *
      * @param object An object of type T to recycle
      */
-    public synchronized void recycle(T object){
+    public synchronized void recycle(@NotNull T object){
         if(object.currentOwnerId != Poolable.NO_OWNER){
-            if(object.currentOwnerId == this.poolId){
+            if(object.currentOwnerId == poolId) {
                 throw new IllegalArgumentException("The object passed is already stored in this pool!");
-            }else {
+            } else {
                 throw new IllegalArgumentException("The object to recycle already belongs to poolId " + object.currentOwnerId + ".  Object cannot belong to two different pool instances simultaneously!");
             }
         }
 
-        this.objectsPointer++;
-        if(this.objectsPointer >= objects.length){
-            this.resizePool();
+        objectsPointer++;
+        if(objectsPointer >= objects.length){
+            resizePool();
         }
 
-        object.currentOwnerId = this.poolId;
-        objects[this.objectsPointer] = object;
+        object.currentOwnerId = poolId;
+        objects[objectsPointer] = object;
 
     }
 
@@ -154,35 +155,38 @@ public class ObjectPool<T extends ObjectPool.Poolable> {
      *
      * @param objects A list of objects of type T to recycle
      */
-    public synchronized void recycle(List<T> objects){
-        while(objects.size() + this.objectsPointer + 1 > this.desiredCapacity){
-            this.resizePool();
+    public synchronized void recycle(@NotNull List<T> objects){
+        while(objects.size() + objectsPointer + 1 > desiredCapacity){
+            resizePool();
         }
+
         final int objectsListSize = objects.size();
 
         // Not relying on recycle(T object) because this is more performant.
-        for(int i = 0 ; i < objectsListSize ; i++){
+        for(int i = 0; i < objectsListSize; i++){
             T object = objects.get(i);
             if(object.currentOwnerId != Poolable.NO_OWNER){
-                if(object.currentOwnerId == this.poolId){
+                if(object.currentOwnerId == poolId){
                     throw new IllegalArgumentException("The object passed is already stored in this pool!");
-                }else {
+                } else {
                     throw new IllegalArgumentException("The object to recycle already belongs to poolId " + object.currentOwnerId + ".  Object cannot belong to two different pool instances simultaneously!");
                 }
             }
-            object.currentOwnerId = this.poolId;
-            this.objects[this.objectsPointer + 1 + i] = object;
+            object.currentOwnerId = poolId;
+            this.objects[objectsPointer + 1 + i] = object;
         }
         this.objectsPointer += objectsListSize;
     }
 
     private void resizePool() {
-        final int oldCapacity = this.desiredCapacity;
-        this.desiredCapacity *= 2;
-        Object[] temp = new Object[this.desiredCapacity];
-        for(int i = 0 ; i < oldCapacity ; i++){
-            temp[i] = this.objects[i];
+        int oldCapacity = desiredCapacity;
+        desiredCapacity *= 2;
+        Object[] temp = new Object[desiredCapacity];
+
+        if (oldCapacity >= 0) {
+            System.arraycopy(this.objects, 0, temp, 0, oldCapacity);
         }
+
         this.objects = temp;
     }
 
@@ -206,13 +210,13 @@ public class ObjectPool<T extends ObjectPool.Poolable> {
         return this.objectsPointer + 1;
     }
 
-
-    public static abstract class Poolable{
-
+    public static abstract class Poolable {
         public static int NO_OWNER = -1;
         int currentOwnerId = NO_OWNER;
+    }
 
-        protected abstract Poolable instantiate();
-
+    public interface Creator<T extends Poolable> {
+        @NotNull
+        T newInstance();
     }
 }

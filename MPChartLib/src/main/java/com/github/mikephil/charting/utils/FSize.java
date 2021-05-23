@@ -1,6 +1,8 @@
 
 package com.github.mikephil.charting.utils;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 /**
@@ -8,60 +10,49 @@ import java.util.List;
  * unit. Replacement for the android.Util.SizeF which is available only on API >= 21.
  */
 public final class FSize extends ObjectPool.Poolable{
-
-    // TODO : Encapsulate width & height
-
     public float width;
     public float height;
 
-    private static ObjectPool<FSize> pool;
+    private static final ObjectPool<FSize> pool;
 
     static {
-        pool = ObjectPool.create(256, new FSize(0,0));
+        pool = ObjectPool.create(256, FSize::new);
         pool.setReplenishPercentage(0.5f);
     }
 
-
-    protected ObjectPool.Poolable instantiate(){
-        return new FSize(0,0);
-    }
-
+    @NotNull
     public static FSize getInstance(final float width, final float height){
         FSize result = pool.get();
         result.width = width;
         result.height = height;
+
         return result;
     }
 
-    public static void recycleInstance(FSize instance){
+    public static void recycleInstance(@NotNull FSize instance){
         pool.recycle(instance);
     }
 
-    public static void recycleInstances(List<FSize> instances){
+    public static void recycleInstances(@NotNull List<FSize> instances){
         pool.recycle(instances);
     }
 
     public FSize() {
     }
 
-    public FSize(final float width, final float height) {
+    public FSize(float width, float height) {
         this.width = width;
         this.height = height;
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (this == obj) {
-            return true;
-        }
-        if (obj instanceof FSize) {
-            final FSize other = (FSize) obj;
-            return width == other.width && height == other.height;
-        }
-        return false;
+    public boolean equals(Object other) {
+        if(other == this) return true;
+        if(other == null || other.getClass() != getClass()) return false;
+
+        FSize o = (FSize)other;
+
+        return width == o.width && height == o.height;
     }
 
     @Override

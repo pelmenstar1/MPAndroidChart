@@ -17,7 +17,6 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
  * @author Philipp Jahoda
  */
 public abstract class ViewPortJob extends ObjectPool.Poolable implements Runnable {
-
     protected float[] pts = new float[2];
 
     protected ViewPortHandler mViewPortHandler;
