@@ -5,6 +5,9 @@ import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.text.DecimalFormat;
 
 /**
@@ -17,14 +20,12 @@ import java.text.DecimalFormat;
  * @author Philipp Jahoda
  * @author Oleksandr Tyshkovets <olexandr.tyshkovets@gmail.com>
  */
-public class LargeValueFormatter implements IValueFormatter, IAxisValueFormatter
-{
-
-    private String[] mSuffix = new String[]{
+public class LargeValueFormatter implements IValueFormatter, IAxisValueFormatter {
+    private String[] mSuffix = new String[] {
             "", "k", "m", "b", "t"
     };
     private int mMaxLength = 5;
-    private DecimalFormat mFormat;
+    private final DecimalFormat mFormat;
     private String mText = "";
 
     public LargeValueFormatter() {
@@ -36,29 +37,34 @@ public class LargeValueFormatter implements IValueFormatter, IAxisValueFormatter
      *
      * @param appendix a text that will be appended
      */
-    public LargeValueFormatter(String appendix) {
+    public LargeValueFormatter(@NotNull String appendix) {
         this();
         mText = appendix;
     }
 
     // IValueFormatter
     @Override
-    public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+    @NotNull
+    public String getFormattedValue(
+            float value,
+            @NotNull Entry entry,
+            int dataSetIndex,
+            @NotNull ViewPortHandler viewPortHandler
+    ) {
         return makePretty(value) + mText;
     }
 
     // IAxisValueFormatter
     @Override
-    public String getFormattedValue(float value, AxisBase axis) {
+    @NotNull
+    public String getFormattedValue(float value, @Nullable AxisBase axis) {
         return makePretty(value) + mText;
     }
 
     /**
      * Set an appendix text to be added at the end of the formatted value.
-     *
-     * @param appendix
      */
-    public void setAppendix(String appendix) {
+    public void setAppendix(@NotNull String appendix) {
         this.mText = appendix;
     }
 
@@ -68,7 +74,7 @@ public class LargeValueFormatter implements IValueFormatter, IAxisValueFormatter
      *
      * @param suffix new suffix
      */
-    public void setSuffix(String[] suffix) {
+    public void setSuffix(@NotNull String[] suffix) {
         this.mSuffix = suffix;
     }
 
@@ -80,13 +86,13 @@ public class LargeValueFormatter implements IValueFormatter, IAxisValueFormatter
      * Formats each number properly. Special thanks to Roman Gromov
      * (https://github.com/romangromov) for this piece of code.
      */
+    @NotNull
     private String makePretty(double number) {
-
         String r = mFormat.format(number);
 
         int numericValue1 = Character.getNumericValue(r.charAt(r.length() - 1));
         int numericValue2 = Character.getNumericValue(r.charAt(r.length() - 2));
-        int combined = Integer.valueOf(numericValue2 + "" + numericValue1);
+        int combined = Integer.parseInt(numericValue2 + "" + numericValue1);
 
         r = r.replaceAll("E[0-9][0-9]", mSuffix[combined / 3]);
 

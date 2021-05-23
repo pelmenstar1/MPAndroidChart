@@ -4,6 +4,8 @@ package com.github.mikephil.charting.formatter;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.text.DecimalFormat;
 
 /**
@@ -12,9 +14,7 @@ import java.text.DecimalFormat;
  *
  * @author Philipp Jahoda
  */
-public class DefaultValueFormatter implements IValueFormatter
-{
-
+public class DefaultValueFormatter implements IValueFormatter {
     /**
      * DecimalFormat for formatting
      */
@@ -25,8 +25,6 @@ public class DefaultValueFormatter implements IValueFormatter
     /**
      * Constructor that specifies to how many digits the value should be
      * formatted.
-     *
-     * @param digits
      */
     public DefaultValueFormatter(int digits) {
         setup(digits);
@@ -34,36 +32,33 @@ public class DefaultValueFormatter implements IValueFormatter
 
     /**
      * Sets up the formatter with a given number of decimal digits.
-     *
-     * @param digits
      */
     public void setup(int digits) {
-
         this.mDecimalDigits = digits;
 
-        StringBuffer b = new StringBuffer();
-        for (int i = 0; i < digits; i++) {
-            if (i == 0)
-                b.append(".");
-            b.append("0");
+        char[] formatChars = new char[digits + 1];
+        formatChars[0] = '.';
+        for(int i = 1; i < formatChars.length; i++) {
+            formatChars[i] = '0';
         }
+        String format = new String(formatChars);
 
-        mFormat = new DecimalFormat("###,###,###,##0" + b.toString());
+        mFormat = new DecimalFormat("###,###,###,##0" + format);
     }
 
     @Override
-    public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-
-        // put more logic here ...
-        // avoid memory allocations here (for performance reasons)
-
+    @NotNull
+    public String getFormattedValue(
+            float value,
+            @NotNull Entry entry,
+            int dataSetIndex,
+            @NotNull ViewPortHandler viewPortHandler
+    ) {
         return mFormat.format(value);
     }
 
     /**
      * Returns the number of decimal digits this formatter uses.
-     *
-     * @return
      */
     public int getDecimalDigits() {
         return mDecimalDigits;

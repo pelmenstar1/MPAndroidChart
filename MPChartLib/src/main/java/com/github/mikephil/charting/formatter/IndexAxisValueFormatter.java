@@ -2,19 +2,17 @@
 package com.github.mikephil.charting.formatter;
 
 import com.github.mikephil.charting.components.AxisBase;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.utils.ViewPortHandler;
 
-import java.text.DecimalFormat;
-import java.util.Arrays;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Collection;
 
 /**
  * This formatter is used for passing an array of x-axis labels, on whole x steps.
  */
-public class IndexAxisValueFormatter implements IAxisValueFormatter
-{
-    private String[] mValues = new String[] {};
+public class IndexAxisValueFormatter implements IAxisValueFormatter {
+    private String[] mValues;
     private int mValueCount = 0;
 
     /**
@@ -29,9 +27,8 @@ public class IndexAxisValueFormatter implements IAxisValueFormatter
      *
      * @param values The values string array
      */
-    public IndexAxisValueFormatter(String[] values) {
-        if (values != null)
-            setValues(values);
+    public IndexAxisValueFormatter(@NotNull String[] values) {
+        setValues(values);
     }
 
     /**
@@ -39,12 +36,12 @@ public class IndexAxisValueFormatter implements IAxisValueFormatter
      *
      * @param values The values string array
      */
-    public IndexAxisValueFormatter(Collection<String> values) {
-        if (values != null)
-            setValues(values.toArray(new String[values.size()]));
+    public IndexAxisValueFormatter(@NotNull Collection<String> values) {
+        setValues(values.toArray(new String[0]));
     }
 
-    public String getFormattedValue(float value, AxisBase axis) {
+    @NotNull
+    public String getFormattedValue(float value, @Nullable AxisBase axis) {
         int index = Math.round(value);
 
         if (index < 0 || index >= mValueCount || index != (int)value)
@@ -53,16 +50,13 @@ public class IndexAxisValueFormatter implements IAxisValueFormatter
         return mValues[index];
     }
 
+    @NotNull
     public String[] getValues()
     {
         return mValues;
     }
 
-    public void setValues(String[] values)
-    {
-        if (values == null)
-            values = new String[] {};
-
+    public void setValues(@NotNull String[] values) {
         this.mValues = values;
         this.mValueCount = values.length;
     }

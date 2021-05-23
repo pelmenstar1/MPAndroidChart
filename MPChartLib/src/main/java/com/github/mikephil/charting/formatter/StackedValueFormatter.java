@@ -4,6 +4,8 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.text.DecimalFormat;
 
 /**
@@ -12,20 +14,18 @@ import java.text.DecimalFormat;
  * A formatter specifically for stacked BarChart that allows to specify whether the all stack values
  * or just the top value should be drawn.
  */
-public class StackedValueFormatter implements IValueFormatter
-{
-
+public class StackedValueFormatter implements IValueFormatter {
     /**
      * if true, all stack values of the stacked bar entry are drawn, else only top
      */
-    private boolean mDrawWholeStack;
+    private final boolean mDrawWholeStack;
 
     /**
      * a string that should be appended behind the value
      */
-    private String mAppendix;
+    private final String mAppendix;
 
-    private DecimalFormat mFormat;
+    private final DecimalFormat mFormat;
 
     /**
      * Constructor.
@@ -34,33 +34,35 @@ public class StackedValueFormatter implements IValueFormatter
      * @param appendix       a string that should be appended behind the value
      * @param decimals       the number of decimal digits to use
      */
-    public StackedValueFormatter(boolean drawWholeStack, String appendix, int decimals) {
+    public StackedValueFormatter(boolean drawWholeStack, @NotNull String appendix, int decimals) {
         this.mDrawWholeStack = drawWholeStack;
         this.mAppendix = appendix;
 
-        StringBuffer b = new StringBuffer();
-        for (int i = 0; i < decimals; i++) {
-            if (i == 0)
-                b.append(".");
-            b.append("0");
+        char[] formatChars = new char[decimals + 1];
+        formatChars[0] = '.';
+        for(int i = 1; i < formatChars.length; i++) {
+            formatChars[i] = '0';
         }
+        String format = new String(formatChars);
 
-        this.mFormat = new DecimalFormat("###,###,###,##0" + b.toString());
+        this.mFormat = new DecimalFormat("###,###,###,##0" + format);
     }
 
     @Override
-    public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-
+    @NotNull
+    public String getFormattedValue(
+            float value,
+            @NotNull Entry entry,
+            int dataSetIndex,
+            @NotNull ViewPortHandler viewPortHandler
+    ) {
         if (!mDrawWholeStack && entry instanceof BarEntry) {
-
             BarEntry barEntry = (BarEntry) entry;
-            float[] vals = barEntry.getYVals();
+            float[] values = barEntry.getYVals();
 
-            if (vals != null) {
-
+            if (values != null) {
                 // find out if we are on top of the stack
-                if (vals[vals.length - 1] == value) {
-
+                if (values[values.length - 1] == value) {
                     // return the "sum" across all stack values
                     return mFormat.format(barEntry.getY()) + mAppendix;
                 } else {

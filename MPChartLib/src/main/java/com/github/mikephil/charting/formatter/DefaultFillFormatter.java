@@ -5,6 +5,8 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.interfaces.dataprovider.LineDataProvider;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Default formatter that calculates the position of the filled line.
  *
@@ -12,11 +14,9 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
  */
 public class DefaultFillFormatter implements IFillFormatter
 {
-
     @Override
-    public float getFillLinePosition(ILineDataSet dataSet, LineDataProvider dataProvider) {
-
-        float fillMin = 0f;
+    public float getFillLinePosition(@NotNull ILineDataSet dataSet, @NotNull LineDataProvider dataProvider) {
+        float fillMin;
         float chartMaxY = dataProvider.getYChartMax();
         float chartMinY = dataProvider.getYChartMin();
 
@@ -25,17 +25,19 @@ public class DefaultFillFormatter implements IFillFormatter
         if (dataSet.getYMax() > 0 && dataSet.getYMin() < 0) {
             fillMin = 0f;
         } else {
-
             float max, min;
 
-            if (data.getYMax() > 0)
+            if (data.getYMax() > 0) {
                 max = 0f;
-            else
+            } else {
                 max = chartMaxY;
-            if (data.getYMin() < 0)
+            }
+
+            if (data.getYMin() < 0) {
                 min = 0f;
-            else
+            } else {
                 min = chartMinY;
+            }
 
             fillMin = dataSet.getYMin() >= 0 ? min : max;
         }
