@@ -3,6 +3,8 @@ package com.github.mikephil.charting.components;
 
 import com.github.mikephil.charting.utils.Utils;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Class representing the x-axis labels settings. Only use the setter methods to
  * modify it. Do not access public variables directly. Be aware that not all
@@ -11,7 +13,6 @@ import com.github.mikephil.charting.utils.Utils;
  * @author Philipp Jahoda
  */
 public class XAxis extends AxisBase {
-
     /**
      * width of the x-axis labels in pixels - this is automatically
      * calculated by the computeSize() methods in the renderers
@@ -50,6 +51,7 @@ public class XAxis extends AxisBase {
     /**
      * the position of the x-labels relative to the chart
      */
+    @NotNull
     private XAxisPosition mPosition = XAxisPosition.TOP;
 
     /**
@@ -68,16 +70,15 @@ public class XAxis extends AxisBase {
     /**
      * returns the position of the x-labels
      */
+    @NotNull
     public XAxisPosition getPosition() {
         return mPosition;
     }
 
     /**
      * sets the position of the x-labels
-     *
-     * @param pos
      */
-    public void setPosition(XAxisPosition pos) {
+    public void setPosition(@NotNull XAxisPosition pos) {
         mPosition = pos;
     }
 
@@ -100,8 +101,6 @@ public class XAxis extends AxisBase {
     /**
      * if set to true, the chart will avoid that the first and last label entry
      * in the chart "clip" off the edge of the chart or the screen
-     *
-     * @param enabled
      */
     public void setAvoidFirstLastClipping(boolean enabled) {
         mAvoidFirstLastClipping = enabled;
@@ -109,8 +108,6 @@ public class XAxis extends AxisBase {
 
     /**
      * returns true if avoid-first-lastclipping is enabled, false if not
-     *
-     * @return
      */
     public boolean isAvoidFirstLastClippingEnabled() {
         return mAvoidFirstLastClipping;

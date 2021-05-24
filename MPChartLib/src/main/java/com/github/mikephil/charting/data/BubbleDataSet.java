@@ -4,18 +4,20 @@ package com.github.mikephil.charting.data;
 import com.github.mikephil.charting.interfaces.datasets.IBubbleDataSet;
 import com.github.mikephil.charting.utils.Utils;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class BubbleDataSet extends BarLineScatterCandleBubbleDataSet<BubbleEntry> implements IBubbleDataSet {
-
     protected float mMaxSize;
     protected boolean mNormalizeSize = true;
 
     private float mHighlightCircleWidth = 2.5f;
 
-    public BubbleDataSet(List<BubbleEntry> yVals, String label) {
-        super(yVals, label);
+    public BubbleDataSet(@NotNull List<BubbleEntry> entries, @Nullable String label) {
+        super(entries, label);
     }
 
     @Override
@@ -29,10 +31,10 @@ public class BubbleDataSet extends BarLineScatterCandleBubbleDataSet<BubbleEntry
     }
 
     @Override
-    protected void calcMinMax(BubbleEntry e) {
+    protected void calcMinMax(@NotNull BubbleEntry e) {
         super.calcMinMax(e);
 
-        final float size = e.getSize();
+        float size = e.getSize();
 
         if (size > mMaxSize) {
             mMaxSize = size;
@@ -40,17 +42,19 @@ public class BubbleDataSet extends BarLineScatterCandleBubbleDataSet<BubbleEntry
     }
 
     @Override
+    @NotNull
     public DataSet<BubbleEntry> copy() {
-        List<BubbleEntry> entries = new ArrayList<BubbleEntry>();
+        ArrayList<BubbleEntry> entries = new ArrayList<>();
         for (int i = 0; i < mEntries.size(); i++) {
             entries.add(mEntries.get(i).copy());
         }
+
         BubbleDataSet copied = new BubbleDataSet(entries, getLabel());
         copy(copied);
         return copied;
     }
 
-    protected void copy(BubbleDataSet bubbleDataSet) {
+    protected void copy(@NotNull BubbleDataSet bubbleDataSet) {
         bubbleDataSet.mHighlightCircleWidth = mHighlightCircleWidth;
         bubbleDataSet.mNormalizeSize = mNormalizeSize;
     }

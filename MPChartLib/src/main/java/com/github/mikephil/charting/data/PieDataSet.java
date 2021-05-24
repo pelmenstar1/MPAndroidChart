@@ -3,13 +3,14 @@ package com.github.mikephil.charting.data;
 
 import com.github.mikephil.charting.interfaces.datasets.IPieDataSet;
 import com.github.mikephil.charting.utils.Utils;
-import androidx.annotation.Nullable;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PieDataSet extends DataSet<PieEntry> implements IPieDataSet {
-
     /**
      * the space in pixels between the chart-slices, default 0f
      */
@@ -21,7 +22,10 @@ public class PieDataSet extends DataSet<PieEntry> implements IPieDataSet {
      */
     private float mShift = 18f;
 
+    @NotNull
     private ValuePosition mXValuePosition = ValuePosition.INSIDE_SLICE;
+
+    @NotNull
     private ValuePosition mYValuePosition = ValuePosition.INSIDE_SLICE;
     private int mValueLineColor = 0xff000000;
     private boolean mUseValueColorForLine = false;
@@ -30,42 +34,40 @@ public class PieDataSet extends DataSet<PieEntry> implements IPieDataSet {
     private float mValueLinePart1Length = 0.3f;
     private float mValueLinePart2Length = 0.4f;
     private boolean mValueLineVariableLength = true;
+
+    @Nullable
     private Integer mHighlightColor = null;
 
-    public PieDataSet(List<PieEntry> yVals, String label) {
-        super(yVals, label);
+    public PieDataSet(@NotNull List<PieEntry> entries, @Nullable String label) {
+        super(entries, label);
 //        mShift = Utils.convertDpToPixel(12f);
     }
 
     @Override
+    @NotNull
     public DataSet<PieEntry> copy() {
         List<PieEntry> entries = new ArrayList<>();
         for (int i = 0; i < mEntries.size(); i++) {
             entries.add(mEntries.get(i).copy());
         }
+
         PieDataSet copied = new PieDataSet(entries, getLabel());
         copy(copied);
         return copied;
     }
 
-    protected void copy(PieDataSet pieDataSet) {
+    protected void copy(@NotNull PieDataSet pieDataSet) {
         super.copy(pieDataSet);
     }
 
     @Override
-    protected void calcMinMax(PieEntry e) {
-
-        if (e == null)
-            return;
-
+    protected void calcMinMax(@NotNull PieEntry e) {
         calcMinMaxY(e);
     }
 
     /**
      * Sets the space that is left out between the piechart-slices in dp.
      * Default: 0 --> no space, maximum 20f
-     *
-     * @param spaceDp
      */
     public void setSliceSpace(float spaceDp) {
 
@@ -85,8 +87,6 @@ public class PieDataSet extends DataSet<PieEntry> implements IPieDataSet {
     /**
      * When enabled, slice spacing will be 0.0 when the smallest value is going to be
      * smaller than the slice spacing itself.
-     *
-     * @param autoDisable
      */
     public void setAutomaticallyDisableSliceSpacing(boolean autoDisable) {
         mAutomaticallyDisableSliceSpacing = autoDisable;
@@ -95,8 +95,6 @@ public class PieDataSet extends DataSet<PieEntry> implements IPieDataSet {
     /**
      * When enabled, slice spacing will be 0.0 when the smallest value is going to be
      * smaller than the slice spacing itself.
-     *
-     * @return
      */
     @Override
     public boolean isAutomaticallyDisableSliceSpacingEnabled() {
@@ -106,8 +104,6 @@ public class PieDataSet extends DataSet<PieEntry> implements IPieDataSet {
     /**
      * sets the distance the highlighted piechart-slice of this DataSet is
      * "shifted" away from the center of the chart, default 12f
-     *
-     * @param shift
      */
     public void setSelectionShift(float shift) {
         mShift = Utils.convertDpToPixel(shift);
@@ -119,20 +115,22 @@ public class PieDataSet extends DataSet<PieEntry> implements IPieDataSet {
     }
 
     @Override
+    @NotNull
     public ValuePosition getXValuePosition() {
         return mXValuePosition;
     }
 
-    public void setXValuePosition(ValuePosition xValuePosition) {
+    public void setXValuePosition(@NotNull ValuePosition xValuePosition) {
         this.mXValuePosition = xValuePosition;
     }
 
     @Override
+    @NotNull
     public ValuePosition getYValuePosition() {
         return mYValuePosition;
     }
 
-    public void setYValuePosition(ValuePosition yValuePosition) {
+    public void setYValuePosition(@NotNull ValuePosition yValuePosition) {
         this.mYValuePosition = yValuePosition;
     }
 
@@ -148,8 +146,6 @@ public class PieDataSet extends DataSet<PieEntry> implements IPieDataSet {
     /**
      * This method is deprecated.
      * Use setUseValueColorForLine(...) instead.
-     *
-     * @param enabled
      */
     @Deprecated
     public void setUsingSliceColorAsValueLineColor(boolean enabled) {

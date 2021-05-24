@@ -1,9 +1,12 @@
 package com.github.mikephil.charting.data;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Typeface;
+
+import androidx.annotation.ColorInt;
 
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.YAxis;
@@ -12,6 +15,9 @@ import com.github.mikephil.charting.interfaces.datasets.IDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.github.mikephil.charting.utils.Utils;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,25 +28,28 @@ import java.util.List;
  * provided by the IDataSet interface.
  */
 public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
-
     /**
      * List representing all colors that are used for this DataSet
      */
-    protected List<Integer> mColors = null;
+    @NotNull
+    protected List<Integer> mColors;
 
     /**
      * List representing all colors that are used for drawing the actual values for this DataSet
      */
-    protected List<Integer> mValueColors = null;
+    @NotNull
+    protected List<Integer> mValueColors;
 
     /**
      * label that describes the DataSet or the data the DataSet represents
      */
+    @Nullable
     private String mLabel = "DataSet";
 
     /**
      * this specifies which axis this DataSet should be plotted against
      */
+    @NotNull
     protected YAxis.AxisDependency mAxisDependency = YAxis.AxisDependency.LEFT;
 
     /**
@@ -51,16 +60,21 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     /**
      * custom formatter that is used instead of the auto-formatter if set
      */
+    @Nullable
     protected transient IValueFormatter mValueFormatter;
 
     /**
      * the typeface used for the value text
      */
+    @Nullable
     protected Typeface mValueTypeface;
 
+    @NotNull
     private Legend.LegendForm mForm = Legend.LegendForm.DEFAULT;
     private float mFormSize = Float.NaN;
     private float mFormLineWidth = Float.NaN;
+
+    @Nullable
     private DashPathEffect mFormLineDashEffect = null;
 
     /**
@@ -76,6 +90,7 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     /**
      * the offset for drawing icons (in dp)
      */
+    @NotNull
     protected MPPointF mIconsOffset = new MPPointF();
 
     /**
@@ -92,8 +107,8 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
      * Default constructor.
      */
     public BaseDataSet() {
-        mColors = new ArrayList<Integer>();
-        mValueColors = new ArrayList<Integer>();
+        mColors = new ArrayList<>();
+        mValueColors = new ArrayList<>();
 
         // default color
         mColors.add(Color.rgb(140, 234, 255));
@@ -102,10 +117,8 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
 
     /**
      * Constructor with label.
-     *
-     * @param label
      */
-    public BaseDataSet(String label) {
+    public BaseDataSet(@Nullable String label) {
         this();
         this.mLabel = label;
     }
@@ -117,33 +130,34 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
         calcMinMax();
     }
 
-
     /**
      * ###### ###### COLOR GETTING RELATED METHODS ##### ######
      */
 
     @Override
+    @NotNull
     public List<Integer> getColors() {
         return mColors;
     }
 
+    @NotNull
     public List<Integer> getValueColors() {
         return mValueColors;
     }
 
     @Override
+    @ColorInt
     public int getColor() {
         return mColors.get(0);
     }
 
     @Override
+    @ColorInt
     public int getColor(int index) {
         return mColors.get(index % mColors.size());
     }
 
-    /**
-     * ###### ###### COLOR SETTING RELATED METHODS ##### ######
-     */
+     // ###### ###### COLOR SETTING RELATED METHODS ##### ######
 
     /**
      * Sets the colors that should be used fore this DataSet. Colors are reused
@@ -151,10 +165,9 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
      * the size of the colors array. If you are using colors from the resources,
      * make sure that the colors are already prepared (by calling
      * getResources().getColor(...)) before adding them to the DataSet.
-     *
-     * @param colors
+
      */
-    public void setColors(List<Integer> colors) {
+    public void setColors(@NotNull List<Integer> colors) {
         this.mColors = colors;
     }
 
@@ -164,10 +177,8 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
      * the size of the colors array. If you are using colors from the resources,
      * make sure that the colors are already prepared (by calling
      * getResources().getColor(...)) before adding them to the DataSet.
-     *
-     * @param colors
      */
-    public void setColors(int... colors) {
+    public void setColors(@NotNull int... colors) {
         this.mColors = ColorTemplate.createColors(colors);
     }
 
@@ -178,40 +189,28 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
      * "new int[] { R.color.red, R.color.green, ... }" to provide colors for
      * this method. Internally, the colors are resolved using
      * getResources().getColor(...)
-     *
-     * @param colors
      */
-    public void setColors(int[] colors, Context c) {
-
-        if (mColors == null) {
-            mColors = new ArrayList<>();
-        }
-
+    public void setColors(@NotNull int[] colors, @NotNull Context c) {
+        Resources res = c.getResources();
         mColors.clear();
 
         for (int color : colors) {
-            mColors.add(c.getResources().getColor(color));
+            mColors.add(res.getColor(color));
         }
     }
 
     /**
      * Adds a new color to the colors array of the DataSet.
-     *
-     * @param color
      */
-    public void addColor(int color) {
-        if (mColors == null)
-            mColors = new ArrayList<Integer>();
+    public void addColor(@ColorInt int color) {
         mColors.add(color);
     }
 
     /**
      * Sets the one and ONLY color that should be used for this DataSet.
      * Internally, this recreates the colors array and adds the specified color.
-     *
-     * @param color
      */
-    public void setColor(int color) {
+    public void setColor(@ColorInt int color) {
         resetColors();
         mColors.add(color);
     }
@@ -219,21 +218,18 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     /**
      * Sets a color with a specific alpha value.
      *
-     * @param color
      * @param alpha from 0-255
      */
-    public void setColor(int color, int alpha) {
+    public void setColor(@ColorInt int color, int alpha) {
         setColor(Color.argb(alpha, Color.red(color), Color.green(color), Color.blue(color)));
     }
 
     /**
      * Sets colors with a specific alpha value.
-     *
-     * @param colors
-     * @param alpha
      */
-    public void setColors(int[] colors, int alpha) {
+    public void setColors(@NotNull int[] colors, int alpha) {
         resetColors();
+
         for (int color : colors) {
             addColor(Color.argb(alpha, Color.red(color), Color.green(color), Color.blue(color)));
         }
@@ -243,9 +239,6 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
      * Resets all colors of this DataSet and recreates the colors array.
      */
     public void resetColors() {
-        if (mColors == null) {
-            mColors = new ArrayList<Integer>();
-        }
         mColors.clear();
     }
 
@@ -254,11 +247,12 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
      */
 
     @Override
-    public void setLabel(String label) {
+    public void setLabel(@Nullable String label) {
         mLabel = label;
     }
 
     @Override
+    @Nullable
     public String getLabel() {
         return mLabel;
     }
@@ -274,18 +268,17 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     }
 
     @Override
-    public void setValueFormatter(IValueFormatter f) {
-
-        if (f == null)
-            return;
-        else
-            mValueFormatter = f;
+    public void setValueFormatter(@NotNull IValueFormatter f) {
+        mValueFormatter = f;
     }
 
     @Override
+    @NotNull
     public IValueFormatter getValueFormatter() {
-        if (needsFormatter())
+        if (mValueFormatter == null) {
             return Utils.getDefaultValueFormatter();
+        }
+
         return mValueFormatter;
     }
 
@@ -295,18 +288,18 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     }
 
     @Override
-    public void setValueTextColor(int color) {
+    public void setValueTextColor(@ColorInt int color) {
         mValueColors.clear();
         mValueColors.add(color);
     }
 
     @Override
-    public void setValueTextColors(List<Integer> colors) {
+    public void setValueTextColors(@NotNull List<Integer> colors) {
         mValueColors = colors;
     }
 
     @Override
-    public void setValueTypeface(Typeface tf) {
+    public void setValueTypeface(@Nullable Typeface tf) {
         mValueTypeface = tf;
     }
 
@@ -316,16 +309,19 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     }
 
     @Override
+    @ColorInt
     public int getValueTextColor() {
         return mValueColors.get(0);
     }
 
     @Override
+    @ColorInt
     public int getValueTextColor(int index) {
         return mValueColors.get(index % mValueColors.size());
     }
 
     @Override
+    @Nullable
     public Typeface getValueTypeface() {
         return mValueTypeface;
     }
@@ -335,11 +331,12 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
         return mValueTextSize;
     }
 
-    public void setForm(Legend.LegendForm form) {
+    public void setForm(@NotNull Legend.LegendForm form) {
         mForm = form;
     }
 
     @Override
+    @NotNull
     public Legend.LegendForm getForm() {
         return mForm;
     }
@@ -362,11 +359,12 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
         return mFormLineWidth;
     }
 
-    public void setFormLineDashEffect(DashPathEffect dashPathEffect) {
+    public void setFormLineDashEffect(@Nullable DashPathEffect dashPathEffect) {
         mFormLineDashEffect = dashPathEffect;
     }
 
     @Override
+    @Nullable
     public DashPathEffect getFormLineDashEffect() {
         return mFormLineDashEffect;
     }
@@ -392,13 +390,13 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     }
 
     @Override
-    public void setIconsOffset(MPPointF offsetDp) {
-
+    public void setIconsOffset(@NotNull MPPointF offsetDp) {
         mIconsOffset.x = offsetDp.x;
         mIconsOffset.y = offsetDp.y;
     }
 
     @Override
+    @NotNull
     public MPPointF getIconsOffset() {
         return mIconsOffset;
     }
@@ -414,15 +412,15 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     }
 
     @Override
+    @NotNull
     public YAxis.AxisDependency getAxisDependency() {
         return mAxisDependency;
     }
 
     @Override
-    public void setAxisDependency(YAxis.AxisDependency dependency) {
+    public void setAxisDependency(@NotNull YAxis.AxisDependency dependency) {
         mAxisDependency = dependency;
     }
-
 
     /**
      * ###### ###### DATA RELATED METHODS ###### ######
@@ -430,10 +428,10 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
 
     @Override
     public int getIndexInEntries(int xIndex) {
-
         for (int i = 0; i < getEntryCount(); i++) {
-            if (xIndex == getEntryForIndex(i).getX())
+            if (xIndex == getEntryForIndex(i).getX()) {
                 return i;
+            }
         }
 
         return -1;
@@ -441,21 +439,20 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
 
     @Override
     public boolean removeFirst() {
-
         if (getEntryCount() > 0) {
-
             T entry = getEntryForIndex(0);
+
             return removeEntry(entry);
-        } else
+        } else {
             return false;
+        }
     }
 
     @Override
     public boolean removeLast() {
-
         if (getEntryCount() > 0) {
-
             T e = getEntryForIndex(getEntryCount() - 1);
+
             return removeEntry(e);
         } else
             return false;
@@ -463,21 +460,23 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
 
     @Override
     public boolean removeEntryByXValue(float xValue) {
-
         T e = getEntryForXValue(xValue, Float.NaN);
+        if(e == null) {
+            return false;
+        }
+
         return removeEntry(e);
     }
 
     @Override
     public boolean removeEntry(int index) {
-
         T e = getEntryForIndex(index);
+
         return removeEntry(e);
     }
 
     @Override
-    public boolean contains(T e) {
-
+    public boolean contains(@NotNull T e) {
         for (int i = 0; i < getEntryCount(); i++) {
             if (getEntryForIndex(i).equals(e))
                 return true;
@@ -486,7 +485,7 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
         return false;
     }
 
-    protected void copy(BaseDataSet baseDataSet) {
+    protected void copy(@NotNull BaseDataSet<T> baseDataSet) {
         baseDataSet.mAxisDependency = mAxisDependency;
         baseDataSet.mColors = mColors;
         baseDataSet.mDrawIcons = mDrawIcons;
@@ -499,7 +498,6 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
         baseDataSet.mIconsOffset = mIconsOffset;
         baseDataSet.mValueColors = mValueColors;
         baseDataSet.mValueFormatter = mValueFormatter;
-        baseDataSet.mValueColors = mValueColors;
         baseDataSet.mValueTextSize = mValueTextSize;
         baseDataSet.mVisible = mVisible;
     }

@@ -3,7 +3,8 @@ package com.github.mikephil.charting.data;
 
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
-import java.util.ArrayList;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 /**
@@ -12,16 +13,15 @@ import java.util.List;
  * @author Philipp Jahoda
  */
 public class LineData extends BarLineScatterCandleBubbleData<ILineDataSet> {
-
     public LineData() {
         super();
     }
 
-    public LineData(ILineDataSet... dataSets) {
+    public LineData(@NotNull ILineDataSet... dataSets) {
         super(dataSets);
     }
 
-    public LineData(List<ILineDataSet> dataSets) {
+    public LineData(@NotNull List<ILineDataSet> dataSets) {
         super(dataSets);
     }
 }

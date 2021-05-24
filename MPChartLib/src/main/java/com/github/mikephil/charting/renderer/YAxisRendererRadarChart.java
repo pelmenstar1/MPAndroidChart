@@ -2,7 +2,6 @@ package com.github.mikephil.charting.renderer;
 
 import android.graphics.Canvas;
 import android.graphics.Path;
-import android.graphics.PointF;
 
 import com.github.mikephil.charting.charts.RadarChart;
 import com.github.mikephil.charting.components.LimitLine;
@@ -11,13 +10,17 @@ import com.github.mikephil.charting.utils.MPPointF;
 import com.github.mikephil.charting.utils.Utils;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 public class YAxisRendererRadarChart extends YAxisRenderer {
+    private final RadarChart mChart;
 
-    private RadarChart mChart;
-
-    public YAxisRendererRadarChart(ViewPortHandler viewPortHandler, YAxis yAxis, RadarChart chart) {
+    public YAxisRendererRadarChart(
+            @NotNull ViewPortHandler viewPortHandler,
+            @NotNull YAxis yAxis,
+            @NotNull RadarChart chart) {
         super(viewPortHandler, yAxis, null);
 
         this.mChart = chart;
@@ -25,12 +28,8 @@ public class YAxisRendererRadarChart extends YAxisRenderer {
 
     @Override
     protected void computeAxisValues(float min, float max) {
-
-        float yMin = min;
-        float yMax = max;
-
         int labelCount = mAxis.getLabelCount();
-        double range = Math.abs(yMax - yMin);
+        double range = Math.abs(max - min);
 
         if (labelCount == 0 || range <= 0 || Double.isInfinite(range)) {
             mAxis.mEntries = new float[]{};
@@ -84,13 +83,12 @@ public class YAxisRendererRadarChart extends YAxisRenderer {
 
             // no forced count
         } else {
-
-            double first = interval == 0.0 ? 0.0 : Math.ceil(yMin / interval) * interval;
+            double first = interval == 0.0 ? 0.0 : Math.ceil(min / interval) * interval;
             if (centeringEnabled) {
                 first -= interval;
             }
 
-            double last = interval == 0.0 ? 0.0 : Utils.nextUp(Math.floor(yMax / interval) * interval);
+            double last = interval == 0.0 ? 0.0 : Utils.nextUp(Math.floor(max / interval) * interval);
 
             double f;
             int i;
@@ -127,7 +125,6 @@ public class YAxisRendererRadarChart extends YAxisRenderer {
         }
 
         if (centeringEnabled) {
-
             if (mAxis.mCenteredEntries.length < n) {
                 mAxis.mCenteredEntries = new float[n];
             }
@@ -145,8 +142,7 @@ public class YAxisRendererRadarChart extends YAxisRenderer {
     }
 
     @Override
-    public void renderAxisLabels(Canvas c) {
-
+    public void renderAxisLabels(@NotNull Canvas c) {
         if (!mYAxis.isEnabled() || !mYAxis.isDrawLabelsEnabled())
             return;
 
@@ -158,15 +154,14 @@ public class YAxisRendererRadarChart extends YAxisRenderer {
         MPPointF pOut = MPPointF.getInstance(0,0);
         float factor = mChart.getFactor();
 
-        final int from = mYAxis.isDrawBottomYLabelEntryEnabled() ? 0 : 1;
-        final int to = mYAxis.isDrawTopYLabelEntryEnabled()
+        int from = mYAxis.isDrawBottomYLabelEntryEnabled() ? 0 : 1;
+        int to = mYAxis.isDrawTopYLabelEntryEnabled()
                 ? mYAxis.mEntryCount
                 : (mYAxis.mEntryCount - 1);
 
         float xOffset = mYAxis.getLabelXOffset();
 
         for (int j = from; j < to; j++) {
-
             float r = (mYAxis.mEntries[j] - mYAxis.mAxisMinimum) * factor;
 
             Utils.getPosition(center, r, mChart.getRotationAngle(), pOut);
@@ -175,20 +170,18 @@ public class YAxisRendererRadarChart extends YAxisRenderer {
 
             c.drawText(label, pOut.x + xOffset, pOut.y, mAxisLabelPaint);
         }
+
         MPPointF.recycleInstance(center);
         MPPointF.recycleInstance(pOut);
     }
 
-    private Path mRenderLimitLinesPathBuffer = new Path();
-    @Override
-    public void renderLimitLines(Canvas c) {
+    private final Path mRenderLimitLinesPathBuffer = new Path();
 
+    @Override
+    public void renderLimitLines(@NotNull Canvas c) {
         List<LimitLine> limitLines = mYAxis.getLimitLines();
 
-        if (limitLines == null)
-            return;
-
-        float sliceangle = mChart.getSliceAngle();
+        float sliceAngle = mChart.getSliceAngle();
 
         // calculate the factor that is needed for transforming the value to
         // pixels
@@ -212,10 +205,10 @@ public class YAxisRendererRadarChart extends YAxisRenderer {
             Path limitPath = mRenderLimitLinesPathBuffer;
             limitPath.reset();
 
+            int count = mChart.getData().getMaxEntryCountSet().getEntryCount();
 
-            for (int j = 0; j < mChart.getData().getMaxEntryCountSet().getEntryCount(); j++) {
-
-                Utils.getPosition(center, r, sliceangle * j + mChart.getRotationAngle(), pOut);
+            for (int j = 0; j < count; j++) {
+                Utils.getPosition(center, r, sliceAngle * j + mChart.getRotationAngle(), pOut);
 
                 if (j == 0)
                     limitPath.moveTo(pOut.x, pOut.y);

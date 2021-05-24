@@ -9,7 +9,6 @@ import com.github.mikephil.charting.utils.Utils;
  * Created by Philipp Jahoda on 17/09/16.
  */
 public class Description extends ComponentBase {
-
     /**
      * the text used in the description
      */

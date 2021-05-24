@@ -21,10 +21,15 @@ public class MoveViewJob extends ViewPortJob {
     }
 
     private MoveViewJob() {
+        //noinspection ConstantConditions
         super(null, 0,0, null, null);
     }
 
-    public MoveViewJob(ViewPortHandler viewPortHandler, float xValue, float yValue, Transformer trans, View v) {
+    public MoveViewJob(
+            @NotNull ViewPortHandler viewPortHandler,
+            float xValue, float yValue,
+            @NotNull Transformer trans,
+            @NotNull View v) {
         super(viewPortHandler, xValue, yValue, trans, v);
     }
 
@@ -55,7 +60,7 @@ public class MoveViewJob extends ViewPortJob {
         return result;
     }
 
-    public static void recycleInstance(MoveViewJob instance){
+    public static void recycleInstance(@NotNull MoveViewJob instance){
         pool.recycle(instance);
     }
 }

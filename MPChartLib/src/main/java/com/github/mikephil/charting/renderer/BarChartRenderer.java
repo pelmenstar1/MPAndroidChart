@@ -24,7 +24,6 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
 import java.util.List;
 
 public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
-
     protected BarDataProvider mChart;
 
     /**

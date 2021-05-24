@@ -6,13 +6,14 @@ import android.graphics.Paint;
 import com.github.mikephil.charting.interfaces.datasets.IScatterDataSet;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Created by wajdic on 15/06/2016.
  * Created at Time 09:07
  */
 public interface IShapeRenderer
 {
-
     /**
      * Renders the provided ScatterDataSet with a shape.
      *
@@ -23,6 +24,11 @@ public interface IShapeRenderer
      * @param posY            Position to draw the shape at
      * @param renderPaint     Paint object used for styling and drawing
      */
-    void renderShape(Canvas c, IScatterDataSet dataSet, ViewPortHandler viewPortHandler,
-                     float posX, float posY, Paint renderPaint);
+    void renderShape(
+            @NotNull Canvas c,
+            @NotNull IScatterDataSet dataSet,
+            @NotNull ViewPortHandler viewPortHandler,
+            float posX, float posY,
+            @NotNull Paint renderPaint
+    );
 }

@@ -12,17 +12,20 @@ import com.github.mikephil.charting.utils.Transformer;
 import com.github.mikephil.charting.utils.Utils;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 /**
  * Baseclass of all axis renderers.
  *
  * @author Philipp Jahoda
  */
 public abstract class AxisRenderer extends Renderer {
-
     /** base axis this axis renderer works with */
     protected AxisBase mAxis;
 
     /** transformer to transform values to screen pixels and return */
+    @Nullable
     protected Transformer mTrans;
 
     /**
@@ -45,36 +48,35 @@ public abstract class AxisRenderer extends Renderer {
      */
     protected Paint mLimitLinePaint;
 
-    public AxisRenderer(ViewPortHandler viewPortHandler, Transformer trans, AxisBase axis) {
+    public AxisRenderer(
+            @NotNull ViewPortHandler viewPortHandler,
+            @Nullable Transformer trans,
+            @NotNull AxisBase axis
+    ) {
         super(viewPortHandler);
 
         this.mTrans = trans;
         this.mAxis = axis;
 
-        if(mViewPortHandler != null) {
+        mAxisLabelPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-            mAxisLabelPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mGridPaint = new Paint();
+        mGridPaint.setColor(Color.GRAY);
+        mGridPaint.setStrokeWidth(1f);
+        mGridPaint.setStyle(Style.STROKE);
+        mGridPaint.setAlpha(90);
 
-            mGridPaint = new Paint();
-            mGridPaint.setColor(Color.GRAY);
-            mGridPaint.setStrokeWidth(1f);
-            mGridPaint.setStyle(Style.STROKE);
-            mGridPaint.setAlpha(90);
+        mAxisLinePaint = new Paint();
+        mAxisLinePaint.setColor(Color.BLACK);
+        mAxisLinePaint.setStrokeWidth(1f);
+        mAxisLinePaint.setStyle(Style.STROKE);
 
-            mAxisLinePaint = new Paint();
-            mAxisLinePaint.setColor(Color.BLACK);
-            mAxisLinePaint.setStrokeWidth(1f);
-            mAxisLinePaint.setStyle(Style.STROKE);
-
-            mLimitLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            mLimitLinePaint.setStyle(Paint.Style.STROKE);
-        }
+        mLimitLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mLimitLinePaint.setStyle(Style.STROKE);
     }
 
     /**
      * Returns the Paint object used for drawing the axis (labels).
-     *
-     * @return
      */
     public Paint getPaintAxisLabels() {
         return mAxisLabelPaint;
@@ -83,8 +85,6 @@ public abstract class AxisRenderer extends Renderer {
     /**
      * Returns the Paint object that is used for drawing the grid-lines of the
      * axis.
-     *
-     * @return
      */
     public Paint getPaintGrid() {
         return mGridPaint;
@@ -93,8 +93,6 @@ public abstract class AxisRenderer extends Renderer {
     /**
      * Returns the Paint object that is used for drawing the axis-line that goes
      * alongside the axis.
-     *
-     * @return
      */
     public Paint getPaintAxisLine() {
         return mAxisLinePaint;
@@ -102,8 +100,6 @@ public abstract class AxisRenderer extends Renderer {
 
     /**
      * Returns the Transformer object used for transforming the axis values.
-     *
-     * @return
      */
     public Transformer getTransformer() {
         return mTrans;
@@ -116,43 +112,36 @@ public abstract class AxisRenderer extends Renderer {
      * @param max - the maximum value in the data object for this axis
      */
     public void computeAxis(float min, float max, boolean inverted) {
-
         // calculate the starting and entry point of the y-labels (depending on
         // zoom / contentrect bounds)
-        if (mViewPortHandler != null && mViewPortHandler.contentWidth() > 10 && !mViewPortHandler.isFullyZoomedOutY()) {
+        if(mTrans != null) {
+            if (mViewPortHandler.contentWidth() > 10 && !mViewPortHandler.isFullyZoomedOutY()) {
+                MPPointD p1 = mTrans.getValuesByTouchPoint(mViewPortHandler.contentLeft(), mViewPortHandler.contentTop());
+                MPPointD p2 = mTrans.getValuesByTouchPoint(mViewPortHandler.contentLeft(), mViewPortHandler.contentBottom());
 
-            MPPointD p1 = mTrans.getValuesByTouchPoint(mViewPortHandler.contentLeft(), mViewPortHandler.contentTop());
-            MPPointD p2 = mTrans.getValuesByTouchPoint(mViewPortHandler.contentLeft(), mViewPortHandler.contentBottom());
+                if (!inverted) {
+                    min = (float) p2.y;
+                    max = (float) p1.y;
+                } else {
+                    min = (float) p1.y;
+                    max = (float) p2.y;
+                }
 
-            if (!inverted) {
-
-                min = (float) p2.y;
-                max = (float) p1.y;
-            } else {
-
-                min = (float) p1.y;
-                max = (float) p2.y;
+                MPPointD.recycleInstance(p1);
+                MPPointD.recycleInstance(p2);
             }
 
-            MPPointD.recycleInstance(p1);
-            MPPointD.recycleInstance(p2);
+            computeAxisValues(min, max);
         }
-
-        computeAxisValues(min, max);
     }
 
     /**
      * Sets up the axis values. Computes the desired number of labels between the two given extremes.
-     *
-     * @return
      */
     protected void computeAxisValues(float min, float max) {
-
-        float yMin = min;
-        float yMax = max;
-
         int labelCount = mAxis.getLabelCount();
-        double range = Math.abs(yMax - yMin);
+
+        double range = Math.abs(max - min);
 
         if (labelCount == 0 || range <= 0 || Double.isInfinite(range)) {
             mAxis.mEntries = new float[]{};
@@ -207,12 +196,12 @@ public abstract class AxisRenderer extends Renderer {
             // no forced count
         } else {
 
-            double first = interval == 0.0 ? 0.0 : Math.ceil(yMin / interval) * interval;
+            double first = interval == 0.0 ? 0.0 : Math.ceil(min / interval) * interval;
             if(mAxis.isCenterAxisLabelsEnabled()) {
                 first -= interval;
             }
 
-            double last = interval == 0.0 ? 0.0 : Utils.nextUp(Math.floor(yMax / interval) * interval);
+            double last = interval == 0.0 ? 0.0 : Utils.nextUp(Math.floor(max / interval) * interval);
 
             double f;
             int i;
@@ -234,7 +223,6 @@ public abstract class AxisRenderer extends Renderer {
             }
 
             for (f = first, i = 0; i < n; f += interval, ++i) {
-
                 if (f == 0.0) // Fix for negative zero case (Where value == -0.0, and 0.0 == -0.0)
                     f = 0.0;
 
@@ -250,12 +238,11 @@ public abstract class AxisRenderer extends Renderer {
         }
 
         if (mAxis.isCenterAxisLabelsEnabled()) {
-
             if (mAxis.mCenteredEntries.length < n) {
                 mAxis.mCenteredEntries = new float[n];
             }
 
-            float offset = (float)interval / 2f;
+            float offset = (float)interval * 0.5f;
 
             for (int i = 0; i < n; i++) {
                 mAxis.mCenteredEntries[i] = mAxis.mEntries[i] + offset;
@@ -265,29 +252,21 @@ public abstract class AxisRenderer extends Renderer {
 
     /**
      * Draws the axis labels to the screen.
-     *
-     * @param c
      */
-    public abstract void renderAxisLabels(Canvas c);
+    public abstract void renderAxisLabels(@NotNull Canvas c);
 
     /**
      * Draws the grid lines belonging to the axis.
-     *
-     * @param c
      */
-    public abstract void renderGridLines(Canvas c);
+    public abstract void renderGridLines(@NotNull Canvas c);
 
     /**
      * Draws the line that goes alongside the axis.
-     *
-     * @param c
      */
-    public abstract void renderAxisLine(Canvas c);
+    public abstract void renderAxisLine(@NotNull Canvas c);
 
     /**
      * Draws the LimitLines associated with this axis to the screen.
-     *
-     * @param c
      */
-    public abstract void renderLimitLines(Canvas c);
+    public abstract void renderLimitLines(@NotNull Canvas c);
 }

@@ -7,6 +7,9 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarLineScatterCandleBubbleDataSet;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,23 +20,31 @@ import java.util.List;
  * @author Philipp Jahoda
  */
 public class CombinedData extends BarLineScatterCandleBubbleData<IBarLineScatterCandleBubbleDataSet<? extends Entry>> {
-
+    @Nullable
     private LineData mLineData;
+
+    @Nullable
     private BarData mBarData;
+
+    @Nullable
     private ScatterData mScatterData;
+
+    @Nullable
     private CandleData mCandleData;
+
+    @Nullable
     private BubbleData mBubbleData;
 
     public CombinedData() {
         super();
     }
 
-    public void setData(LineData data) {
+    public void setData(@NotNull LineData data) {
         mLineData = data;
         notifyDataChanged();
     }
 
-    public void setData(BarData data) {
+    public void setData(@NotNull BarData data) {
         mBarData = data;
         notifyDataChanged();
     }
@@ -43,22 +54,18 @@ public class CombinedData extends BarLineScatterCandleBubbleData<IBarLineScatter
         notifyDataChanged();
     }
 
-    public void setData(CandleData data) {
+    public void setData(@NotNull CandleData data) {
         mCandleData = data;
         notifyDataChanged();
     }
 
-    public void setData(BubbleData data) {
+    public void setData(@NotNull BubbleData data) {
         mBubbleData = data;
         notifyDataChanged();
     }
 
     @Override
     public void calcMinMax() {
-
-        if(mDataSets == null){
-            mDataSets = new ArrayList<>();
-        }
         mDataSets.clear();
 
         mYMax = -Float.MAX_VALUE;
@@ -71,13 +78,13 @@ public class CombinedData extends BarLineScatterCandleBubbleData<IBarLineScatter
         mRightAxisMax = -Float.MAX_VALUE;
         mRightAxisMin = Float.MAX_VALUE;
 
-        List<BarLineScatterCandleBubbleData> allData = getAllData();
+        List<BarLineScatterCandleBubbleData<?>> allData = getAllData();
 
         for (ChartData data : allData) {
-
             data.calcMinMax();
 
-            List<IBarLineScatterCandleBubbleDataSet<? extends Entry>> sets = data.getDataSets();
+            List<IBarLineScatterCandleBubbleDataSet<?>> sets = data.getDataSets();
+
             mDataSets.addAll(sets);
 
             if (data.getYMax() > mYMax)
@@ -115,34 +122,38 @@ public class CombinedData extends BarLineScatterCandleBubbleData<IBarLineScatter
         }
     }
 
+    @Nullable
     public BubbleData getBubbleData() {
         return mBubbleData;
     }
 
+    @Nullable
     public LineData getLineData() {
         return mLineData;
     }
 
+    @Nullable
     public BarData getBarData() {
         return mBarData;
     }
 
+    @Nullable
     public ScatterData getScatterData() {
         return mScatterData;
     }
 
+    @Nullable
     public CandleData getCandleData() {
         return mCandleData;
     }
 
     /**
      * Returns all data objects in row: line-bar-scatter-candle-bubble if not null.
-     *
-     * @return
      */
-    public List<BarLineScatterCandleBubbleData> getAllData() {
+    @NotNull
+    public List<BarLineScatterCandleBubbleData<?>> getAllData() {
+        List<BarLineScatterCandleBubbleData<?>> data = new ArrayList<>();
 
-        List<BarLineScatterCandleBubbleData> data = new ArrayList<BarLineScatterCandleBubbleData>();
         if (mLineData != null)
             data.add(mLineData);
         if (mBarData != null)
@@ -157,7 +168,8 @@ public class CombinedData extends BarLineScatterCandleBubbleData<IBarLineScatter
         return data;
     }
 
-    public BarLineScatterCandleBubbleData getDataByIndex(int index) {
+    @NotNull
+    public BarLineScatterCandleBubbleData<?> getDataByIndex(int index) {
         return getAllData().get(index);
     }
 
@@ -180,16 +192,14 @@ public class CombinedData extends BarLineScatterCandleBubbleData<IBarLineScatter
     /**
      * Get the Entry for a corresponding highlight object
      *
-     * @param highlight
      * @return the entry that is highlighted
      */
     @Override
     public Entry getEntryForHighlight(Highlight highlight) {
-
         if (highlight.getDataIndex() >= getAllData().size())
             return null;
 
-        ChartData data = getDataByIndex(highlight.getDataIndex());
+        BarLineScatterCandleBubbleData<?> data = getDataByIndex(highlight.getDataIndex());
 
         if (highlight.getDataSetIndex() >= data.getDataSetCount())
             return null;
@@ -197,8 +207,9 @@ public class CombinedData extends BarLineScatterCandleBubbleData<IBarLineScatter
         // The value of the highlighted entry could be NaN -
         //   if we are not interested in highlighting a specific value.
 
-        List<Entry> entries = data.getDataSetByIndex(highlight.getDataSetIndex())
+        List<? extends Entry> entries = data.getDataSetByIndex(highlight.getDataSetIndex())
                 .getEntriesForXValue(highlight.getX());
+
         for (Entry entry : entries)
             if (entry.getY() == highlight.getY() ||
                     Float.isNaN(highlight.getY()))
@@ -217,28 +228,25 @@ public class CombinedData extends BarLineScatterCandleBubbleData<IBarLineScatter
         if (highlight.getDataIndex() >= getAllData().size())
             return null;
 
-        BarLineScatterCandleBubbleData data = getDataByIndex(highlight.getDataIndex());
+        BarLineScatterCandleBubbleData<?> data = getDataByIndex(highlight.getDataIndex());
 
         if (highlight.getDataSetIndex() >= data.getDataSetCount())
             return null;
 
-        return (IBarLineScatterCandleBubbleDataSet<? extends Entry>)
-                data.getDataSets().get(highlight.getDataSetIndex());
+        return data.getDataSets().get(highlight.getDataSetIndex());
     }
 
-    public int getDataIndex(ChartData data) {
+    public int getDataIndex(BarLineScatterCandleBubbleData<?> data) {
         return getAllData().indexOf(data);
     }
 
     @Override
-    public boolean removeDataSet(IBarLineScatterCandleBubbleDataSet<? extends Entry> d) {
-
-        List<BarLineScatterCandleBubbleData> datas = getAllData();
+    public boolean removeDataSet(@NotNull IBarLineScatterCandleBubbleDataSet<? extends Entry> d) {
+        List<BarLineScatterCandleBubbleData<?>> datas = getAllData();
 
         boolean success = false;
 
         for (ChartData data : datas) {
-
             success = data.removeDataSet(d);
 
             if (success) {
@@ -258,7 +266,7 @@ public class CombinedData extends BarLineScatterCandleBubbleData<IBarLineScatter
 
     @Deprecated
     @Override
-    public boolean removeEntry(Entry e, int dataSetIndex) {
+    public boolean removeEntry(@NotNull Entry e, int dataSetIndex) {
         Log.e("MPAndroidChart", "removeEntry(...) not supported for CombinedData");
         return false;
     }

@@ -3,21 +3,27 @@ package com.github.mikephil.charting.data;
 
 import android.graphics.Color;
 
+import androidx.annotation.ColorInt;
+
 import com.github.mikephil.charting.interfaces.datasets.IRadarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RadarDataSet extends LineRadarDataSet<RadarEntry> implements IRadarDataSet {
-
     /// flag indicating whether highlight circle should be drawn or not
     protected boolean mDrawHighlightCircleEnabled = false;
 
+    @ColorInt
     protected int mHighlightCircleFillColor = Color.WHITE;
 
     /// The stroke color for highlight circle.
     /// If Utils.COLOR_NONE, the color of the dataset is taken.
+    @ColorInt
     protected int mHighlightCircleStrokeColor = ColorTemplate.COLOR_NONE;
 
     protected int mHighlightCircleStrokeAlpha = (int) (0.3 * 255);
@@ -25,8 +31,8 @@ public class RadarDataSet extends LineRadarDataSet<RadarEntry> implements IRadar
     protected float mHighlightCircleOuterRadius = 4.0f;
     protected float mHighlightCircleStrokeWidth = 2.0f;
 
-    public RadarDataSet(List<RadarEntry> yVals, String label) {
-        super(yVals, label);
+    public RadarDataSet(@NotNull List<RadarEntry> entries, @Nullable String label) {
+        super(entries, label);
     }
 
     /// Returns true if highlight circle should be drawn, false if not
@@ -42,11 +48,12 @@ public class RadarDataSet extends LineRadarDataSet<RadarEntry> implements IRadar
     }
 
     @Override
+    @ColorInt
     public int getHighlightCircleFillColor() {
         return mHighlightCircleFillColor;
     }
 
-    public void setHighlightCircleFillColor(int color) {
+    public void setHighlightCircleFillColor(@ColorInt int color) {
         mHighlightCircleFillColor = color;
     }
 
@@ -100,17 +107,19 @@ public class RadarDataSet extends LineRadarDataSet<RadarEntry> implements IRadar
     }
 
     @Override
+    @NotNull
     public DataSet<RadarEntry> copy() {
-        List<RadarEntry> entries = new ArrayList<RadarEntry>();
+        ArrayList<RadarEntry> entries = new ArrayList<>();
         for (int i = 0; i < mEntries.size(); i++) {
             entries.add(mEntries.get(i).copy());
         }
+
         RadarDataSet copied = new RadarDataSet(entries, getLabel());
         copy(copied);
         return copied;
     }
 
-    protected void copy(RadarDataSet radarDataSet) {
+    protected void copy(@NotNull RadarDataSet radarDataSet) {
         super.copy(radarDataSet);
         radarDataSet.mDrawHighlightCircleEnabled = mDrawHighlightCircleEnabled;
         radarDataSet.mHighlightCircleFillColor = mHighlightCircleFillColor;

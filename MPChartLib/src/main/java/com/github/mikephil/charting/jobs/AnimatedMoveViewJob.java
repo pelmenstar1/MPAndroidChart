@@ -23,15 +23,29 @@ public class AnimatedMoveViewJob extends AnimatedViewPortJob {
     }
 
     private AnimatedMoveViewJob() {
+        //noinspection ConstantConditions
         super(null, 0,0, null, null, 0, 0, 0);
     }
 
-    public AnimatedMoveViewJob(ViewPortHandler viewPortHandler, float xValue, float yValue, Transformer trans, View v, float xOrigin, float yOrigin, long duration) {
+    public AnimatedMoveViewJob(
+            @NotNull ViewPortHandler viewPortHandler,
+            float xValue, float yValue,
+            @NotNull Transformer trans,
+            @NotNull View v,
+            float xOrigin, float yOrigin,
+            long duration
+    ) {
         super(viewPortHandler, xValue, yValue, trans, v, xOrigin, yOrigin, duration);
     }
 
     @NotNull
-    public static AnimatedMoveViewJob getInstance(ViewPortHandler viewPortHandler, float xValue, float yValue, Transformer trans, View v, float xOrigin, float yOrigin, long duration){
+    public static AnimatedMoveViewJob getInstance(
+            @NotNull ViewPortHandler viewPortHandler,
+            float xValue, float yValue,
+            @NotNull Transformer trans,
+            @NotNull View v,
+            float xOrigin, float yOrigin,
+            long duration) {
         AnimatedMoveViewJob result = pool.get();
         result.mViewPortHandler = viewPortHandler;
         result.xValue = xValue;
@@ -40,12 +54,12 @@ public class AnimatedMoveViewJob extends AnimatedViewPortJob {
         result.view = v;
         result.xOrigin = xOrigin;
         result.yOrigin = yOrigin;
-        //result.resetAnimator();
         result.animator.setDuration(duration);
+
         return result;
     }
 
-    public static void recycleInstance(AnimatedMoveViewJob instance){
+    public static void recycleInstance(@NotNull AnimatedMoveViewJob instance) {
         pool.recycle(instance);
     }
 
@@ -55,13 +69,10 @@ public class AnimatedMoveViewJob extends AnimatedViewPortJob {
 
     @Override
     public void onAnimationUpdate(ValueAnimator animation) {
-
         pts[0] = xOrigin + (xValue - xOrigin) * phase;
         pts[1] = yOrigin + (yValue - yOrigin) * phase;
 
         mTrans.pointValuesToPixel(pts);
         mViewPortHandler.centerViewPort(pts, view);
     }
-
-
 }

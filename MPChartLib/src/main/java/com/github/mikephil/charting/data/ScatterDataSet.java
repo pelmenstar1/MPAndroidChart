@@ -1,6 +1,8 @@
 
 package com.github.mikephil.charting.data;
 
+import androidx.annotation.ColorInt;
+
 import com.github.mikephil.charting.charts.ScatterChart;
 import com.github.mikephil.charting.interfaces.datasets.IScatterDataSet;
 import com.github.mikephil.charting.renderer.scatter.ChevronDownShapeRenderer;
@@ -13,11 +15,13 @@ import com.github.mikephil.charting.renderer.scatter.TriangleShapeRenderer;
 import com.github.mikephil.charting.renderer.scatter.XShapeRenderer;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class ScatterDataSet extends LineScatterCandleRadarDataSet<Entry> implements IScatterDataSet {
-
     /**
      * the size the scattershape will have, in density pixels
      */
@@ -26,6 +30,7 @@ public class ScatterDataSet extends LineScatterCandleRadarDataSet<Entry> impleme
     /**
      * Renderer responsible for rendering this DataSet, default: square
      */
+    @NotNull
     protected IShapeRenderer mShapeRenderer = new SquareShapeRenderer();
 
     /**
@@ -41,22 +46,24 @@ public class ScatterDataSet extends LineScatterCandleRadarDataSet<Entry> impleme
      */
     private int mScatterShapeHoleColor = ColorTemplate.COLOR_NONE;
 
-    public ScatterDataSet(List<Entry> yVals, String label) {
-        super(yVals, label);
+    public ScatterDataSet(@NotNull List<Entry> entries, @Nullable String label) {
+        super(entries, label);
     }
 
     @Override
+    @NotNull
     public DataSet<Entry> copy() {
-        List<Entry> entries = new ArrayList<Entry>();
+        ArrayList<Entry> entries = new ArrayList<>();
         for (int i = 0; i < mEntries.size(); i++) {
             entries.add(mEntries.get(i).copy());
         }
+
         ScatterDataSet copied = new ScatterDataSet(entries, getLabel());
         copy(copied);
         return copied;
     }
 
-    protected void copy(ScatterDataSet scatterDataSet) {
+    protected void copy(@NotNull ScatterDataSet scatterDataSet) {
         super.copy(scatterDataSet);
         scatterDataSet.mShapeSize = mShapeSize;
         scatterDataSet.mShapeRenderer = mShapeRenderer;
@@ -67,8 +74,6 @@ public class ScatterDataSet extends LineScatterCandleRadarDataSet<Entry> impleme
     /**
      * Sets the size in density pixels the drawn scattershape will have. This
      * only applies for non custom shapes.
-     *
-     * @param size
      */
     public void setScatterShapeSize(float size) {
         mShapeSize = size;
@@ -82,10 +87,8 @@ public class ScatterDataSet extends LineScatterCandleRadarDataSet<Entry> impleme
     /**
      * Sets the ScatterShape this DataSet should be drawn with. This will search for an available IShapeRenderer and set this
      * renderer for the DataSet.
-     *
-     * @param shape
      */
-    public void setScatterShape(ScatterChart.ScatterShape shape) {
+    public void setScatterShape(@NotNull ScatterChart.ScatterShape shape) {
         mShapeRenderer = getRendererForShape(shape);
     }
 
@@ -93,13 +96,13 @@ public class ScatterDataSet extends LineScatterCandleRadarDataSet<Entry> impleme
      * Sets a new IShapeRenderer responsible for drawing this DataSet.
      * This can also be used to set a custom IShapeRenderer aside from the default ones.
      *
-     * @param shapeRenderer
      */
-    public void setShapeRenderer(IShapeRenderer shapeRenderer) {
+    public void setShapeRenderer(@NotNull IShapeRenderer shapeRenderer) {
         mShapeRenderer = shapeRenderer;
     }
 
     @Override
+    @NotNull
     public IShapeRenderer getShapeRenderer() {
         return mShapeRenderer;
     }
@@ -107,8 +110,6 @@ public class ScatterDataSet extends LineScatterCandleRadarDataSet<Entry> impleme
     /**
      * Sets the radius of the hole in the shape (applies to Square, Circle and Triangle)
      * Set this to <= 0 to remove holes.
-     *
-     * @param holeRadius
      */
     public void setScatterShapeHoleRadius(float holeRadius) {
         mScatterShapeHoleRadius = holeRadius;
@@ -121,10 +122,8 @@ public class ScatterDataSet extends LineScatterCandleRadarDataSet<Entry> impleme
 
     /**
      * Sets the color for the hole in the shape.
-     *
-     * @param holeColor
      */
-    public void setScatterShapeHoleColor(int holeColor) {
+    public void setScatterShapeHoleColor(@ColorInt int holeColor) {
         mScatterShapeHoleColor = holeColor;
     }
 
@@ -133,8 +132,8 @@ public class ScatterDataSet extends LineScatterCandleRadarDataSet<Entry> impleme
         return mScatterShapeHoleColor;
     }
 
-    public static IShapeRenderer getRendererForShape(ScatterChart.ScatterShape shape) {
-
+    @NotNull
+    public static IShapeRenderer getRendererForShape(@NotNull ScatterChart.ScatterShape shape) {
         switch (shape) {
             case SQUARE:
                 return new SquareShapeRenderer();
@@ -150,8 +149,8 @@ public class ScatterDataSet extends LineScatterCandleRadarDataSet<Entry> impleme
                 return new ChevronUpShapeRenderer();
             case CHEVRON_DOWN:
                 return new ChevronDownShapeRenderer();
+            default:
+                throw new IllegalArgumentException("shape");
         }
-
-        return null;
     }
 }

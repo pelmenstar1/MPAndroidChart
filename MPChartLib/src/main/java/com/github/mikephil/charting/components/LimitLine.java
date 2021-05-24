@@ -8,6 +8,9 @@ import android.graphics.Typeface;
 
 import com.github.mikephil.charting.utils.Utils;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 /**
  * The limit line is an additional feature for all Line-, Bar- and
  * ScatterCharts. It allows the displaying of an additional line in the chart
@@ -16,9 +19,8 @@ import com.github.mikephil.charting.utils.Utils;
  * @author Philipp Jahoda
  */
 public class LimitLine extends ComponentBase {
-
     /** limit / maximum (the y-value or xIndex) */
-    private float mLimit = 0f;
+    private final float mLimit;
 
     /** the width of the limit line */
     private float mLineWidth = 2f;
@@ -60,15 +62,13 @@ public class LimitLine extends ComponentBase {
      *            (xIndex) where this line should appear
      * @param label - provide "" if no label is required
      */
-    public LimitLine(float limit, String label) {
+    public LimitLine(float limit, @NotNull String label) {
         mLimit = limit;
         mLabel = label;
     }
 
     /**
      * Returns the limit that is set for this line.
-     * 
-     * @return
      */
     public float getLimit() {
         return mLimit;
@@ -77,22 +77,18 @@ public class LimitLine extends ComponentBase {
     /**
      * set the line width of the chart (min = 0.2f, max = 12f); default 2f NOTE:
      * thinner line == better performance, thicker line == worse performance
-     * 
-     * @param width
      */
     public void setLineWidth(float width) {
-
         if (width < 0.2f)
             width = 0.2f;
         if (width > 12.0f)
             width = 12.0f;
+
         mLineWidth = Utils.convertDpToPixel(width);
     }
 
     /**
      * returns the width of limit line
-     * 
-     * @return
      */
     public float getLineWidth() {
         return mLineWidth;
@@ -101,8 +97,6 @@ public class LimitLine extends ComponentBase {
     /**
      * Sets the linecolor for this LimitLine. Make sure to use
      * getResources().getColor(...)
-     * 
-     * @param color
      */
     public void setLineColor(int color) {
         mLineColor = color;
@@ -110,8 +104,6 @@ public class LimitLine extends ComponentBase {
 
     /**
      * Returns the color that is used for this LimitLine
-     * 
-     * @return
      */
     public int getLineColor() {
         return mLineColor;
@@ -140,18 +132,15 @@ public class LimitLine extends ComponentBase {
     /**
      * Returns true if the dashed-line effect is enabled, false if not. Default:
      * disabled
-     * 
-     * @return
      */
     public boolean isDashedLineEnabled() {
-        return mDashPathEffect == null ? false : true;
+        return mDashPathEffect != null;
     }
 
     /**
      * returns the DashPathEffect that is set for this LimitLine
-     * 
-     * @return
      */
+    @Nullable
     public DashPathEffect getDashPathEffect() {
         return mDashPathEffect;
     }
@@ -159,18 +148,15 @@ public class LimitLine extends ComponentBase {
     /**
      * Sets the color of the value-text that is drawn next to the LimitLine.
      * Default: Paint.Style.FILL_AND_STROKE
-     *
-     * @param style
      */
-    public void setTextStyle(Paint.Style style) {
+    public void setTextStyle(@NotNull Paint.Style style) {
         this.mTextStyle = style;
     }
 
     /**
      * Returns the color of the value-text that is drawn next to the LimitLine.
-     *
-     * @return
      */
+    @NotNull
     public Paint.Style getTextStyle() {
         return mTextStyle;
     }
@@ -178,18 +164,15 @@ public class LimitLine extends ComponentBase {
     /**
      * Sets the position of the LimitLine value label (either on the right or on
      * the left edge of the chart). Not supported for RadarChart.
-     * 
-     * @param pos
      */
-    public void setLabelPosition(LimitLabelPosition pos) {
+    public void setLabelPosition(@NotNull LimitLabelPosition pos) {
         mLabelPosition = pos;
     }
 
     /**
      * Returns the position of the LimitLine label (value).
-     * 
-     * @return
      */
+    @NotNull
     public LimitLabelPosition getLabelPosition() {
         return mLabelPosition;
     }
@@ -197,18 +180,15 @@ public class LimitLine extends ComponentBase {
     /**
      * Sets the label that is drawn next to the limit line. Provide "" if no
      * label is required.
-     * 
-     * @param label
      */
-    public void setLabel(String label) {
+    public void setLabel(@NotNull String label) {
         mLabel = label;
     }
 
     /**
      * Returns the label that is drawn next to the limit line.
-     * 
-     * @return
      */
+    @NotNull
     public String getLabel() {
         return mLabel;
     }

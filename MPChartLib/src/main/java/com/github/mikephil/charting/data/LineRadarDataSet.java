@@ -5,8 +5,13 @@ import android.annotation.TargetApi;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 
+import androidx.annotation.ColorInt;
+
 import com.github.mikephil.charting.interfaces.datasets.ILineRadarDataSet;
 import com.github.mikephil.charting.utils.Utils;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -16,16 +21,16 @@ import java.util.List;
  * @author Philipp Jahoda
  */
 public abstract class LineRadarDataSet<T extends Entry> extends LineScatterCandleRadarDataSet<T> implements ILineRadarDataSet<T> {
-
-    // TODO: Move to using `Fill` class
     /**
      * the color that is used for filling the line surface
      */
+    @ColorInt
     private int mFillColor = Color.rgb(140, 234, 255);
 
     /**
      * the drawable to be used for filling the line surface
      */
+    @Nullable
     protected Drawable mFillDrawable;
 
     /**
@@ -43,12 +48,12 @@ public abstract class LineRadarDataSet<T extends Entry> extends LineScatterCandl
      */
     private boolean mDrawFilled = false;
 
-
-    public LineRadarDataSet(List<T> yVals, String label) {
-        super(yVals, label);
+    public LineRadarDataSet(@NotNull List<T> entries, @Nullable String label) {
+        super(entries, label);
     }
 
     @Override
+    @ColorInt
     public int getFillColor() {
         return mFillColor;
     }
@@ -56,26 +61,23 @@ public abstract class LineRadarDataSet<T extends Entry> extends LineScatterCandl
     /**
      * Sets the color that is used for filling the area below the line.
      * Resets an eventually set "fillDrawable".
-     *
-     * @param color
      */
-    public void setFillColor(int color) {
+    public void setFillColor(@ColorInt int color) {
         mFillColor = color;
         mFillDrawable = null;
     }
 
     @Override
+    @Nullable
     public Drawable getFillDrawable() {
         return mFillDrawable;
     }
 
     /**
      * Sets the drawable to be used to fill the area below the line.
-     *
-     * @param drawable
      */
     @TargetApi(18)
-    public void setFillDrawable(Drawable drawable) {
+    public void setFillDrawable(@Nullable Drawable drawable) {
         this.mFillDrawable = drawable;
     }
 
@@ -87,8 +89,6 @@ public abstract class LineRadarDataSet<T extends Entry> extends LineScatterCandl
     /**
      * sets the alpha value (transparency) that is used for filling the line
      * surface (0-255), default: 85
-     *
-     * @param alpha
      */
     public void setFillAlpha(int alpha) {
         mFillAlpha = alpha;
@@ -97,15 +97,13 @@ public abstract class LineRadarDataSet<T extends Entry> extends LineScatterCandl
     /**
      * set the line width of the chart (min = 0.2f, max = 10f); default 1f NOTE:
      * thinner line == better performance, thicker line == worse performance
-     *
-     * @param width
      */
     public void setLineWidth(float width) {
-
         if (width < 0.0f)
             width = 0.0f;
         if (width > 10.0f)
             width = 10.0f;
+
         mLineWidth = Utils.convertDpToPixel(width);
     }
 
@@ -124,8 +122,9 @@ public abstract class LineRadarDataSet<T extends Entry> extends LineScatterCandl
         return mDrawFilled;
     }
 
-    protected void copy(LineRadarDataSet lineRadarDataSet) {
+    protected void copy(@NotNull LineRadarDataSet<T> lineRadarDataSet) {
         super.copy(lineRadarDataSet);
+
         lineRadarDataSet.mDrawFilled = mDrawFilled;
         lineRadarDataSet.mFillAlpha = mFillAlpha;
         lineRadarDataSet.mFillColor = mFillColor;

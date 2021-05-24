@@ -20,12 +20,13 @@ import com.github.mikephil.charting.utils.FSize;
 import com.github.mikephil.charting.utils.Utils;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class LegendRenderer extends Renderer {
-
     /**
      * paint for the legend labels
      */
@@ -41,7 +42,7 @@ public class LegendRenderer extends Renderer {
      */
     protected Legend mLegend;
 
-    public LegendRenderer(ViewPortHandler viewPortHandler, Legend legend) {
+    public LegendRenderer(@NotNull ViewPortHandler viewPortHandler, @NotNull Legend legend) {
         super(viewPortHandler);
 
         this.mLegend = legend;
@@ -56,48 +57,38 @@ public class LegendRenderer extends Renderer {
 
     /**
      * Returns the Paint object used for drawing the Legend labels.
-     *
-     * @return
      */
+    @NotNull
     public Paint getLabelPaint() {
         return mLegendLabelPaint;
     }
 
     /**
      * Returns the Paint object used for drawing the Legend forms.
-     *
-     * @return
      */
+    @NotNull
     public Paint getFormPaint() {
         return mLegendFormPaint;
     }
-
 
     protected List<LegendEntry> computedEntries = new ArrayList<>(16);
 
     /**
      * Prepares the legend and calculates all needed forms, labels and colors.
-     *
-     * @param data
      */
     public void computeLegend(ChartData<?> data) {
-
         if (!mLegend.isLegendCustom()) {
-
             computedEntries.clear();
 
             // loop for building up the colors and labels used in the legend
             for (int i = 0; i < data.getDataSetCount(); i++) {
-
-                IDataSet dataSet = data.getDataSetByIndex(i);
-                if (dataSet == null) continue;
+                IDataSet<?> dataSet = data.getDataSetByIndex(i);
 
                 List<Integer> clrs = dataSet.getColors();
                 int entryCount = dataSet.getEntryCount();
 
                 // if we have a barchart with stacked bars
                 if (dataSet instanceof IBarDataSet && ((IBarDataSet) dataSet).isStacked()) {
-
                     IBarDataSet bds = (IBarDataSet) dataSet;
                     String[] sLabels = bds.getStackLabels();
 
@@ -135,11 +126,9 @@ public class LegendRenderer extends Renderer {
                     }
 
                 } else if (dataSet instanceof IPieDataSet) {
-
                     IPieDataSet pds = (IPieDataSet) dataSet;
 
                     for (int j = 0; j < clrs.size() && j < entryCount; j++) {
-
                         computedEntries.add(new LegendEntry(
                                 pds.getEntryForIndex(j).getLabel(),
                                 dataSet.getForm(),
@@ -187,9 +176,7 @@ public class LegendRenderer extends Renderer {
                     ));
 
                 } else { // all others
-
                     for (int j = 0; j < clrs.size() && j < entryCount; j++) {
-
                         String label;
 
                         // if multiple colors are set for a DataSet, group them
@@ -233,7 +220,6 @@ public class LegendRenderer extends Renderer {
     protected Paint.FontMetrics legendFontMetrics = new Paint.FontMetrics();
 
     public void renderLegend(Canvas c) {
-
         if (!mLegend.isEnabled())
             return;
 
@@ -248,7 +234,7 @@ public class LegendRenderer extends Renderer {
         float labelLineHeight = Utils.getLineHeight(mLegendLabelPaint, legendFontMetrics);
         float labelLineSpacing = Utils.getLineSpacing(mLegendLabelPaint, legendFontMetrics)
                 + Utils.convertDpToPixel(mLegend.getYEntrySpace());
-        float formYOffset = labelLineHeight - Utils.calcTextHeight(mLegendLabelPaint, "ABC") / 2.f;
+        float formYOffset = labelLineHeight - Utils.calcTextHeight(mLegendLabelPaint, "ABC") * 0.5f;
 
         LegendEntry[] entries = mLegend.getEntries();
 
@@ -263,53 +249,53 @@ public class LegendRenderer extends Renderer {
         // space between the entries
         float stackSpace = Utils.convertDpToPixel(mLegend.getStackSpace());
 
-        float yoffset = mLegend.getYOffset();
-        float xoffset = mLegend.getXOffset();
-        float originPosX = 0.f;
+        float xOffset = mLegend.getXOffset();
+        float yOffset = mLegend.getYOffset();
+
+        float originPosX = 0f;
 
         switch (horizontalAlignment) {
             case LEFT:
+                if (orientation == Legend.LegendOrientation.VERTICAL) {
+                    originPosX = xOffset;
+                } else {
+                    originPosX = mViewPortHandler.contentLeft() + xOffset;
+                }
 
-                if (orientation == Legend.LegendOrientation.VERTICAL)
-                    originPosX = xoffset;
-                else
-                    originPosX = mViewPortHandler.contentLeft() + xoffset;
-
-                if (direction == Legend.LegendDirection.RIGHT_TO_LEFT)
+                if (direction == Legend.LegendDirection.RIGHT_TO_LEFT) {
                     originPosX += mLegend.mNeededWidth;
+                }
 
                 break;
-
             case RIGHT:
+                if (orientation == Legend.LegendOrientation.VERTICAL) {
+                    originPosX = mViewPortHandler.getChartWidth() - xOffset;
+                } else {
+                    originPosX = mViewPortHandler.contentRight() - xOffset;
+                }
 
-                if (orientation == Legend.LegendOrientation.VERTICAL)
-                    originPosX = mViewPortHandler.getChartWidth() - xoffset;
-                else
-                    originPosX = mViewPortHandler.contentRight() - xoffset;
-
-                if (direction == Legend.LegendDirection.LEFT_TO_RIGHT)
+                if (direction == Legend.LegendDirection.LEFT_TO_RIGHT) {
                     originPosX -= mLegend.mNeededWidth;
+                }
 
                 break;
-
             case CENTER:
-
-                if (orientation == Legend.LegendOrientation.VERTICAL)
-                    originPosX = mViewPortHandler.getChartWidth() / 2.f;
-                else
-                    originPosX = mViewPortHandler.contentLeft()
-                            + mViewPortHandler.contentWidth() / 2.f;
+                if (orientation == Legend.LegendOrientation.VERTICAL) {
+                    originPosX = mViewPortHandler.getChartWidth() * 0.5f;
+                } else {
+                    originPosX = mViewPortHandler.contentLeft() + mViewPortHandler.contentWidth() * 0.5f;
+                }
 
                 originPosX += (direction == Legend.LegendDirection.LEFT_TO_RIGHT
-                        ? +xoffset
-                        : -xoffset);
+                        ? +xOffset
+                        : -xOffset);
 
                 // Horizontally layed out legends do the center offset on a line basis,
                 // So here we offset the vertical ones only.
                 if (orientation == Legend.LegendOrientation.VERTICAL) {
                     originPosX += (direction == Legend.LegendDirection.LEFT_TO_RIGHT
-                            ? -mLegend.mNeededWidth / 2.0 + xoffset
-                            : mLegend.mNeededWidth / 2.0 - xoffset);
+                            ? mLegend.mNeededWidth * -0.5f + xOffset
+                            : mLegend.mNeededWidth * 0.5f - xOffset);
                 }
 
                 break;
@@ -317,33 +303,32 @@ public class LegendRenderer extends Renderer {
 
         switch (orientation) {
             case HORIZONTAL: {
-
                 List<FSize> calculatedLineSizes = mLegend.getCalculatedLineSizes();
                 List<FSize> calculatedLabelSizes = mLegend.getCalculatedLabelSizes();
                 List<Boolean> calculatedLabelBreakPoints = mLegend.getCalculatedLabelBreakPoints();
 
                 float posX = originPosX;
-                float posY = 0.f;
+                float posY = 0f;
 
                 switch (verticalAlignment) {
                     case TOP:
-                        posY = yoffset;
+                        posY = yOffset;
                         break;
 
                     case BOTTOM:
-                        posY = mViewPortHandler.getChartHeight() - yoffset - mLegend.mNeededHeight;
+                        posY = mViewPortHandler.getChartHeight() - yOffset - mLegend.mNeededHeight;
                         break;
 
                     case CENTER:
-                        posY = (mViewPortHandler.getChartHeight() - mLegend.mNeededHeight) / 2.f + yoffset;
+                        posY = (mViewPortHandler.getChartHeight() - mLegend.mNeededHeight) * 0.5f + yOffset;
                         break;
                 }
 
                 int lineIndex = 0;
 
                 for (int i = 0, count = entries.length; i < count; i++) {
-
                     LegendEntry e = entries[i];
+
                     boolean drawingForm = e.form != Legend.LegendForm.NONE;
                     float formSize = Float.isNaN(e.formSize) ? defaultFormSize : Utils.convertDpToPixel(e.formSize);
 
@@ -357,7 +342,7 @@ public class LegendRenderer extends Renderer {
                             lineIndex < calculatedLineSizes.size()) {
                         posX += (direction == Legend.LegendDirection.RIGHT_TO_LEFT
                                 ? calculatedLineSizes.get(lineIndex).width
-                                : -calculatedLineSizes.get(lineIndex).width) / 2.f;
+                                : -calculatedLineSizes.get(lineIndex).width) * 0.5f;
                         lineIndex++;
                     }
 
@@ -405,14 +390,14 @@ public class LegendRenderer extends Renderer {
                         posY = (horizontalAlignment == Legend.LegendHorizontalAlignment.CENTER
                                 ? 0.f
                                 : mViewPortHandler.contentTop());
-                        posY += yoffset;
+                        posY += yOffset;
                         break;
 
                     case BOTTOM:
                         posY = (horizontalAlignment == Legend.LegendHorizontalAlignment.CENTER
                                 ? mViewPortHandler.getChartHeight()
                                 : mViewPortHandler.contentBottom());
-                        posY -= mLegend.mNeededHeight + yoffset;
+                        posY -= mLegend.mNeededHeight + yOffset;
                         break;
 
                     case CENTER:
@@ -422,9 +407,7 @@ public class LegendRenderer extends Renderer {
                         break;
                 }
 
-                for (int i = 0; i < entries.length; i++) {
-
-                    LegendEntry e = entries[i];
+                for (LegendEntry e : entries) {
                     boolean drawingForm = e.form != Legend.LegendForm.NONE;
                     float formSize = Float.isNaN(e.formSize) ? defaultFormSize : Utils.convertDpToPixel(e.formSize);
 
@@ -443,7 +426,6 @@ public class LegendRenderer extends Renderer {
                     }
 
                     if (e.label != null) {
-
                         if (drawingForm && !wasStacked)
                             posX += direction == Legend.LegendDirection.LEFT_TO_RIGHT ? formToTextSpace
                                     : -formToTextSpace;
@@ -453,12 +435,11 @@ public class LegendRenderer extends Renderer {
                         if (direction == Legend.LegendDirection.RIGHT_TO_LEFT)
                             posX -= Utils.calcTextWidth(mLegendLabelPaint, e.label);
 
-                        if (!wasStacked) {
-                            drawLabel(c, posX, posY + labelLineHeight, e.label);
-                        } else {
+                        if (wasStacked) {
                             posY += labelLineHeight + labelLineSpacing;
-                            drawLabel(c, posX, posY + labelLineHeight, e.label);
                         }
+
+                        drawLabel(c, posX, posY + labelLineHeight, e.label);
 
                         // make a step down
                         posY += labelLineHeight + labelLineSpacing;
@@ -475,7 +456,7 @@ public class LegendRenderer extends Renderer {
         }
     }
 
-    private Path mLineFormPath = new Path();
+    private final Path mLineFormPath = new Path();
 
     /**
      * Draws the Legend-form at the given position with the color at the given
@@ -488,11 +469,11 @@ public class LegendRenderer extends Renderer {
      * @param legend the legend context
      */
     protected void drawForm(
-            Canvas c,
+            @NotNull Canvas c,
             float x, float y,
-            LegendEntry entry,
-            Legend legend) {
-
+            @NotNull LegendEntry entry,
+            @NotNull Legend legend
+    ) {
         if (entry.formColor == ColorTemplate.COLOR_SKIP ||
                 entry.formColor == ColorTemplate.COLOR_NONE ||
                 entry.formColor == 0)
@@ -506,17 +487,15 @@ public class LegendRenderer extends Renderer {
 
         mLegendFormPaint.setColor(entry.formColor);
 
-        final float formSize = Utils.convertDpToPixel(
+        float formSize = Utils.convertDpToPixel(
                 Float.isNaN(entry.formSize)
                         ? legend.getFormSize()
                         : entry.formSize);
-        final float half = formSize / 2f;
+        float half = formSize * 0.5f;
 
         switch (form) {
             case NONE:
                 // Do nothing
-                break;
-
             case EMPTY:
                 // Do not draw, but keep space for the form
                 break;
@@ -532,13 +511,12 @@ public class LegendRenderer extends Renderer {
                 c.drawRect(x, y - half, x + formSize, y + half, mLegendFormPaint);
                 break;
 
-            case LINE:
-            {
-                final float formLineWidth = Utils.convertDpToPixel(
+            case LINE: {
+                float formLineWidth = Utils.convertDpToPixel(
                         Float.isNaN(entry.formLineWidth)
                                 ? legend.getFormLineWidth()
                                 : entry.formLineWidth);
-                final DashPathEffect formLineDashEffect = entry.formLineDashEffect == null
+                DashPathEffect formLineDashEffect = entry.formLineDashEffect == null
                         ? legend.getFormLineDashEffect()
                         : entry.formLineDashEffect;
                 mLegendFormPaint.setStyle(Paint.Style.STROKE);
@@ -549,8 +527,8 @@ public class LegendRenderer extends Renderer {
                 mLineFormPath.moveTo(x, y);
                 mLineFormPath.lineTo(x + formSize, y);
                 c.drawPath(mLineFormPath, mLegendFormPaint);
-            }
                 break;
+            }
         }
 
         c.restoreToCount(restoreCount);
@@ -560,11 +538,9 @@ public class LegendRenderer extends Renderer {
      * Draws the provided label at the given position.
      *
      * @param c     canvas to draw with
-     * @param x
-     * @param y
      * @param label the label to draw
      */
-    protected void drawLabel(Canvas c, float x, float y, String label) {
+    protected void drawLabel(@NotNull Canvas c, float x, float y, @NotNull String label) {
         c.drawText(label, x, y, mLegendLabelPaint);
     }
 }

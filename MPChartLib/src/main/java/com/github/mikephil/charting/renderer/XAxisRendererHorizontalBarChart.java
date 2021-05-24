@@ -18,14 +18,18 @@ import com.github.mikephil.charting.utils.Transformer;
 import com.github.mikephil.charting.utils.Utils;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 public class XAxisRendererHorizontalBarChart extends XAxisRenderer {
-
     protected BarChart mChart;
 
-    public XAxisRendererHorizontalBarChart(ViewPortHandler viewPortHandler, XAxis xAxis,
-            Transformer trans, BarChart chart) {
+    public XAxisRendererHorizontalBarChart(
+            @NotNull ViewPortHandler viewPortHandler,
+            @NotNull XAxis xAxis,
+            @NotNull Transformer trans,
+            @NotNull BarChart chart) {
         super(viewPortHandler, xAxis, trans);
 
         this.mChart = chart;
@@ -33,16 +37,13 @@ public class XAxisRendererHorizontalBarChart extends XAxisRenderer {
 
     @Override
     public void computeAxis(float min, float max, boolean inverted) {
-
         // calculate the starting and entry point of the y-labels (depending on
         // zoom / contentrect bounds)
         if (mViewPortHandler.contentWidth() > 10 && !mViewPortHandler.isFullyZoomedOutY()) {
-
             MPPointD p1 = mTrans.getValuesByTouchPoint(mViewPortHandler.contentLeft(), mViewPortHandler.contentBottom());
             MPPointD p2 = mTrans.getValuesByTouchPoint(mViewPortHandler.contentLeft(), mViewPortHandler.contentTop());
 
             if (inverted) {
-
                 min = (float) p2.y;
                 max = (float) p1.y;
             } else {
@@ -60,21 +61,21 @@ public class XAxisRendererHorizontalBarChart extends XAxisRenderer {
     
     @Override
     protected void computeSize() {
-        
         mAxisLabelPaint.setTypeface(mXAxis.getTypeface());
         mAxisLabelPaint.setTextSize(mXAxis.getTextSize());
 
         String longest = mXAxis.getLongestLabel();
 
-        final FSize labelSize = Utils.calcTextSize(mAxisLabelPaint, longest);
+        FSize labelSize = Utils.calcTextSize(mAxisLabelPaint, longest);
 
-        final float labelWidth = (int)(labelSize.width + mXAxis.getXOffset() * 3.5f);
-        final float labelHeight = labelSize.height;
+        float labelWidth = (int)(labelSize.width + mXAxis.getXOffset() * 3.5f);
+        float labelHeight = labelSize.height;
 
-        final FSize labelRotatedSize = Utils.getSizeOfRotatedRectangleByDegrees(
+        FSize labelRotatedSize = Utils.getSizeOfRotatedRectangleByDegrees(
                 labelSize.width,
                 labelHeight,
-                mXAxis.getLabelRotationAngle());
+                mXAxis.getLabelRotationAngle()
+        );
 
         mXAxis.mLabelWidth = Math.round(labelWidth);
         mXAxis.mLabelHeight = Math.round(labelHeight);
@@ -85,61 +86,76 @@ public class XAxisRendererHorizontalBarChart extends XAxisRenderer {
     }
 
     @Override
-    public void renderAxisLabels(Canvas c) {
-
+    public void renderAxisLabels(@NotNull Canvas c) {
         if (!mXAxis.isEnabled() || !mXAxis.isDrawLabelsEnabled())
             return;
 
-        float xoffset = mXAxis.getXOffset();
+        float xOffset = mXAxis.getXOffset();
 
         mAxisLabelPaint.setTypeface(mXAxis.getTypeface());
         mAxisLabelPaint.setTextSize(mXAxis.getTextSize());
         mAxisLabelPaint.setColor(mXAxis.getTextColor());
 
-        MPPointF pointF = MPPointF.getInstance(0,0);
+        MPPointF pointF = MPPointF.getInstance();
+        XAxisPosition pos = mXAxis.getPosition();
 
-        if (mXAxis.getPosition() == XAxisPosition.TOP) {
-            pointF.x = 0.0f;
-            pointF.y = 0.5f;
-            drawLabels(c, mViewPortHandler.contentRight() + xoffset, pointF);
+        switch (pos) {
+            case TOP: {
+                pointF.x = 0.0f;
+                pointF.y = 0.5f;
+                drawLabels(c, mViewPortHandler.contentRight() + xOffset, pointF);
 
-        } else if (mXAxis.getPosition() == XAxisPosition.TOP_INSIDE) {
-            pointF.x = 1.0f;
-            pointF.y = 0.5f;
-            drawLabels(c, mViewPortHandler.contentRight() - xoffset, pointF);
+                break;
+            }
+            case TOP_INSIDE: {
+                pointF.x = 1.0f;
+                pointF.y = 0.5f;
+                drawLabels(c, mViewPortHandler.contentRight() - xOffset, pointF);
 
-        } else if (mXAxis.getPosition() == XAxisPosition.BOTTOM) {
-            pointF.x = 1.0f;
-            pointF.y = 0.5f;
-            drawLabels(c, mViewPortHandler.contentLeft() - xoffset, pointF);
+                break;
+            }
+            case BOTTOM: {
+                pointF.x = 1.0f;
+                pointF.y = 0.5f;
+                drawLabels(c, mViewPortHandler.contentLeft() - xOffset, pointF);
 
-        } else if (mXAxis.getPosition() == XAxisPosition.BOTTOM_INSIDE) {
-            pointF.x = 1.0f;
-            pointF.y = 0.5f;
-            drawLabels(c, mViewPortHandler.contentLeft() + xoffset, pointF);
+                break;
+            }
+            case BOTTOM_INSIDE: {
+                pointF.x = 1.0f;
+                pointF.y = 0.5f;
+                drawLabels(c, mViewPortHandler.contentLeft() + xOffset, pointF);
 
-        } else { // BOTH SIDED
-            pointF.x = 0.0f;
-            pointF.y = 0.5f;
-            drawLabels(c, mViewPortHandler.contentRight() + xoffset, pointF);
-            pointF.x = 1.0f;
-            pointF.y = 0.5f;
-            drawLabels(c, mViewPortHandler.contentLeft() - xoffset, pointF);
+                break;
+            }
+            case BOTH_SIDED: {
+                pointF.x = 0.0f;
+                pointF.y = 0.5f;
+                drawLabels(c, mViewPortHandler.contentRight() + xOffset, pointF);
+                pointF.x = 1.0f;
+                pointF.y = 0.5f;
+                drawLabels(c, mViewPortHandler.contentLeft() - xOffset, pointF);
+
+                break;
+            }
         }
+
 
         MPPointF.recycleInstance(pointF);
     }
 
     @Override
-    protected void drawLabels(Canvas c, float pos, MPPointF anchor) {
-
+    protected void drawLabels(
+            @NotNull Canvas c,
+            float pos,
+            @NotNull MPPointF anchor
+    ) {
         final float labelRotationAngleDegrees = mXAxis.getLabelRotationAngle();
         boolean centeringEnabled = mXAxis.isCenterAxisLabelsEnabled();
 
         float[] positions = new float[mXAxis.mEntryCount * 2];
 
         for (int i = 0; i < positions.length; i += 2) {
-
             // only fill x values
             if (centeringEnabled) {
                 positions[i + 1] = mXAxis.mCenteredEntries[i / 2];
@@ -151,7 +167,6 @@ public class XAxisRendererHorizontalBarChart extends XAxisRenderer {
         mTrans.pointValuesToPixel(positions);
 
         for (int i = 0; i < positions.length; i += 2) {
-
             float y = positions[i + 1];
 
             if (mViewPortHandler.isInBoundsY(y)) {
@@ -163,6 +178,7 @@ public class XAxisRendererHorizontalBarChart extends XAxisRenderer {
     }
 
     @Override
+    @NotNull
     public RectF getGridClippingRect() {
         mGridClippingRect.set(mViewPortHandler.getContentRect());
         mGridClippingRect.inset(0.f, -mAxis.getGridLineWidth());
@@ -170,8 +186,11 @@ public class XAxisRendererHorizontalBarChart extends XAxisRenderer {
     }
 
     @Override
-    protected void drawGridLine(Canvas c, float x, float y, Path gridLinePath) {
-
+    protected void drawGridLine(
+            @NotNull Canvas c,
+            float x, float y,
+            @NotNull Path gridLinePath
+    ) {
         gridLinePath.moveTo(mViewPortHandler.contentRight(), y);
         gridLinePath.lineTo(mViewPortHandler.contentLeft(), y);
 
@@ -182,25 +201,26 @@ public class XAxisRendererHorizontalBarChart extends XAxisRenderer {
     }
 
     @Override
-    public void renderAxisLine(Canvas c) {
-
+    public void renderAxisLine(@NotNull Canvas c) {
         if (!mXAxis.isDrawAxisLineEnabled() || !mXAxis.isEnabled())
             return;
 
         mAxisLinePaint.setColor(mXAxis.getAxisLineColor());
         mAxisLinePaint.setStrokeWidth(mXAxis.getAxisLineWidth());
 
-        if (mXAxis.getPosition() == XAxisPosition.TOP
-                || mXAxis.getPosition() == XAxisPosition.TOP_INSIDE
-                || mXAxis.getPosition() == XAxisPosition.BOTH_SIDED) {
+        XAxisPosition pos = mXAxis.getPosition();
+
+        if (pos == XAxisPosition.TOP
+                || pos == XAxisPosition.TOP_INSIDE
+                || pos == XAxisPosition.BOTH_SIDED) {
             c.drawLine(mViewPortHandler.contentRight(),
                     mViewPortHandler.contentTop(), mViewPortHandler.contentRight(),
                     mViewPortHandler.contentBottom(), mAxisLinePaint);
         }
 
-        if (mXAxis.getPosition() == XAxisPosition.BOTTOM
-                || mXAxis.getPosition() == XAxisPosition.BOTTOM_INSIDE
-                || mXAxis.getPosition() == XAxisPosition.BOTH_SIDED) {
+        if (pos == XAxisPosition.BOTTOM
+                || pos == XAxisPosition.BOTTOM_INSIDE
+                || pos == XAxisPosition.BOTH_SIDED) {
             c.drawLine(mViewPortHandler.contentLeft(),
                     mViewPortHandler.contentTop(), mViewPortHandler.contentLeft(),
                     mViewPortHandler.contentBottom(), mAxisLinePaint);
@@ -208,18 +228,16 @@ public class XAxisRendererHorizontalBarChart extends XAxisRenderer {
     }
 
     protected Path mRenderLimitLinesPathBuffer = new Path();
+
     /**
 	 * Draws the LimitLines associated with this axis to the screen.
 	 * This is the standard YAxis renderer using the XAxis limit lines.
-	 *
-	 * @param c
 	 */
 	@Override
-	public void renderLimitLines(Canvas c) {
-
+	public void renderLimitLines(@NotNull Canvas c) {
 		List<LimitLine> limitLines = mXAxis.getLimitLines();
 
-		if (limitLines == null || limitLines.size() <= 0)
+		if (limitLines.size() <= 0)
 			return;
 
 		float[] pts = mRenderLimitLinesBuffer;
@@ -248,10 +266,13 @@ public class XAxisRendererHorizontalBarChart extends XAxisRenderer {
 
 			pts[1] = l.getLimit();
 
-			mTrans.pointValuesToPixel(pts);
+            //noinspection ConstantConditions
+            mTrans.pointValuesToPixel(pts);
 
-			limitLinePath.moveTo(mViewPortHandler.contentLeft(), pts[1]);
-			limitLinePath.lineTo(mViewPortHandler.contentRight(), pts[1]);
+			float py = pts[1];
+
+			limitLinePath.moveTo(mViewPortHandler.contentLeft(), py);
+			limitLinePath.lineTo(mViewPortHandler.contentRight(), py);
 
 			c.drawPath(limitLinePath, mLimitLinePaint);
 			limitLinePath.reset();
@@ -260,48 +281,63 @@ public class XAxisRendererHorizontalBarChart extends XAxisRenderer {
 			String label = l.getLabel();
 
 			// if drawing the limit-value label is enabled
-			if (label != null && !label.equals("")) {
-
+			if (label.length() > 0) {
 				mLimitLinePaint.setStyle(l.getTextStyle());
 				mLimitLinePaint.setPathEffect(null);
 				mLimitLinePaint.setColor(l.getTextColor());
 				mLimitLinePaint.setStrokeWidth(0.5f);
 				mLimitLinePaint.setTextSize(l.getTextSize());
 
-                final float labelLineHeight = Utils.calcTextHeight(mLimitLinePaint, label);
+				float labelLineHeight = Utils.calcTextHeight(mLimitLinePaint, label);
                 float xOffset = Utils.convertDpToPixel(4f) + l.getXOffset();
                 float yOffset = l.getLineWidth() + labelLineHeight + l.getYOffset();
 
-                final LimitLine.LimitLabelPosition position = l.getLabelPosition();
+                LimitLine.LimitLabelPosition position = l.getLabelPosition();
 
-				if (position == LimitLine.LimitLabelPosition.RIGHT_TOP) {
+                switch (position) {
+                    case RIGHT_TOP: {
+                        mLimitLinePaint.setTextAlign(Align.RIGHT);
+                        c.drawText(
+                                label,
+                                mViewPortHandler.contentRight() - xOffset,
+                                py - yOffset + labelLineHeight,
+                                mLimitLinePaint
+                        );
 
-					mLimitLinePaint.setTextAlign(Align.RIGHT);
-					c.drawText(label,
-                            mViewPortHandler.contentRight() - xOffset,
-							pts[1] - yOffset + labelLineHeight, mLimitLinePaint);
+                        break;
+                    }
+                    case RIGHT_BOTTOM: {
+                        mLimitLinePaint.setTextAlign(Align.RIGHT);
+                        c.drawText(
+                                label,
+                                mViewPortHandler.contentRight() - xOffset,
+                                py + yOffset,
+                                mLimitLinePaint
+                        );
 
-				} else if (position == LimitLine.LimitLabelPosition.RIGHT_BOTTOM) {
+                        break;
+                    }
+                    case LEFT_TOP: {
+                        mLimitLinePaint.setTextAlign(Align.LEFT);
+                        c.drawText(
+                                label,
+                                mViewPortHandler.contentLeft() + xOffset,
+                                py - yOffset + labelLineHeight,
+                                mLimitLinePaint
+                        );
+                    }
+                    case LEFT_BOTTOM: {
+                        mLimitLinePaint.setTextAlign(Align.LEFT);
+                        c.drawText(
+                                label,
+                                mViewPortHandler.offsetLeft() + xOffset,
+                                py + yOffset,
+                                mLimitLinePaint
+                        );
 
-                    mLimitLinePaint.setTextAlign(Align.RIGHT);
-                    c.drawText(label,
-                            mViewPortHandler.contentRight() - xOffset,
-                            pts[1] + yOffset, mLimitLinePaint);
-
-                } else if (position == LimitLine.LimitLabelPosition.LEFT_TOP) {
-
-                    mLimitLinePaint.setTextAlign(Align.LEFT);
-                    c.drawText(label,
-                            mViewPortHandler.contentLeft() + xOffset,
-                            pts[1] - yOffset + labelLineHeight, mLimitLinePaint);
-
-                } else {
-
-					mLimitLinePaint.setTextAlign(Align.LEFT);
-					c.drawText(label,
-                            mViewPortHandler.offsetLeft() + xOffset,
-							pts[1] + yOffset, mLimitLinePaint);
-				}
+                        break;
+                    }
+                }
 			}
 
             c.restoreToCount(clipRestoreCount);

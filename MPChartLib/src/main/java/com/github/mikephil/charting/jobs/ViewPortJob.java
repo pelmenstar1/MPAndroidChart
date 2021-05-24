@@ -7,6 +7,8 @@ import com.github.mikephil.charting.utils.ObjectPool;
 import com.github.mikephil.charting.utils.Transformer;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Runnable that is used for viewport modifications since they cannot be
  * executed at any time. This can be used to delay the execution of viewport
@@ -17,23 +19,31 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
  * @author Philipp Jahoda
  */
 public abstract class ViewPortJob extends ObjectPool.Poolable implements Runnable {
+    @NotNull
     protected float[] pts = new float[2];
 
+    @NotNull
     protected ViewPortHandler mViewPortHandler;
-    protected float xValue = 0f;
-    protected float yValue = 0f;
+    protected float xValue;
+    protected float yValue;
+
+    @NotNull
     protected Transformer mTrans;
+
+    @NotNull
     protected View view;
 
-    public ViewPortJob(ViewPortHandler viewPortHandler, float xValue, float yValue,
-                       Transformer trans, View v) {
-
+    public ViewPortJob(
+            @NotNull ViewPortHandler viewPortHandler,
+            float xValue, float yValue,
+            @NotNull Transformer trans,
+            @NotNull View v
+    ) {
         this.mViewPortHandler = viewPortHandler;
         this.xValue = xValue;
         this.yValue = yValue;
         this.mTrans = trans;
         this.view = v;
-
     }
 
     public float getXValue() {

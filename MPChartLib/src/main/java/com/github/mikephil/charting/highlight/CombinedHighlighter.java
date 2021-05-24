@@ -33,10 +33,10 @@ public class CombinedHighlighter extends ChartHighlighter<CombinedDataProvider> 
     protected List<Highlight> getHighlightsAtXValue(float xVal, float x, float y) {
         mHighlightBuffer.clear();
 
-        List<BarLineScatterCandleBubbleData> dataObjects = mChart.getCombinedData().getAllData();
+        List<BarLineScatterCandleBubbleData<?>> dataObjects = mChart.getCombinedData().getAllData();
 
         for (int i = 0; i < dataObjects.size(); i++) {
-            ChartData dataObject = dataObjects.get(i);
+            ChartData<?> dataObject = dataObjects.get(i);
 
             // in case of BarData, let the BarHighlighter take over
             if (barHighlighter != null && dataObject instanceof BarData) {
@@ -48,7 +48,7 @@ public class CombinedHighlighter extends ChartHighlighter<CombinedDataProvider> 
                 }
             } else {
                 for (int j = 0, dataSetCount = dataObject.getDataSetCount(); j < dataSetCount; j++) {
-                    IDataSet dataSet = dataObjects.get(i).getDataSetByIndex(j);
+                    IDataSet<?> dataSet = dataObjects.get(i).getDataSetByIndex(j);
 
                     // don't include datasets that cannot be highlighted
                     if (!dataSet.isHighlightEnabled())

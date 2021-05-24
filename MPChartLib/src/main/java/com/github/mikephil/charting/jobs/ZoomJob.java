@@ -16,7 +16,6 @@ import org.jetbrains.annotations.NotNull;
  * Created by Philipp Jahoda on 19/02/16.
  */
 public class ZoomJob extends ViewPortJob {
-
     private static final ObjectPool<ZoomJob> pool;
 
     static {
@@ -27,14 +26,23 @@ public class ZoomJob extends ViewPortJob {
     protected float scaleX;
     protected float scaleY;
 
+    @NotNull
     protected YAxis.AxisDependency axisDependency;
 
     private ZoomJob() {
+        //noinspection ConstantConditions
         super(null, 0, 0, null, null);
+
+        axisDependency = YAxis.AxisDependency.LEFT;
     }
 
-    public ZoomJob(ViewPortHandler viewPortHandler, float scaleX, float scaleY, float xValue, float yValue, Transformer trans,
-                   YAxis.AxisDependency axis, View v) {
+    public ZoomJob(
+            @NotNull ViewPortHandler viewPortHandler,
+            float scaleX, float scaleY,
+            float xValue, float yValue,
+            @NotNull Transformer trans,
+            @NotNull YAxis.AxisDependency axis,
+            @NotNull View v) {
         super(viewPortHandler, xValue, yValue, trans, v);
 
         this.scaleX = scaleX;
@@ -71,7 +79,6 @@ public class ZoomJob extends ViewPortJob {
 
     @Override
     public void run() {
-
         Matrix save = mRunMatrixBuffer;
         mViewPortHandler.zoom(scaleX, scaleY, save);
         mViewPortHandler.refresh(save, view, false);
@@ -79,8 +86,8 @@ public class ZoomJob extends ViewPortJob {
         float yValsInView = ((BarLineChartBase) view).getAxis(axisDependency).mAxisRange / mViewPortHandler.getScaleY();
         float xValsInView = ((BarLineChartBase) view).getXAxis().mAxisRange / mViewPortHandler.getScaleX();
 
-        pts[0] = xValue - xValsInView / 2f;
-        pts[1] = yValue + yValsInView / 2f;
+        pts[0] = xValue - xValsInView * 0.5f;
+        pts[1] = yValue + yValsInView * 0.5f;
 
         mTrans.pointValuesToPixel(pts);
 

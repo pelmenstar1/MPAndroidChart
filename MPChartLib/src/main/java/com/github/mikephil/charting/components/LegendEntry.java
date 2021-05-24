@@ -5,13 +5,14 @@ import android.graphics.DashPathEffect;
 
 import com.github.mikephil.charting.utils.ColorTemplate;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 public class LegendEntry {
     public LegendEntry() {
-
     }
 
     /**
-     *
      * @param label The legend entry text. A `null` label will start a group.
      * @param form The form to draw for this entry.
      * @param formSize Set to NaN to use the legend's default.
@@ -19,11 +20,11 @@ public class LegendEntry {
      * @param formLineDashEffect Set to nil to use the legend's default.
      * @param formColor The color for drawing the form.
      */
-    public LegendEntry(String label,
-                       Legend.LegendForm form,
+    public LegendEntry(@Nullable String label,
+                       @NotNull Legend.LegendForm form,
                        float formSize,
                        float formLineWidth,
-                       DashPathEffect formLineDashEffect,
+                       @Nullable DashPathEffect formLineDashEffect,
                        int formColor)
     {
         this.label = label;
@@ -38,6 +39,7 @@ public class LegendEntry {
      * The legend entry text.
      * A `null` label will start a group.
      */
+    @Nullable
     public String label;
 
     /**
@@ -47,6 +49,7 @@ public class LegendEntry {
      * `EMPTY` will avoid drawing a form, but keep its space.
      * `DEFAULT` will use the Legend's default.
      */
+    @NotNull
     public Legend.LegendForm form = Legend.LegendForm.DEFAULT;
 
     /**
@@ -68,6 +71,7 @@ public class LegendEntry {
      *
      * Set to null to use the legend's default
      */
+    @Nullable
     public DashPathEffect formLineDashEffect = null;
 
     /**

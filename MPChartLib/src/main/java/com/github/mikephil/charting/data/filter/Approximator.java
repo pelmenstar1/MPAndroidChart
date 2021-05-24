@@ -4,6 +4,8 @@ package com.github.mikephil.charting.data.filter;
 import android.annotation.TargetApi;
 import android.os.Build;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Arrays;
 
 /**
@@ -16,7 +18,6 @@ public class Approximator {
 
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     public float[] reduceWithDouglasPeucker(float[] points, float tolerance) {
-
         int greatestIndex = 0;
         float greatestDistance = 0f;
 
@@ -33,53 +34,49 @@ public class Approximator {
         }
 
         if (greatestDistance > tolerance) {
-
             float[] reduced1 = reduceWithDouglasPeucker(Arrays.copyOfRange(points, 0, greatestIndex + 2), tolerance);
             float[] reduced2 = reduceWithDouglasPeucker(Arrays.copyOfRange(points, greatestIndex, points.length),
                     tolerance);
 
-            float[] result1 = reduced1;
             float[] result2 = Arrays.copyOfRange(reduced2, 2, reduced2.length);
 
-            return concat(result1, result2);
+            return concat(reduced1, result2);
         } else {
-            return line.getPoints();
+            return line.points;
         }
     }
 
     /**
      * Combine arrays.
-     *
-     * @param arrays
-     * @return
      */
-    float[] concat(float[]... arrays) {
+    @NotNull
+    float[] concat(@NotNull float[]... arrays) {
         int length = 0;
         for (float[] array : arrays) {
             length += array.length;
         }
+
         float[] result = new float[length];
-        int pos = 0;
+        int index = 0;
         for (float[] array : arrays) {
             for (float element : array) {
-                result[pos] = element;
-                pos++;
+                result[index++] = element;
             }
         }
+
         return result;
     }
 
-    private class Line {
+    private static final class Line {
+        public final float[] points;
 
-        private float[] points;
+        private final float sxey;
+        private final float exsy;
 
-        private float sxey;
-        private float exsy;
+        private final float dx;
+        private final float dy;
 
-        private float dx;
-        private float dy;
-
-        private float length;
+        private final float length;
 
         public Line(float x1, float y1, float x2, float y2) {
             dx = x1 - x2;
@@ -88,15 +85,11 @@ public class Approximator {
             exsy = x2 * y1;
             length = (float) Math.sqrt(dx * dx + dy * dy);
 
-            points = new float[]{x1, y1, x2, y2};
+            points = new float[] { x1, y1, x2, y2 };
         }
 
         public float distance(float x, float y) {
             return Math.abs(dy * x - dx * y + sxey - exsy) / length;
-        }
-
-        public float[] getPoints() {
-            return points;
         }
     }
 }

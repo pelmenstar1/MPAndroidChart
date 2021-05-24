@@ -1,16 +1,17 @@
 
 package com.github.mikephil.charting.data.filter;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 
 /**
  * Implemented according to modified Douglas Peucker {@link}
  * http://psimpl.sourceforge.net/douglas-peucker.html
  */
-public class ApproximatorN
-{
-    public float[] reduceWithDouglasPeucker(float[] points, float resultCount) {
-
+public class ApproximatorN {
+    @NotNull
+    public float[] reduceWithDouglasPeucker(@NotNull float[] points, float resultCount) {
         int pointCount = points.length / 2;
 
         // if a shape has 2 or less points it cannot be reduced
@@ -83,14 +84,14 @@ public class ApproximatorN
         return (float)(dividend / divisor);
     }
 
-    private static class Line {
-        int start;
-        int end;
+    private static final class Line {
+        final int start;
+        final int end;
 
         float distance = 0;
         int index = 0;
 
-        Line(int start, int end, float[] points) {
+        public Line(int start, int end, float[] points) {
             this.start = start;
             this.end = end;
 
@@ -111,16 +112,16 @@ public class ApproximatorN
             }
         }
 
-        boolean equals(final Line rhs) {
+        public boolean equals(@NotNull Line rhs) {
             return (start == rhs.start) && (end == rhs.end) && index == rhs.index;
         }
 
-        boolean lessThan(final Line rhs) {
+        public boolean lessThan(@NotNull Line rhs) {
             return distance < rhs.distance;
         }
     }
 
-    private static int insertionIndex(Line line, ArrayList<Line> queue) {
+    private static int insertionIndex(@NotNull Line line, @NotNull ArrayList<Line> queue) {
         int min = 0;
         int max = queue.size();
 

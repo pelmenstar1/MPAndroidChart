@@ -31,12 +31,17 @@ public class AnimatedZoomJob extends AnimatedViewPortJob implements Animator.Ani
     protected float zoomCenterX;
     protected float zoomCenterY;
 
+    @NotNull
     protected YAxis yAxis;
 
     protected float xAxisRange;
 
     private AnimatedZoomJob() {
+        //noinspection ConstantConditions
         super(null, 0, 0, null, null, 0,0,0);
+
+        //noinspection ConstantConditions
+        yAxis = null;
     }
 
     @SuppressLint("NewApi")
@@ -66,7 +71,6 @@ public class AnimatedZoomJob extends AnimatedViewPortJob implements Animator.Ani
 
     @Override
     public void onAnimationUpdate(ValueAnimator animation) {
-
         float scaleX = xOrigin + (xValue - xOrigin) * phase;
         float scaleY = yOrigin + (yValue - yOrigin) * phase;
 
@@ -77,8 +81,8 @@ public class AnimatedZoomJob extends AnimatedViewPortJob implements Animator.Ani
         float valsInView = yAxis.mAxisRange / mViewPortHandler.getScaleY();
         float xsInView =  xAxisRange / mViewPortHandler.getScaleX();
 
-        pts[0] = zoomOriginX + ((zoomCenterX - xsInView / 2f) - zoomOriginX) * phase;
-        pts[1] = zoomOriginY + ((zoomCenterY + valsInView / 2f) - zoomOriginY) * phase;
+        pts[0] = zoomOriginX + ((zoomCenterX - xsInView * 0.5f) - zoomOriginX) * phase;
+        pts[1] = zoomOriginY + ((zoomCenterY + valsInView * 0.5f) - zoomOriginY) * phase;
 
         mTrans.pointValuesToPixel(pts);
 
@@ -86,7 +90,18 @@ public class AnimatedZoomJob extends AnimatedViewPortJob implements Animator.Ani
         mViewPortHandler.refresh(save, view, true);
     }
 
-    public static AnimatedZoomJob getInstance(ViewPortHandler viewPortHandler, View v, Transformer trans, YAxis axis, float xAxisRange, float scaleX, float scaleY, float xOrigin, float yOrigin, float zoomCenterX, float zoomCenterY, float zoomOriginX, float zoomOriginY, long duration) {
+    @NotNull
+    public static AnimatedZoomJob getInstance(
+            @NotNull ViewPortHandler viewPortHandler,
+            @NotNull View v,
+            @NotNull Transformer trans,
+            @NotNull YAxis axis,
+            float xAxisRange,
+            float scaleX, float scaleY,
+            float xOrigin, float yOrigin,
+            float zoomCenterX, float zoomCenterY,
+            float zoomOriginX, float zoomOriginY,
+            long duration) {
         AnimatedZoomJob result = pool.get();
         result.mViewPortHandler = viewPortHandler;
         result.xValue = scaleX;
@@ -110,21 +125,17 @@ public class AnimatedZoomJob extends AnimatedViewPortJob implements Animator.Ani
 
     @Override
     public void onAnimationCancel(Animator animation) {
-
     }
 
     @Override
     public void onAnimationRepeat(Animator animation) {
-
     }
 
     @Override
     public void recycleSelf() {
-
     }
 
     @Override
     public void onAnimationStart(Animator animation) {
-
     }
 }

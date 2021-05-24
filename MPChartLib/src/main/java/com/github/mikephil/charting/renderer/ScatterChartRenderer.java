@@ -18,13 +18,19 @@ import com.github.mikephil.charting.utils.Transformer;
 import com.github.mikephil.charting.utils.Utils;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 public class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
-
+    @NotNull
     protected ScatterDataProvider mChart;
 
-    public ScatterChartRenderer(ScatterDataProvider chart, ChartAnimator animator, ViewPortHandler viewPortHandler) {
+    public ScatterChartRenderer(
+            @NotNull ScatterDataProvider chart,
+            @NotNull ChartAnimator animator,
+            @NotNull ViewPortHandler viewPortHandler
+    ) {
         super(animator, viewPortHandler);
         mChart = chart;
     }
@@ -34,8 +40,7 @@ public class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
     }
 
     @Override
-    public void drawData(Canvas c) {
-
+    public void drawData(@NotNull Canvas c) {
         ScatterData scatterData = mChart.getScatterData();
 
         for (IScatterDataSet set : scatterData.getDataSets()) {
@@ -45,10 +50,9 @@ public class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
         }
     }
 
-    float[] mPixelBuffer = new float[2];
+    private final float[] mPixelBuffer = new float[2];
 
     protected void drawDataSet(Canvas c, IScatterDataSet dataSet) {
-
         if (dataSet.getEntryCount() < 1)
             return;
 
@@ -59,17 +63,12 @@ public class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
         float phaseY = mAnimator.getPhaseY();
 
         IShapeRenderer renderer = dataSet.getShapeRenderer();
-        if (renderer == null) {
-            Log.i("MISSING", "There's no IShapeRenderer specified for ScatterDataSet");
-            return;
-        }
 
         int max = (int)(Math.min(
                 Math.ceil((float)dataSet.getEntryCount() * mAnimator.getPhaseX()),
                 (float)dataSet.getEntryCount()));
 
         for (int i = 0; i < max; i++) {
-
             Entry e = dataSet.getEntryForIndex(i);
 
             mPixelBuffer[0] = e.getX();
@@ -93,15 +92,12 @@ public class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
     }
 
     @Override
-    public void drawValues(Canvas c) {
-
+    public void drawValues(@NotNull Canvas c) {
         // if values are drawn
         if (isDrawingValuesAllowed(mChart)) {
-
             List<IScatterDataSet> dataSets = mChart.getScatterData().getDataSets();
 
             for (int i = 0; i < mChart.getScatterData().getDataSetCount(); i++) {
-
                 IScatterDataSet dataSet = dataSets.get(i);
 
                 if (!shouldDrawValues(dataSet) || dataSet.getEntryCount() < 1)
@@ -146,7 +142,6 @@ public class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
                     }
 
                     if (entry.getIcon() != null && dataSet.isDrawIconsEnabled()) {
-
                         Drawable icon = entry.getIcon();
 
                         Utils.drawImage(
@@ -165,28 +160,29 @@ public class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
     }
 
     @Override
-    public void drawExtras(Canvas c) {
+    public void drawExtras(@NotNull Canvas c) {
     }
 
     @Override
-    public void drawHighlighted(Canvas c, Highlight[] indices) {
-
+    public void drawHighlighted(@NotNull Canvas c, @NotNull Highlight[] indices) {
         ScatterData scatterData = mChart.getScatterData();
 
         for (Highlight high : indices) {
-
             IScatterDataSet set = scatterData.getDataSetByIndex(high.getDataSetIndex());
 
-            if (set == null || !set.isHighlightEnabled())
+            if (!set.isHighlightEnabled())
                 continue;
 
-            final Entry e = set.getEntryForXValue(high.getX(), high.getY());
+            Entry e = set.getEntryForXValue(high.getX(), high.getY());
+            if(e == null) {
+                continue;
+            }
 
             if (!isInBoundsX(e, set))
                 continue;
 
-            MPPointD pix = mChart.getTransformer(set.getAxisDependency()).getPixelForValues(e.getX(), e.getY() * mAnimator
-                    .getPhaseY());
+            Transformer trans = mChart.getTransformer(set.getAxisDependency());
+            MPPointD pix = trans.getPixelForValues(e.getX(), e.getY() * mAnimator.getPhaseY());
 
             high.setDraw((float) pix.x, (float) pix.y);
 

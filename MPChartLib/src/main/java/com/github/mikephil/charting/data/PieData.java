@@ -6,7 +6,9 @@ import android.util.Log;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IPieDataSet;
 
-import java.util.ArrayList;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 
 /**
@@ -18,21 +20,18 @@ import java.util.List;
  * @author Philipp Jahoda
  */
 public class PieData extends ChartData<IPieDataSet> {
-
     public PieData() {
         super();
     }
 
-    public PieData(IPieDataSet dataSet) {
+    public PieData(@NotNull IPieDataSet dataSet) {
         super(dataSet);
     }
 
     /**
      * Sets the PieDataSet this data object should represent.
-     *
-     * @param dataSet
      */
-    public void setDataSet(IPieDataSet dataSet) {
+    public void setDataSet(@NotNull IPieDataSet dataSet) {
         mDataSets.clear();
         mDataSets.add(dataSet);
         notifyDataChanged();
@@ -41,14 +40,13 @@ public class PieData extends ChartData<IPieDataSet> {
     /**
      * Returns the DataSet this PieData object represents. A PieData object can
      * only contain one DataSet.
-     *
-     * @return
      */
     public IPieDataSet getDataSet() {
         return mDataSets.get(0);
     }
 
     @Override
+    @NotNull
     public List<IPieDataSet> getDataSets() {
         List<IPieDataSet> dataSets = super.getDataSets();
 
@@ -63,37 +61,39 @@ public class PieData extends ChartData<IPieDataSet> {
     /**
      * The PieData object can only have one DataSet. Use getDataSet() method instead.
      *
-     * @param index
-     * @return
      */
     @Override
+    @NotNull
     public IPieDataSet getDataSetByIndex(int index) {
-        return index == 0 ? getDataSet() : null;
+        if(index == 0) {
+            return getDataSet();
+        }
+
+        throw new IllegalArgumentException("index>0");
     }
 
     @Override
-    public IPieDataSet getDataSetByLabel(String label, boolean ignorecase) {
-        return ignorecase ? label.equalsIgnoreCase(mDataSets.get(0).getLabel()) ? mDataSets.get(0)
+    @Nullable
+    public IPieDataSet getDataSetByLabel(@NotNull String label, boolean ignoreCase) {
+        return ignoreCase ? label.equalsIgnoreCase(mDataSets.get(0).getLabel()) ? mDataSets.get(0)
                 : null : label.equals(mDataSets.get(0).getLabel()) ? mDataSets.get(0) : null;
     }
 
     @Override
-    public Entry getEntryForHighlight(Highlight highlight) {
+    @NotNull
+    public Entry getEntryForHighlight(@NotNull Highlight highlight) {
         return getDataSet().getEntryForIndex((int) highlight.getX());
     }
 
     /**
      * Returns the sum of all values in this PieData object.
-     *
-     * @return
      */
     public float getYValueSum() {
-
         float sum = 0;
 
-        for (int i = 0; i < getDataSet().getEntryCount(); i++)
+        for (int i = 0; i < getDataSet().getEntryCount(); i++) {
             sum += getDataSet().getEntryForIndex(i).getY();
-
+        }
 
         return sum;
     }

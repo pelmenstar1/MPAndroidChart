@@ -4,7 +4,9 @@ package com.github.mikephil.charting.data;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IRadarDataSet;
 
-import java.util.ArrayList;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,39 +16,36 @@ import java.util.List;
  * @author Philipp Jahoda
  */
 public class RadarData extends ChartData<IRadarDataSet> {
-
+    @Nullable
     private List<String> mLabels;
 
     public RadarData() {
         super();
     }
 
-    public RadarData(List<IRadarDataSet> dataSets) {
+    public RadarData(@NotNull List<IRadarDataSet> dataSets) {
         super(dataSets);
     }
 
-    public RadarData(IRadarDataSet... dataSets) {
+    public RadarData(@NotNull IRadarDataSet... dataSets) {
         super(dataSets);
     }
 
     /**
      * Sets the labels that should be drawn around the RadarChart at the end of each web line.
-     *
-     * @param labels
      */
-    public void setLabels(List<String> labels) {
+    public void setLabels(@NotNull List<String> labels) {
         this.mLabels = labels;
     }
 
     /**
      * Sets the labels that should be drawn around the RadarChart at the end of each web line.
-     *
-     * @param labels
      */
-    public void setLabels(String... labels) {
+    public void setLabels(@NotNull String... labels) {
         this.mLabels = Arrays.asList(labels);
     }
 
+    @Nullable
     public List<String> getLabels() {
         return mLabels;
     }

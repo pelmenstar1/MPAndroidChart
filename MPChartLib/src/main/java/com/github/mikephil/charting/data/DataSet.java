@@ -1,6 +1,9 @@
 
 package com.github.mikephil.charting.data;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,10 +16,10 @@ import java.util.List;
  * @author Philipp Jahoda
  */
 public abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
-
     /**
      * the entries that this DataSet represents / holds together
      */
+    @NotNull
     protected List<T> mEntries;
 
     /**
@@ -39,35 +42,28 @@ public abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
      */
     protected float mXMin = Float.MAX_VALUE;
 
-
     /**
      * Creates a new DataSet object with the given values (entries) it represents. Also, a
      * label that describes the DataSet can be specified. The label can also be
      * used to retrieve the DataSet from a ChartData object.
-     *
-     * @param entries
-     * @param label
      */
-    public DataSet(List<T> entries, String label) {
+    public DataSet(@NotNull List<T> entries, @Nullable String label) {
         super(label);
+
         this.mEntries = entries;
-
-        if (mEntries == null)
-            mEntries = new ArrayList<T>();
-
         calcMinMax();
     }
 
     @Override
     public void calcMinMax() {
-
         mYMax = -Float.MAX_VALUE;
         mYMin = Float.MAX_VALUE;
         mXMax = -Float.MAX_VALUE;
         mXMin = Float.MAX_VALUE;
 
-        if (mEntries == null || mEntries.isEmpty())
+        if (mEntries.isEmpty()) {
             return;
+        }
 
         for (T e : mEntries) {
             calcMinMax(e);
@@ -79,7 +75,7 @@ public abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
         mYMax = -Float.MAX_VALUE;
         mYMin = Float.MAX_VALUE;
         
-        if (mEntries == null || mEntries.isEmpty())
+        if (mEntries.isEmpty())
             return;
 
         int indexFrom = getEntryIndex(fromX, Float.NaN, Rounding.DOWN);
@@ -88,7 +84,6 @@ public abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
         if (indexTo < indexFrom) return;
 
         for (int i = indexFrom; i <= indexTo; i++) {
-
             // only recalculate y
             calcMinMaxY(mEntries.get(i));
         }
@@ -96,30 +91,23 @@ public abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
 
     /**
      * Updates the min and max x and y value of this DataSet based on the given Entry.
-     *
-     * @param e
      */
-    protected void calcMinMax(T e) {
-
-        if (e == null)
-            return;
-
+    protected void calcMinMax(@NotNull T e) {
         calcMinMaxX(e);
-
         calcMinMaxY(e);
     }
 
-    protected void calcMinMaxX(T e) {
-
-        if (e.getX() < mXMin)
+    protected void calcMinMaxX(@NotNull T e) {
+        if (e.getX() < mXMin) {
             mXMin = e.getX();
+        }
 
-        if (e.getX() > mXMax)
+        if (e.getX() > mXMax) {
             mXMax = e.getX();
+        }
     }
 
-    protected void calcMinMaxY(T e) {
-
+    protected void calcMinMaxY(@NotNull T e) {
         if (e.getY() < mYMin)
             mYMin = e.getY();
 
@@ -135,8 +123,6 @@ public abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
     /**
      * This method is deprecated.
      * Use getEntries() instead.
-     *
-     * @return
      */
     @Deprecated
     public List<T> getValues() {
@@ -145,9 +131,8 @@ public abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
 
     /**
      * Returns the array of entries that this DataSet represents.
-     *
-     * @return
      */
+    @NotNull
     public List<T> getEntries() {
         return mEntries;
     }
@@ -155,8 +140,6 @@ public abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
     /**
      * This method is deprecated.
      * Use setEntries(...) instead.
-     *
-     * @param values
      */
     @Deprecated
     public void setValues(List<T> values) {
@@ -165,35 +148,29 @@ public abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
 
     /**
      * Sets the array of entries that this DataSet represents, and calls notifyDataSetChanged()
-     *
-     * @return
      */
-    public void setEntries(List<T> entries) {
+    public void setEntries(@NotNull List<T> entries) {
         mEntries = entries;
         notifyDataSetChanged();
     }
 
     /**
      * Provides an exact copy of the DataSet this method is used on.
-     *
-     * @return
      */
+    @NotNull
     public abstract DataSet<T> copy();
-
-    /**
-     *
-     * @param dataSet
-     */
-    protected void copy(DataSet dataSet) {
+    
+    protected void copy(@NotNull DataSet<T> dataSet) {
         super.copy(dataSet);
     }
 
     @Override
+    @NotNull
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         buffer.append(toSimpleString());
         for (int i = 0; i < mEntries.size(); i++) {
-            buffer.append(mEntries.get(i).toString() + " ");
+            buffer.append(mEntries.get(i).toString()).append(' ');
         }
         return buffer.toString();
     }
@@ -201,14 +178,10 @@ public abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
     /**
      * Returns a simple string representation of the DataSet with the type and
      * the number of Entries.
-     *
-     * @return
      */
     public String toSimpleString() {
-        StringBuffer buffer = new StringBuffer();
-        buffer.append("DataSet, label: " + (getLabel() == null ? "" : getLabel()) + ", entries: " + mEntries.size() +
-                "\n");
-        return buffer.toString();
+        return "DataSet, label: " + (getLabel() == null ? "" : getLabel()) + ", entries: " + mEntries.size() +
+                "\n";
     }
 
     @Override
@@ -232,15 +205,7 @@ public abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
     }
 
     @Override
-    public void addEntryOrdered(T e) {
-
-        if (e == null)
-            return;
-
-        if (mEntries == null) {
-            mEntries = new ArrayList<T>();
-        }
-
+    public void addEntryOrdered(@NotNull T e) {
         calcMinMax(e);
 
         if (mEntries.size() > 0 && mEntries.get(mEntries.size() - 1).getX() > e.getX()) {
@@ -258,15 +223,8 @@ public abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
     }
 
     @Override
-    public boolean addEntry(T e) {
-
-        if (e == null)
-            return false;
-
+    public boolean addEntry(@NotNull T e) {
         List<T> values = getEntries();
-        if (values == null) {
-            values = new ArrayList<>();
-        }
 
         calcMinMax(e);
 
@@ -275,14 +233,7 @@ public abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
     }
 
     @Override
-    public boolean removeEntry(T e) {
-
-        if (e == null)
-            return false;
-
-        if (mEntries == null)
-            return false;
-
+    public boolean removeEntry(@NotNull T e) {
         // remove the entry
         boolean removed = mEntries.remove(e);
 
@@ -294,33 +245,35 @@ public abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
     }
 
     @Override
-    public int getEntryIndex(Entry e) {
+    public int getEntryIndex(@NotNull Entry e) {
         return mEntries.indexOf(e);
     }
 
     @Override
-    public T getEntryForXValue(float xValue, float closestToY, Rounding rounding) {
-
+    @Nullable
+    public T getEntryForXValue(float xValue, float closestToY, @NotNull Rounding rounding) {
         int index = getEntryIndex(xValue, closestToY, rounding);
+
         if (index > -1)
             return mEntries.get(index);
         return null;
     }
 
     @Override
+    @Nullable
     public T getEntryForXValue(float xValue, float closestToY) {
         return getEntryForXValue(xValue, closestToY, Rounding.CLOSEST);
     }
 
     @Override
+    @NotNull
     public T getEntryForIndex(int index) {
         return mEntries.get(index);
     }
 
     @Override
-    public int getEntryIndex(float xValue, float closestToY, Rounding rounding) {
-
-        if (mEntries == null || mEntries.isEmpty())
+    public int getEntryIndex(float xValue, float closestToY, @NotNull Rounding rounding) {
+        if (mEntries.isEmpty())
             return -1;
 
         int low = 0;
@@ -403,9 +356,9 @@ public abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
     }
 
     @Override
+    @NotNull
     public List<T> getEntriesForXValue(float xValue) {
-
-        List<T> entries = new ArrayList<T>();
+        ArrayList<T> entries = new ArrayList<>();
 
         int low = 0;
         int high = mEntries.size() - 1;

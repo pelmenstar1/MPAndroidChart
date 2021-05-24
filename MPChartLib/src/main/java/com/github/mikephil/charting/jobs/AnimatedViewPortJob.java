@@ -9,11 +9,15 @@ import android.view.View;
 import com.github.mikephil.charting.utils.Transformer;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Created by Philipp Jahoda on 19/02/16.
  */
 @SuppressLint("NewApi")
-public abstract class AnimatedViewPortJob extends ViewPortJob implements ValueAnimator.AnimatorUpdateListener, Animator.AnimatorListener {
+public abstract class AnimatedViewPortJob extends ViewPortJob
+        implements ValueAnimator.AnimatorUpdateListener, Animator.AnimatorListener {
+    @NotNull
     protected ObjectAnimator animator;
 
     protected float phase;
@@ -21,10 +25,17 @@ public abstract class AnimatedViewPortJob extends ViewPortJob implements ValueAn
     protected float xOrigin;
     protected float yOrigin;
 
-    public AnimatedViewPortJob(ViewPortHandler viewPortHandler, float xValue, float yValue, Transformer trans, View v, float xOrigin, float yOrigin, long duration) {
+    public AnimatedViewPortJob(
+            @NotNull ViewPortHandler viewPortHandler,
+            float xValue, float yValue,
+            @NotNull Transformer trans,
+            @NotNull View v,
+            float xOrigin, float yOrigin,
+            long duration) {
         super(viewPortHandler, xValue, yValue, trans, v);
         this.xOrigin = xOrigin;
         this.yOrigin = yOrigin;
+
         animator = ObjectAnimator.ofFloat(this, "phase", 0f, 1f);
         animator.setDuration(duration);
         animator.addUpdateListener(this);
@@ -65,34 +76,31 @@ public abstract class AnimatedViewPortJob extends ViewPortJob implements ValueAn
 
     @Override
     public void onAnimationStart(Animator animation) {
-
     }
 
     @Override
     public void onAnimationEnd(Animator animation) {
-        try{
+        try {
             recycleSelf();
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             // don't worry about it.
         }
     }
 
     @Override
     public void onAnimationCancel(Animator animation) {
-        try{
+        try {
             recycleSelf();
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             // don't worry about it.
         }
     }
 
     @Override
     public void onAnimationRepeat(Animator animation) {
-
     }
 
     @Override
     public void onAnimationUpdate(ValueAnimator animation) {
-
     }
 }

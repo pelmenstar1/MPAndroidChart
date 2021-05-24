@@ -1,6 +1,7 @@
 package com.github.mikephil.charting.components;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -10,11 +11,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.DrawableRes;
+
 import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.FSize;
 import com.github.mikephil.charting.utils.MPPointF;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
 
@@ -25,42 +31,32 @@ import java.lang.ref.WeakReference;
  * @author Philipp Jahoda
  */
 public class MarkerImage implements IMarker {
-
-    private Context mContext;
-    private Drawable mDrawable;
+    private final Drawable mDrawable;
 
     private MPPointF mOffset = new MPPointF();
-    private MPPointF mOffset2 = new MPPointF();
+    private final MPPointF mOffset2 = new MPPointF();
     private WeakReference<Chart> mWeakChart;
 
     private FSize mSize = new FSize();
-    private Rect mDrawableBoundsCache = new Rect();
+    private final Rect mDrawableBoundsCache = new Rect();
 
     /**
      * Constructor. Sets up the MarkerView with a custom layout resource.
      *
-     * @param context
      * @param drawableResourceId the drawable resource to render
      */
-    public MarkerImage(Context context, int drawableResourceId) {
-        mContext = context;
+    public MarkerImage(@NotNull Context context, @DrawableRes int drawableResourceId) {
+        Resources res = context.getResources();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-        {
-            mDrawable = mContext.getResources().getDrawable(drawableResourceId, null);
-        }
-        else
-        {
-            mDrawable = mContext.getResources().getDrawable(drawableResourceId);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mDrawable = res.getDrawable(drawableResourceId, null);
+        } else {
+            mDrawable = res.getDrawable(drawableResourceId);
         }
     }
 
-    public void setOffset(MPPointF offset) {
+    public void setOffset(@NotNull MPPointF offset) {
         mOffset = offset;
-
-        if (mOffset == null) {
-            mOffset = new MPPointF();
-        }
     }
 
     public void setOffset(float offsetX, float offsetY) {
@@ -69,33 +65,30 @@ public class MarkerImage implements IMarker {
     }
 
     @Override
+    @NotNull
     public MPPointF getOffset() {
         return mOffset;
     }
 
-    public void setSize(FSize size) {
+    public void setSize(@NotNull FSize size) {
         mSize = size;
-
-        if (mSize == null) {
-            mSize = new FSize();
-        }
     }
 
     public FSize getSize() {
         return mSize;
     }
 
-    public void setChartView(Chart chart) {
+    public void setChartView(@Nullable Chart chart) {
         mWeakChart = new WeakReference<>(chart);
     }
 
+    @Nullable
     public Chart getChartView() {
         return mWeakChart == null ? null : mWeakChart.get();
     }
 
     @Override
     public MPPointF getOffsetForDrawingAtPoint(float posX, float posY) {
-
         MPPointF offset = getOffset();
         mOffset2.x = offset.x;
         mOffset2.y = offset.y;
@@ -128,13 +121,11 @@ public class MarkerImage implements IMarker {
     }
 
     @Override
-    public void refreshContent(Entry e, Highlight highlight) {
-
+    public void refreshContent(@NotNull Entry e, @NotNull Highlight highlight) {
     }
 
     @Override
-    public void draw(Canvas canvas, float posX, float posY) {
-
+    public void draw(@NotNull Canvas canvas, float posX, float posY) {
         if (mDrawable == null) return;
 
         MPPointF offset = getOffsetForDrawingAtPoint(posX, posY);
