@@ -119,12 +119,16 @@ public abstract class PieRadarChartBase<TData extends ChartData<TDataSet, TEntry
                     mViewPortHandler.getChartWidth() * mLegend.getMaxSizePercent());
 
             switch (mLegend.getOrientation()) {
-                case VERTICAL: {
+                case Legend.ORIENTATION_VERTICAL: {
                     float xLegendOffset = 0.f;
 
-                    if (mLegend.getHorizontalAlignment() == Legend.LegendHorizontalAlignment.LEFT
-                            || mLegend.getHorizontalAlignment() == Legend.LegendHorizontalAlignment.RIGHT) {
-                        if (mLegend.getVerticalAlignment() == Legend.LegendVerticalAlignment.CENTER) {
+                    int hAlign = mLegend.getHorizontalAlignment();
+
+
+                    if (hAlign == Legend.HALIGN_LEFT || hAlign == Legend.HALIGN_RIGHT) {
+                        int vAlign = mLegend.getVerticalAlignment();
+
+                        if (vAlign == Legend.VALIGN_CENTER) {
                             // this is the space between the legend and the chart
                             final float spacing = Utils.convertDpToPixel(13f);
 
@@ -140,7 +144,7 @@ public abstract class PieRadarChartBase<TData extends ChartData<TDataSet, TEntry
                             MPPointF center = getCenter();
 
                             float bottomX = mLegend.getHorizontalAlignment() ==
-                                    Legend.LegendHorizontalAlignment.RIGHT
+                                    Legend.HALIGN_RIGHT
                                     ? getWidth() - legendWidth + 15.f
                                     : legendWidth - 15.f;
                             float bottomY = legendHeight + 15.f;
@@ -166,23 +170,25 @@ public abstract class PieRadarChartBase<TData extends ChartData<TDataSet, TEntry
                     }
 
                     switch (mLegend.getHorizontalAlignment()) {
-                        case LEFT:
+                        case Legend.HALIGN_LEFT:
                             legendLeft = xLegendOffset;
                             break;
 
-                        case RIGHT:
+                        case Legend.HALIGN_RIGHT:
                             legendRight = xLegendOffset;
                             break;
 
-                        case CENTER:
+                        case Legend.HALIGN_CENTER:
                             switch (mLegend.getVerticalAlignment()) {
-                                case TOP:
+                                case Legend.VALIGN_TOP:
                                     legendTop = Math.min(mLegend.mNeededHeight,
                                             mViewPortHandler.getChartHeight() * mLegend.getMaxSizePercent());
                                     break;
-                                case BOTTOM:
+                                case Legend.VALIGN_BOTTOM:
                                     legendBottom = Math.min(mLegend.mNeededHeight,
                                             mViewPortHandler.getChartHeight() * mLegend.getMaxSizePercent());
+                                    break;
+                                case Legend.VALIGN_CENTER:
                                     break;
                             }
                             break;
@@ -190,12 +196,12 @@ public abstract class PieRadarChartBase<TData extends ChartData<TDataSet, TEntry
                 }
                 break;
 
-                case HORIZONTAL:
+                case Legend.ORIENTATION_HORIZONTAL:
                     float yLegendOffset = 0.f;
 
-                    if (mLegend.getVerticalAlignment() == Legend.LegendVerticalAlignment.TOP ||
-                            mLegend.getVerticalAlignment() == Legend.LegendVerticalAlignment.BOTTOM) {
+                    int vAlign = mLegend.getVerticalAlignment();
 
+                    if (vAlign == Legend.VALIGN_TOP || vAlign == Legend.VALIGN_BOTTOM) {
                         // It's possible that we do not need this offset anymore as it
                         //   is available through the extraOffsets, but changing it can mean
                         //   changing default visibility for existing apps.
@@ -205,11 +211,13 @@ public abstract class PieRadarChartBase<TData extends ChartData<TDataSet, TEntry
                                 mViewPortHandler.getChartHeight() * mLegend.getMaxSizePercent());
 
                         switch (mLegend.getVerticalAlignment()) {
-                            case TOP:
+                            case Legend.VALIGN_TOP:
                                 legendTop = yLegendOffset;
                                 break;
-                            case BOTTOM:
+                            case Legend.VALIGN_BOTTOM:
                                 legendBottom = yLegendOffset;
+                                break;
+                            case Legend.VALIGN_CENTER:
                                 break;
                         }
                     }

@@ -21,7 +21,7 @@ public class LegendEntry {
      * @param formColor The color for drawing the form.
      */
     public LegendEntry(@Nullable String label,
-                       @NotNull Legend.LegendForm form,
+                       @Legend.LegendForm int form,
                        float formSize,
                        float formLineWidth,
                        @Nullable DashPathEffect formLineDashEffect,
@@ -49,8 +49,8 @@ public class LegendEntry {
      * `EMPTY` will avoid drawing a form, but keep its space.
      * `DEFAULT` will use the Legend's default.
      */
-    @NotNull
-    public Legend.LegendForm form = Legend.LegendForm.DEFAULT;
+    @Legend.LegendForm
+    public int form = Legend.FORM_DEFAULT;
 
     /**
      * Form size will be considered except for when .None is used

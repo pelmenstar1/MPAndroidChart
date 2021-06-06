@@ -14,6 +14,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis.XAxisPosition;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.components.YAxis.AxisDependency;
@@ -402,31 +403,29 @@ public abstract class BarLineChartBase<TData extends BarLineScatterCandleBubbleD
             return;
 
         switch (mLegend.getOrientation()) {
-            case VERTICAL:
-
+            case Legend.ORIENTATION_VERTICAL:
                 switch (mLegend.getHorizontalAlignment()) {
-                    case LEFT:
+                    case Legend.HALIGN_LEFT:
                         offsets.left += Math.min(mLegend.mNeededWidth,
                                 mViewPortHandler.getChartWidth() * mLegend.getMaxSizePercent())
                                 + mLegend.getXOffset();
                         break;
 
-                    case RIGHT:
+                    case Legend.HALIGN_RIGHT:
                         offsets.right += Math.min(mLegend.mNeededWidth,
                                 mViewPortHandler.getChartWidth() * mLegend.getMaxSizePercent())
                                 + mLegend.getXOffset();
                         break;
 
-                    case CENTER:
-
+                    case Legend.HALIGN_CENTER:
                         switch (mLegend.getVerticalAlignment()) {
-                            case TOP:
+                            case Legend.VALIGN_TOP:
                                 offsets.top += Math.min(mLegend.mNeededHeight,
                                         mViewPortHandler.getChartHeight() * mLegend.getMaxSizePercent())
                                         + mLegend.getYOffset();
                                 break;
 
-                            case BOTTOM:
+                            case Legend.VALIGN_BOTTOM:
                                 offsets.bottom += Math.min(mLegend.mNeededHeight,
                                         mViewPortHandler.getChartHeight() * mLegend.getMaxSizePercent())
                                         + mLegend.getYOffset();
@@ -439,25 +438,22 @@ public abstract class BarLineChartBase<TData extends BarLineScatterCandleBubbleD
 
                 break;
 
-            case HORIZONTAL:
-
+            case Legend.ORIENTATION_HORIZONTAL:
                 switch (mLegend.getVerticalAlignment()) {
-                    case TOP:
+                    case Legend.VALIGN_TOP:
                         offsets.top += Math.min(mLegend.mNeededHeight,
                                 mViewPortHandler.getChartHeight() * mLegend.getMaxSizePercent())
                                 + mLegend.getYOffset();
 
 
                         break;
-
-                    case BOTTOM:
+                    case Legend.VALIGN_BOTTOM:
                         offsets.bottom += Math.min(mLegend.mNeededHeight,
                                 mViewPortHandler.getChartHeight() * mLegend.getMaxSizePercent())
                                 + mLegend.getYOffset();
 
 
                         break;
-
                     default:
                         break;
                 }

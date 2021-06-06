@@ -69,8 +69,8 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     @Nullable
     protected Typeface mValueTypeface;
 
-    @NotNull
-    private Legend.LegendForm mForm = Legend.LegendForm.DEFAULT;
+    @Legend.LegendForm
+    private int mForm = Legend.FORM_DEFAULT;
     private float mFormSize = Float.NaN;
     private float mFormLineWidth = Float.NaN;
 
@@ -331,13 +331,13 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
         return mValueTextSize;
     }
 
-    public void setForm(@NotNull Legend.LegendForm form) {
+    public void setForm(@Legend.LegendForm int form) {
         mForm = form;
     }
 
     @Override
-    @NotNull
-    public Legend.LegendForm getForm() {
+    @Legend.LegendForm
+    public int getForm() {
         return mForm;
     }
 

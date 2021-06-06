@@ -3,6 +3,8 @@ package com.github.mikephil.charting.components;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 
+import androidx.annotation.IntDef;
+
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.FSize;
 import com.github.mikephil.charting.utils.Utils;
@@ -11,6 +13,10 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,52 +28,55 @@ import java.util.List;
  * @author Philipp Jahoda
  */
 public class Legend extends ComponentBase {
-    public enum LegendForm {
-        /**
-         * Avoid drawing a form
-         */
-        NONE,
+    public static final int FORM_NONE = 0;
+    public static final int FORM_EMPTY = 1;
+    public static final int FORM_DEFAULT = 2;
+    public static final int FORM_SQUARE = 3;
+    public static final int FORM_CIRCLE = 4;
+    public static final int FORM_LINE = 5;
 
-        /**
-         * Do not draw the a form, but leave space for it
-         */
-        EMPTY,
-
-        /**
-         * Use default (default dataset's form to the legend's form)
-         */
-        DEFAULT,
-
-        /**
-         * Draw a square
-         */
-        SQUARE,
-
-        /**
-         * Draw a circle
-         */
-        CIRCLE,
-
-        /**
-         * Draw a horizontal line
-         */
-        LINE
+    @IntDef({ FORM_NONE, FORM_EMPTY, FORM_DEFAULT, FORM_SQUARE, FORM_CIRCLE, FORM_LINE })
+    @Retention(RetentionPolicy.SOURCE)
+    @Target({ ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER })
+    public @interface LegendForm {
     }
 
-    public enum LegendHorizontalAlignment {
-        LEFT, CENTER, RIGHT
+    public static final int HALIGN_LEFT = 0;
+    public static final int HALIGN_CENTER = 1;
+    public static final int HALIGN_RIGHT = 2;
+
+    @IntDef({ HALIGN_LEFT, HALIGN_CENTER, HALIGN_RIGHT })
+    @Retention(RetentionPolicy.SOURCE)
+    @Target({ ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER })
+    public @interface LegendHorizontalAlignment {
     }
 
-    public enum LegendVerticalAlignment {
-        TOP, CENTER, BOTTOM
+    public static final int VALIGN_TOP = 0;
+    public static final int VALIGN_CENTER = 1;
+    public static final int VALIGN_BOTTOM = 2;
+
+    @IntDef({ VALIGN_TOP, VALIGN_CENTER, VALIGN_BOTTOM })
+    @Retention(RetentionPolicy.SOURCE)
+    @Target({ ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER })
+    public @interface LegendVerticalAlignment {
     }
 
-    public enum LegendOrientation {
-        HORIZONTAL, VERTICAL
+    public static final int ORIENTATION_HORIZONTAL = 0;
+    public static final int ORIENTATION_VERTICAL = 1;
+
+    @IntDef({ ORIENTATION_HORIZONTAL, ORIENTATION_VERTICAL })
+    @Retention(RetentionPolicy.SOURCE)
+    @Target({ ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER })
+    public @interface LegendOrientation {
     }
 
-    public enum LegendDirection {
-        LEFT_TO_RIGHT, RIGHT_TO_LEFT
+    public static final int DIRECTION_LEFT_TO_RIGHT = 0;
+    public static final int DIRECTION_RIGHT_TO_LEFT = 1;
+
+    @IntDef({ DIRECTION_LEFT_TO_RIGHT, DIRECTION_RIGHT_TO_LEFT })
+    @Retention(RetentionPolicy.SOURCE)
+    @Target({ ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER })
+    public @interface LegendDirection {
     }
 
     /**
@@ -87,20 +96,20 @@ public class Legend extends ComponentBase {
      */
     private boolean mIsLegendCustom = false;
 
-    private LegendHorizontalAlignment mHorizontalAlignment = LegendHorizontalAlignment.LEFT;
-    private LegendVerticalAlignment mVerticalAlignment = LegendVerticalAlignment.BOTTOM;
-    private LegendOrientation mOrientation = LegendOrientation.HORIZONTAL;
+    private int mHorizontalAlignment = HALIGN_LEFT;
+    private int mVerticalAlignment = VALIGN_BOTTOM;
+    private int mOrientation = ORIENTATION_HORIZONTAL;
     private boolean mDrawInside = false;
 
     /**
      * the text direction for the legend
      */
-    private LegendDirection mDirection = LegendDirection.LEFT_TO_RIGHT;
+    private int mDirection = DIRECTION_LEFT_TO_RIGHT;
 
     /**
      * the shape/form the legend colors are drawn in
      */
-    private LegendForm mShape = LegendForm.SQUARE;
+    private int mShape = FORM_SQUARE;
 
     /**
      * the size of the legend forms/shapes
@@ -257,9 +266,9 @@ public class Legend extends ComponentBase {
 
             if (entry.formColor == ColorTemplate.COLOR_SKIP ||
                     entry.formColor == 0)
-                entry.form = LegendForm.NONE;
+                entry.form = FORM_NONE;
             else if (entry.formColor == ColorTemplate.COLOR_NONE)
-                entry.form = LegendForm.EMPTY;
+                entry.form = FORM_EMPTY;
 
             entries.add(entry);
         }
@@ -313,42 +322,45 @@ public class Legend extends ComponentBase {
     /**
      * returns the horizontal alignment of the legend
      */
-    public LegendHorizontalAlignment getHorizontalAlignment() {
+    @LegendHorizontalAlignment
+    public int getHorizontalAlignment() {
         return mHorizontalAlignment;
     }
 
     /**
      * sets the horizontal alignment of the legend
      */
-    public void setHorizontalAlignment(LegendHorizontalAlignment value) {
+    public void setHorizontalAlignment(@LegendHorizontalAlignment int value) {
         mHorizontalAlignment = value;
     }
 
     /**
      * returns the vertical alignment of the legend
      */
-    public LegendVerticalAlignment getVerticalAlignment() {
+    @LegendVerticalAlignment
+    public int getVerticalAlignment() {
         return mVerticalAlignment;
     }
 
     /**
      * sets the vertical alignment of the legend
      */
-    public void setVerticalAlignment(LegendVerticalAlignment value) {
+    public void setVerticalAlignment(@LegendVerticalAlignment int value) {
         mVerticalAlignment = value;
     }
 
     /**
      * returns the orientation of the legend
      */
-    public LegendOrientation getOrientation() {
+    @LegendOrientation
+    public int getOrientation() {
         return mOrientation;
     }
 
     /**
      * sets the orientation of the legend
      */
-    public void setOrientation(LegendOrientation value) {
+    public void setOrientation(@LegendOrientation int value) {
         mOrientation = value;
     }
 
@@ -369,28 +381,30 @@ public class Legend extends ComponentBase {
     /**
      * returns the text direction of the legend
      */
-    public LegendDirection getDirection() {
+    @LegendDirection
+    public int getDirection() {
         return mDirection;
     }
 
     /**
      * sets the text direction of the legend
      */
-    public void setDirection(LegendDirection pos) {
+    public void setDirection(@LegendDirection int pos) {
         mDirection = pos;
     }
 
     /**
      * returns the current form/shape that is set for the legend
      */
-    public LegendForm getForm() {
+    @LegendForm
+    public int getForm() {
         return mShape;
     }
 
     /**
      * sets the form/shape of the legend forms
      */
-    public void setForm(LegendForm shape) {
+    public void setForm(@LegendForm int shape) {
         mShape = shape;
     }
 
@@ -592,7 +606,7 @@ public class Legend extends ComponentBase {
         mTextHeightMax = getMaximumEntryHeight(labelPaint);
 
         switch (mOrientation) {
-            case VERTICAL: {
+            case ORIENTATION_VERTICAL: {
                 float maxWidth = 0f, maxHeight = 0f, width = 0f;
                 float labelLineHeight = Utils.getLineHeight(labelPaint);
                 boolean wasStacked = false;
@@ -600,7 +614,7 @@ public class Legend extends ComponentBase {
                 for (int i = 0; i < entryCount; i++) {
 
                     LegendEntry e = entries[i];
-                    boolean drawingForm = e.form != LegendForm.NONE;
+                    boolean drawingForm = e.form != FORM_NONE;
                     float formSize = Float.isNaN(e.formSize)
                             ? defaultFormSize
                             : Utils.convertDpToPixel(e.formSize);
@@ -646,7 +660,7 @@ public class Legend extends ComponentBase {
 
                 break;
             }
-            case HORIZONTAL: {
+            case ORIENTATION_HORIZONTAL: {
                 float labelLineHeight = Utils.getLineHeight(labelPaint);
                 float labelLineSpacing = Utils.getLineSpacing(labelPaint) + yEntrySpace;
                 float contentWidth = viewPortHandler.contentWidth() * mMaxSizePercent;
@@ -664,7 +678,7 @@ public class Legend extends ComponentBase {
                 for (int i = 0; i < entryCount; i++) {
 
                     LegendEntry e = entries[i];
-                    boolean drawingForm = e.form != LegendForm.NONE;
+                    boolean drawingForm = e.form != FORM_NONE;
                     float formSize = Float.isNaN(e.formSize)
                             ? defaultFormSize
                             : Utils.convertDpToPixel(e.formSize);

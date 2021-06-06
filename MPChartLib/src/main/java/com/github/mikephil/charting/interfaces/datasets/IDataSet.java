@@ -321,8 +321,8 @@ public interface IDataSet<T extends Entry> {
      * <p/>
      * Return `DEFAULT` to use the default legend form.
      */
-    @NotNull
-    Legend.LegendForm getForm();
+    @Legend.LegendForm
+    int getForm();
 
     /**
      * The form size to draw for this dataset in the legend.
