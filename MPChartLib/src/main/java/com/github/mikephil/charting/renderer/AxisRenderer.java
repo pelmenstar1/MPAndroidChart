@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 
 import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.utils.EmptyArray;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.github.mikephil.charting.utils.Transformer;
 import com.github.mikephil.charting.utils.Utils;
@@ -144,8 +145,8 @@ public abstract class AxisRenderer extends Renderer {
         float range = Math.abs(max - min);
 
         if (labelCount == 0 || range <= 0 || Float.isInfinite(range)) {
-            mAxis.mEntries = new float[0];
-            mAxis.mCenteredEntries = new float[0];
+            mAxis.mEntries = EmptyArray.FLOAT;
+            mAxis.mCenteredEntries = EmptyArray.FLOAT;
             mAxis.mEntryCount = 0;
             return;
         }

@@ -6,6 +6,7 @@ import android.graphics.Path;
 import com.github.mikephil.charting.charts.RadarChart;
 import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.utils.EmptyArray;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.github.mikephil.charting.utils.Utils;
 import com.github.mikephil.charting.utils.ViewPortHandler;
@@ -32,8 +33,8 @@ public class YAxisRendererRadarChart extends YAxisRenderer {
         float range = Math.abs(max - min);
 
         if (labelCount == 0 || range <= 0 || Float.isInfinite(range)) {
-            mAxis.mEntries = new float[0];
-            mAxis.mCenteredEntries = new float[0];
+            mAxis.mEntries = EmptyArray.FLOAT;
+            mAxis.mCenteredEntries = EmptyArray.FLOAT;
             mAxis.mEntryCount = 0;
             return;
         }

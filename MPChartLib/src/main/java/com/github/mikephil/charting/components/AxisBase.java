@@ -9,6 +9,7 @@ import androidx.annotation.ColorInt;
 
 import com.github.mikephil.charting.formatter.DefaultAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.utils.EmptyArray;
 import com.github.mikephil.charting.utils.Utils;
 
 import org.jetbrains.annotations.NotNull;
@@ -41,13 +42,13 @@ public abstract class AxisBase extends ComponentBase {
      * the actual array of entries
      */
     @NotNull
-    public float[] mEntries = new float[0];
+    public float[] mEntries = EmptyArray.FLOAT;
 
     /**
      * axis label entries only used for centered labels
      */
     @NotNull
-    public float[] mCenteredEntries = new float[0];
+    public float[] mCenteredEntries = EmptyArray.FLOAT;
 
     /**
      * the number of entries the legend contains
