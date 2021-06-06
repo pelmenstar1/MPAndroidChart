@@ -76,7 +76,7 @@ public abstract class DataRenderer extends Renderer {
         mHighlightPaint.setColor(Color.rgb(255, 187, 115));
     }
 
-    protected boolean isDrawingValuesAllowed(@NotNull ChartInterface chart) {
+    protected boolean isDrawingValuesAllowed(@NotNull ChartInterface<?, ?, ?> chart) {
         return chart.getData().getEntryCount() < chart.getMaxVisibleCount()
                 * mViewPortHandler.getScaleX();
     }

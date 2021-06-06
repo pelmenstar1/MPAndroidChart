@@ -12,18 +12,20 @@ import java.util.List;
  * 
  * @author Philipp Jahoda
  */
-public abstract class BarLineScatterCandleBubbleData<T extends IBarLineScatterCandleBubbleDataSet<? extends Entry>>
-        extends ChartData<T> {
+public abstract class BarLineScatterCandleBubbleData<
+        TDataSet extends IBarLineScatterCandleBubbleDataSet<TEntry>,
+        TEntry extends Entry
+> extends ChartData<TDataSet, TEntry> {
     public BarLineScatterCandleBubbleData() {
         super();
     }
 
     @SafeVarargs
-    public BarLineScatterCandleBubbleData(@NotNull T... sets) {
+    public BarLineScatterCandleBubbleData(@NotNull TDataSet... sets) {
         super(sets);
     }
 
-    public BarLineScatterCandleBubbleData(@NotNull List<T> sets) {
+    public BarLineScatterCandleBubbleData(@NotNull List<TDataSet> sets) {
         super(sets);
     }
 }

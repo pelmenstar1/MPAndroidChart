@@ -14,7 +14,6 @@ import android.graphics.Paint.Align;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore.Images;
 import androidx.annotation.RequiresApi;
@@ -26,7 +25,6 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 
 import com.github.mikephil.charting.animation.ChartAnimator;
-import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.animation.Easing.EasingFunction;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.IMarker;
@@ -61,9 +59,9 @@ import java.util.ArrayList;
  *
  * @author Philipp Jahoda
  */
-public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Entry>>> extends
+public abstract class Chart<TData extends ChartData<TDataSet, TEntry>, TDataSet extends IDataSet<TEntry>, TEntry extends Entry> extends
         ViewGroup
-        implements ChartInterface {
+        implements ChartInterface<TData, TDataSet, TEntry> {
 
     public static final String LOG_TAG = "MPAndroidChart";
 
@@ -76,7 +74,7 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
      * object that holds all data that was originally set for the chart, before
      * it was modified or any filtering algorithms had been applied
      */
-    protected T mData = null;
+    protected TData mData = null;
 
     /**
      * Flag that indicates if highlighting per tap (touch) is enabled
@@ -138,7 +136,7 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
      */
     protected OnChartValueSelectedListener mSelectionListener;
 
-    protected ChartTouchListener mChartTouchListener;
+    protected ChartTouchListener<? extends Chart<TData, TDataSet, TEntry>, TData, TDataSet, TEntry> mChartTouchListener;
 
     /**
      * text that is displayed when the chart is empty
@@ -280,8 +278,7 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
      *
      * @param data
      */
-    public void setData(T data) {
-
+    public void setData(TData data) {
         mData = data;
         mOffsetsCalculated = false;
 
@@ -292,7 +289,7 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
         // calculate how many digits are needed
         setupDefaultFormatter(data.getYMin(), data.getYMax());
 
-        for (IDataSet set : mData.getDataSets()) {
+        for (TDataSet set : mData.getDataSets()) {
             if (set.needsFormatter() || set.getValueFormatter() == mDefaultValueFormatter)
                 set.setValueFormatter(mDefaultValueFormatter);
         }
@@ -332,15 +329,10 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
      * @return
      */
     public boolean isEmpty() {
-
         if (mData == null)
             return true;
         else {
-
-            if (mData.getEntryCount() <= 0)
-                return true;
-            else
-                return false;
+            return mData.getEntryCount() <= 0;
         }
     }
 
@@ -369,8 +361,7 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
      * drawn in the chart (if enabled), and creates the default-value-formatter
      */
     protected void setupDefaultFormatter(float min, float max) {
-
-        float reference = 0f;
+        float reference;
 
         if (mData == null || mData.getEntryCount() < 2) {
 
@@ -526,9 +517,8 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
      * @return
      */
     public boolean valuesToHighlight() {
-        return mIndicesToHighlight == null || mIndicesToHighlight.length <= 0
-                || mIndicesToHighlight[0] == null ? false
-                : true;
+        return mIndicesToHighlight != null && mIndicesToHighlight.length > 0
+                && mIndicesToHighlight[0] != null;
     }
 
     /**
@@ -684,8 +674,7 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
      * @param callListener - call the listener
      */
     public void highlightValue(Highlight high, boolean callListener) {
-
-        Entry e = null;
+        TEntry e = null;
 
         if (high == null)
             mIndicesToHighlight = null;
@@ -710,7 +699,6 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
         setLastHighlighted(mIndicesToHighlight);
 
         if (callListener && mSelectionListener != null) {
-
             if (!valuesToHighlight())
                 mSelectionListener.onNothingSelected();
             else {
@@ -733,12 +721,12 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
      * @return
      */
     public Highlight getHighlightByTouchPoint(float x, float y) {
-
         if (mData == null) {
             Log.e(LOG_TAG, "Can't select by touch. No data set.");
             return null;
-        } else
+        } else {
             return getHighlighter().getHighlight(x, y);
+        }
     }
 
     /**
@@ -747,7 +735,7 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
      *
      * @param l
      */
-    public void setOnTouchListener(ChartTouchListener l) {
+    public void setOnTouchListener(ChartTouchListener<? extends Chart<TData, TDataSet, TEntry>, TData, TDataSet, TEntry> l) {
         this.mChartTouchListener = l;
     }
 
@@ -756,7 +744,7 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
      *
      * @return
      */
-    public ChartTouchListener getOnTouchListener() {
+    public ChartTouchListener<? extends Chart<TData, TDataSet, TEntry>, TData, TDataSet, TEntry> getOnTouchListener() {
         return mChartTouchListener;
     }
 
@@ -784,13 +772,13 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
         if (mMarker == null || !isDrawMarkersEnabled() || !valuesToHighlight())
             return;
 
-        for (int i = 0; i < mIndicesToHighlight.length; i++) {
+        for (Highlight highlight : mIndicesToHighlight) {
+            TDataSet set = mData.getDataSetByIndex(highlight.getDataSetIndex());
+            TEntry e = mData.getEntryForHighlight(highlight);
+            if(e == null) {
+                continue;
+            }
 
-            Highlight highlight = mIndicesToHighlight[i];
-
-            IDataSet set = mData.getDataSetByIndex(highlight.getDataSetIndex());
-
-            Entry e = mData.getEntryForHighlight(mIndicesToHighlight[i]);
             int entryIndex = set.getEntryIndex(e);
 
             // make sure entry not null
@@ -1448,7 +1436,7 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
      *
      * @return
      */
-    public T getData() {
+    public TData getData() {
         return mData;
     }
 
@@ -1492,7 +1480,7 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
      *
      * @param highlighter
      */
-    public void setHighlighter(ChartHighlighter highlighter) {
+    public void setHighlighter(IHighlighter highlighter) {
         mHighlighter = highlighter;
     }
 
@@ -1677,7 +1665,7 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
     /**
      * tasks to be done after the view is setup
      */
-    protected ArrayList<Runnable> mJobs = new ArrayList<Runnable>();
+    protected ArrayList<Runnable> mJobs = new ArrayList<>();
 
     public void removeViewportJob(Runnable job) {
         mJobs.remove(job);

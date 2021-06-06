@@ -23,7 +23,7 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.util.List;
 
-public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
+public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer<IBarDataSet, BarEntry> {
     protected BarDataProvider mChart;
 
     /**

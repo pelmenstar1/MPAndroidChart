@@ -7,7 +7,10 @@ import android.view.View;
 import android.view.animation.AnimationUtils;
 
 import com.github.mikephil.charting.charts.PieRadarChartBase;
+import com.github.mikephil.charting.data.ChartData;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.interfaces.datasets.IDataSet;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.github.mikephil.charting.utils.Utils;
 
@@ -20,7 +23,7 @@ import java.util.ArrayList;
  *
  * @author Philipp Jahoda
  */
-public class PieRadarChartTouchListener extends ChartTouchListener<PieRadarChartBase<?>> {
+public class PieRadarChartTouchListener<TData extends ChartData<TDataSet, TEntry>, TDataSet extends IDataSet<TEntry>, TEntry extends Entry> extends ChartTouchListener<PieRadarChartBase<TData, TDataSet, TEntry>, TData, TDataSet, TEntry> {
     private final MPPointF mTouchStartPoint = MPPointF.getInstance(0,0);
 
     /**
@@ -33,7 +36,7 @@ public class PieRadarChartTouchListener extends ChartTouchListener<PieRadarChart
     private long mDecelerationLastTime = 0;
     private float mDecelerationAngularVelocity = 0.f;
 
-    public PieRadarChartTouchListener(@NotNull PieRadarChartBase<?> chart) {
+    public PieRadarChartTouchListener(@NotNull PieRadarChartBase<TData, TDataSet, TEntry> chart) {
         super(chart);
     }
 

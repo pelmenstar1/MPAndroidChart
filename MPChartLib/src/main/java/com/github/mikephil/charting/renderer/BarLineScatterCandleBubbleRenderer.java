@@ -1,6 +1,8 @@
 package com.github.mikephil.charting.renderer;
 
 import com.github.mikephil.charting.animation.ChartAnimator;
+import com.github.mikephil.charting.charts.Chart;
+import com.github.mikephil.charting.data.ChartData;
 import com.github.mikephil.charting.data.DataSet;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.interfaces.dataprovider.BarLineScatterCandleBubbleDataProvider;
@@ -13,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by Philipp Jahoda on 09/06/16.
  */
-public abstract class BarLineScatterCandleBubbleRenderer extends DataRenderer {
+public abstract class BarLineScatterCandleBubbleRenderer<TDataSet extends IBarLineScatterCandleBubbleDataSet<TEntry>, TEntry extends Entry> extends DataRenderer {
     /**
      * buffer for storing the current minimum and maximum visible x
      */
@@ -30,7 +32,7 @@ public abstract class BarLineScatterCandleBubbleRenderer extends DataRenderer {
     /**
      * Returns true if the DataSet values should be drawn, false if not.
      */
-    protected boolean shouldDrawValues(@NotNull IDataSet<?> set) {
+    protected boolean shouldDrawValues(@NotNull TDataSet set) {
         return set.isVisible() && (set.isDrawValuesEnabled() || set.isDrawIconsEnabled());
     }
 
@@ -38,8 +40,8 @@ public abstract class BarLineScatterCandleBubbleRenderer extends DataRenderer {
      * Checks if the provided entry object is in bounds for drawing considering the current animation phase.
      */
     protected boolean isInBoundsX(
-            @NotNull Entry e,
-            @NotNull IBarLineScatterCandleBubbleDataSet set
+            @NotNull TEntry e,
+            @NotNull TDataSet set
     ) {
         float entryIndex = set.getEntryIndex(e);
 
@@ -70,16 +72,16 @@ public abstract class BarLineScatterCandleBubbleRenderer extends DataRenderer {
          *
          */
         public void set(
-                BarLineScatterCandleBubbleDataProvider chart,
-                @NotNull IBarLineScatterCandleBubbleDataSet dataSet
+                BarLineScatterCandleBubbleDataProvider<? extends ChartData<TDataSet, TEntry>, TDataSet, TEntry> chart,
+                @NotNull TDataSet dataSet
         ) {
             float phaseX = Math.max(0f, Math.min(1f, mAnimator.getPhaseX()));
 
             float low = chart.getLowestVisibleX();
             float high = chart.getHighestVisibleX();
 
-            Entry entryFrom = dataSet.getEntryForXValue(low, Float.NaN, DataSet.Rounding.DOWN);
-            Entry entryTo = dataSet.getEntryForXValue(high, Float.NaN, DataSet.Rounding.UP);
+            TEntry entryFrom = dataSet.getEntryForXValue(low, Float.NaN, DataSet.Rounding.DOWN);
+            TEntry entryTo = dataSet.getEntryForXValue(high, Float.NaN, DataSet.Rounding.UP);
 
             min = entryFrom == null ? 0 : dataSet.getEntryIndex(entryFrom);
             max = entryTo == null ? 0 : dataSet.getEntryIndex(entryTo);

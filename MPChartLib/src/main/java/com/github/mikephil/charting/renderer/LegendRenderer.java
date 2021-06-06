@@ -76,7 +76,7 @@ public class LegendRenderer extends Renderer {
     /**
      * Prepares the legend and calculates all needed forms, labels and colors.
      */
-    public void computeLegend(ChartData<?> data) {
+    public void computeLegend(ChartData<?, ?> data) {
         if (!mLegend.isLegendCustom()) {
             computedEntries.clear();
 

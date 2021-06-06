@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
+public class CandleStickChartRenderer extends LineScatterCandleRadarRenderer<ICandleDataSet, CandleEntry> {
     protected CandleDataProvider mChart;
 
     private final float[] mShadowBuffers = new float[8];

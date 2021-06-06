@@ -1,6 +1,7 @@
 package com.github.mikephil.charting.highlight;
 
 import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.DataSet;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.interfaces.dataprovider.BarDataProvider;
@@ -49,7 +50,7 @@ public class HorizontalBarHighlighter extends BarHighlighter {
 
 	@Override
 	protected List<Highlight> buildHighlights(
-			@NotNull IDataSet set,
+			@NotNull IBarDataSet set,
 			int dataSetIndex,
 			float xVal,
 			@NotNull DataSet.Rounding rounding
@@ -57,7 +58,7 @@ public class HorizontalBarHighlighter extends BarHighlighter {
 		ArrayList<Highlight> highlights = new ArrayList<>();
 
 		//noinspection unchecked
-		List<Entry> entries = set.getEntriesForXValue(xVal);
+		List<BarEntry> entries = set.getEntriesForXValue(xVal);
 		if (entries.isEmpty()) {
 			// Try to find closest x-value and take all entries for that x-value
 			Entry closest = set.getEntryForXValue(xVal, Float.NaN, rounding);

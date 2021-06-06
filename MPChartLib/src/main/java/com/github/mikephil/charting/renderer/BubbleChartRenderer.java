@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 
 import com.github.mikephil.charting.animation.ChartAnimator;
 import com.github.mikephil.charting.data.BubbleData;
+import com.github.mikephil.charting.data.BubbleDataSet;
 import com.github.mikephil.charting.data.BubbleEntry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.dataprovider.BubbleDataProvider;
@@ -25,7 +26,7 @@ import java.util.List;
  * Bubble chart implementation: Copyright 2015 Pierre-Marc Airoldi Licensed
  * under Apache License 2.0 Ported by Daniel Cohen Gindi
  */
-public class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
+public class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer<IBubbleDataSet, BubbleEntry> {
     protected BubbleDataProvider mChart;
 
     public BubbleChartRenderer(BubbleDataProvider chart, ChartAnimator animator,

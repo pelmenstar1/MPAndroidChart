@@ -430,7 +430,7 @@ public class HorizontalBarChartRenderer extends BarChartRenderer {
     }
 
     @Override
-    protected boolean isDrawingValuesAllowed(@NotNull ChartInterface chart) {
+    protected boolean isDrawingValuesAllowed(@NotNull ChartInterface<?, ?, ?> chart) {
         return chart.getData().getEntryCount() < chart.getMaxVisibleCount()
                 * mViewPortHandler.getScaleY();
     }

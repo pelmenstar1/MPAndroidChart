@@ -2,6 +2,8 @@ package com.github.mikephil.charting.highlight;
 
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.interfaces.datasets.IPieDataSet;
 
 import org.jetbrains.annotations.NotNull;
@@ -10,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Created by philipp on 12/06/16.
  */
-public class PieHighlighter extends PieRadarHighlighter<PieChart> {
+public class PieHighlighter extends PieRadarHighlighter<PieChart, PieData, IPieDataSet, PieEntry> {
     public PieHighlighter(@NotNull PieChart chart) {
         super(chart);
     }

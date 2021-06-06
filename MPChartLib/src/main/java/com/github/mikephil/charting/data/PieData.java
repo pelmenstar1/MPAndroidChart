@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @author Philipp Jahoda
  */
-public class PieData extends ChartData<IPieDataSet> {
+public class PieData extends ChartData<IPieDataSet, PieEntry> {
     public PieData() {
         super();
     }
@@ -81,7 +81,7 @@ public class PieData extends ChartData<IPieDataSet> {
 
     @Override
     @NotNull
-    public Entry getEntryForHighlight(@NotNull Highlight highlight) {
+    public PieEntry getEntryForHighlight(@NotNull Highlight highlight) {
         return getDataSet().getEntryForIndex((int) highlight.getX());
     }
 

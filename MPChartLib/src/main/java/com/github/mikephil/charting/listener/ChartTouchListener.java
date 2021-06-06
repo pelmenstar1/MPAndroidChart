@@ -5,7 +5,10 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.github.mikephil.charting.charts.Chart;
+import com.github.mikephil.charting.data.ChartData;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.interfaces.datasets.IDataSet;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Created by philipp on 12/06/15.
  */
-public abstract class ChartTouchListener<T extends Chart<?>> extends GestureDetector.SimpleOnGestureListener implements View.OnTouchListener {
+public abstract class ChartTouchListener<TChart extends Chart<TData, TDataSet, TEntry>, TData extends ChartData<TDataSet, TEntry>, TDataSet extends IDataSet<TEntry>, TEntry extends Entry> extends GestureDetector.SimpleOnGestureListener implements View.OnTouchListener {
     public enum ChartGesture {
         NONE,
         DRAG,
@@ -59,9 +62,9 @@ public abstract class ChartTouchListener<T extends Chart<?>> extends GestureDete
     /**
      * the chart the listener represents
      */
-    protected T mChart;
+    protected TChart mChart;
 
-    public ChartTouchListener(T chart) {
+    public ChartTouchListener(TChart chart) {
         this.mChart = chart;
 
         mGestureDetector = new GestureDetector(chart.getContext(), this);

@@ -20,7 +20,7 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import org.jetbrains.annotations.NotNull;
 
-public class RadarChartRenderer extends LineRadarRenderer {
+public class RadarChartRenderer extends LineRadarRenderer<IRadarDataSet, RadarEntry> {
     protected RadarChart mChart;
 
     /**

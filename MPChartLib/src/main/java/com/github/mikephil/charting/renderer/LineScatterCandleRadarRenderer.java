@@ -4,6 +4,9 @@ import android.graphics.Canvas;
 import android.graphics.Path;
 
 import com.github.mikephil.charting.animation.ChartAnimator;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.interfaces.datasets.IBarLineScatterCandleBubbleDataSet;
+import com.github.mikephil.charting.interfaces.datasets.IDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineScatterCandleRadarDataSet;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
@@ -12,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by Philipp Jahoda on 11/07/15.
  */
-public abstract class LineScatterCandleRadarRenderer extends BarLineScatterCandleBubbleRenderer {
+public abstract class LineScatterCandleRadarRenderer<TDataSet extends ILineScatterCandleRadarDataSet<TEntry>, TEntry extends Entry> extends BarLineScatterCandleBubbleRenderer<TDataSet, TEntry> {
     /**
      * path that is used for drawing highlight-lines (drawLines(...) cannot be used because of dashes)
      */
@@ -36,7 +39,7 @@ public abstract class LineScatterCandleRadarRenderer extends BarLineScatterCandl
     protected void drawHighlightLines(
             @NotNull Canvas c,
             float x, float y,
-            @NotNull ILineScatterCandleRadarDataSet set
+            @NotNull TDataSet set
     ) {
         // set color and stroke-width
         mHighlightPaint.setColor(set.getHighLightColor());

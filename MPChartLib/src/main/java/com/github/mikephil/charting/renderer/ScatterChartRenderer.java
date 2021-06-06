@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
+public class ScatterChartRenderer extends LineScatterCandleRadarRenderer<IScatterDataSet, Entry> {
     @NotNull
     protected ScatterDataProvider mChart;
 

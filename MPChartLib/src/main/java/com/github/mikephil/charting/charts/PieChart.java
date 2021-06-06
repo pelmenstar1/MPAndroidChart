@@ -10,6 +10,8 @@ import android.util.AttributeSet;
 
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.highlight.PieHighlighter;
 import com.github.mikephil.charting.interfaces.datasets.IPieDataSet;
@@ -24,7 +26,7 @@ import java.util.List;
  *
  * @author Philipp Jahoda
  */
-public class PieChart extends PieRadarChartBase<PieData> {
+public class PieChart extends PieRadarChartBase<PieData, IPieDataSet, PieEntry> {
 
     /**
      * rect object that represents the bounds of the piechart, needed for

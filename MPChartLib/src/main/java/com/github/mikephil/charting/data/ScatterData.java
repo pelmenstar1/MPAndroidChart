@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class ScatterData extends BarLineScatterCandleBubbleData<IScatterDataSet> {
+public class ScatterData extends BarLineScatterCandleBubbleData<IScatterDataSet, Entry> {
     public ScatterData() {
         super();
     }

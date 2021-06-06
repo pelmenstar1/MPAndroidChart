@@ -4,8 +4,11 @@ package com.github.mikephil.charting.charts;
 import android.content.Context;
 import android.util.AttributeSet;
 
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.ScatterData;
+import com.github.mikephil.charting.data.ScatterDataSet;
 import com.github.mikephil.charting.interfaces.dataprovider.ScatterDataProvider;
+import com.github.mikephil.charting.interfaces.datasets.IScatterDataSet;
 import com.github.mikephil.charting.renderer.ScatterChartRenderer;
 
 /**
@@ -15,7 +18,7 @@ import com.github.mikephil.charting.renderer.ScatterChartRenderer;
  *
  * @author Philipp Jahoda
  */
-public class ScatterChart extends BarLineChartBase<ScatterData> implements ScatterDataProvider {
+public class ScatterChart extends BarLineChartBase<ScatterData, IScatterDataSet, Entry> implements ScatterDataProvider {
 
     public ScatterChart(Context context) {
         super(context);

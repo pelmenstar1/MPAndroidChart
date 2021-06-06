@@ -11,7 +11,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 
-import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.animation.Easing.EasingFunction;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -27,8 +26,8 @@ import com.github.mikephil.charting.utils.Utils;
  *
  * @author Philipp Jahoda
  */
-public abstract class PieRadarChartBase<T extends ChartData<? extends IDataSet<? extends Entry>>>
-        extends Chart<T> {
+public abstract class PieRadarChartBase<TData extends ChartData<TDataSet, TEntry>, TDataSet extends IDataSet<TEntry>, TEntry extends Entry>
+        extends Chart<TData, TDataSet, TEntry> {
 
     /**
      * holds the normalized version of the current rotation angle of the chart
@@ -66,7 +65,7 @@ public abstract class PieRadarChartBase<T extends ChartData<? extends IDataSet<?
     protected void init() {
         super.init();
 
-        mChartTouchListener = new PieRadarChartTouchListener(this);
+        mChartTouchListener = new PieRadarChartTouchListener<>(this);
     }
 
     @Override
@@ -92,7 +91,8 @@ public abstract class PieRadarChartBase<T extends ChartData<? extends IDataSet<?
     public void computeScroll() {
 
         if (mChartTouchListener instanceof PieRadarChartTouchListener)
-            ((PieRadarChartTouchListener) mChartTouchListener).computeScroll();
+            //noinspection unchecked
+            ((PieRadarChartTouchListener<TData, TDataSet, TEntry>) mChartTouchListener).computeScroll();
     }
 
     @Override

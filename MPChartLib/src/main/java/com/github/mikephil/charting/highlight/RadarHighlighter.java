@@ -4,7 +4,9 @@ import com.github.mikephil.charting.charts.RadarChart;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.RadarData;
+import com.github.mikephil.charting.data.RadarEntry;
 import com.github.mikephil.charting.interfaces.datasets.IDataSet;
+import com.github.mikephil.charting.interfaces.datasets.IRadarDataSet;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.github.mikephil.charting.utils.Utils;
 
@@ -16,7 +18,7 @@ import java.util.List;
 /**
  * Created by philipp on 12/06/16.
  */
-public class RadarHighlighter extends PieRadarHighlighter<RadarChart> {
+public class RadarHighlighter extends PieRadarHighlighter<RadarChart, RadarData, IRadarDataSet, RadarEntry> {
     public RadarHighlighter(@NotNull RadarChart chart) {
         super(chart);
     }

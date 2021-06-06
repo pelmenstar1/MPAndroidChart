@@ -23,6 +23,7 @@ import com.github.mikephil.charting.highlight.ChartHighlighter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.dataprovider.BarLineScatterCandleBubbleDataProvider;
 import com.github.mikephil.charting.interfaces.datasets.IBarLineScatterCandleBubbleDataSet;
+import com.github.mikephil.charting.interfaces.datasets.IDataSet;
 import com.github.mikephil.charting.jobs.AnimatedMoveViewJob;
 import com.github.mikephil.charting.jobs.AnimatedZoomJob;
 import com.github.mikephil.charting.jobs.MoveViewJob;
@@ -41,9 +42,8 @@ import com.github.mikephil.charting.utils.Utils;
  * @author Philipp Jahoda
  */
 @SuppressLint("RtlHardcoded")
-public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<? extends
-        IBarLineScatterCandleBubbleDataSet<? extends Entry>>>
-        extends Chart<T> implements BarLineScatterCandleBubbleDataProvider {
+public abstract class BarLineChartBase<TData extends BarLineScatterCandleBubbleData<TDataSet, TEntry>, TDataSet extends IBarLineScatterCandleBubbleDataSet<TEntry>, TEntry extends Entry>
+        extends Chart<TData, TDataSet, TEntry> implements BarLineScatterCandleBubbleDataProvider<TData, TDataSet, TEntry> {
 
     /**
      * the maximum number of entries to which values will be drawn
@@ -164,9 +164,9 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
 
         mXAxisRenderer = new XAxisRenderer(mViewPortHandler, mXAxis, mLeftAxisTransformer);
 
-        setHighlighter(new ChartHighlighter(this));
+        setHighlighter(new ChartHighlighter<>(this));
 
-        mChartTouchListener = new BarLineChartTouchListener(this, mViewPortHandler.getMatrixTouch(), 3f);
+        mChartTouchListener = new BarLineChartTouchListener<>(this, mViewPortHandler.getMatrixTouch(), 3f);
 
         mGridBackgroundPaint = new Paint();
         mGridBackgroundPaint.setStyle(Style.FILL);
@@ -582,9 +582,8 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
 
     @Override
     public void computeScroll() {
-
         if (mChartTouchListener instanceof BarLineChartTouchListener)
-            ((BarLineChartTouchListener) mChartTouchListener).computeScroll();
+            ((BarLineChartTouchListener<?, ?, ?>) mChartTouchListener).computeScroll();
     }
 
     /**
@@ -1388,7 +1387,7 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
      * @param y
      * @return
      */
-    public IBarLineScatterCandleBubbleDataSet getDataSetByTouchPoint(float x, float y) {
+    public TDataSet getDataSetByTouchPoint(float x, float y) {
         Highlight h = getHighlightByTouchPoint(x, y);
         if (h != null) {
             return mData.getDataSetByIndex(h.getDataSetIndex());

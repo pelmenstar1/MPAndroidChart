@@ -20,5 +20,5 @@ public interface ColorFormatter {
      * @param set   the DataSet the entry belongs to
      * @return
      */
-    int getColor(int index, @NotNull Entry e, @NotNull IDataSet set);
+    int getColor(int index, @NotNull Entry e, @NotNull IDataSet<? extends Entry> set);
 }

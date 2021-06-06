@@ -3,7 +3,9 @@ package com.github.mikephil.charting.interfaces.dataprovider;
 import android.graphics.RectF;
 
 import com.github.mikephil.charting.data.ChartData;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.IValueFormatter;
+import com.github.mikephil.charting.interfaces.datasets.IDataSet;
 import com.github.mikephil.charting.utils.MPPointF;
 
 /**
@@ -12,7 +14,7 @@ import com.github.mikephil.charting.utils.MPPointF;
  *
  * @author Philipp Jahoda
  */
-public interface ChartInterface {
+public interface ChartInterface<TData extends ChartData<TDataSet, TEntry>, TDataSet extends IDataSet<TEntry>, TEntry extends Entry> {
 
     /**
      * Returns the minimum x value of the chart, regardless of zoom or translation.
@@ -63,7 +65,7 @@ public interface ChartInterface {
 
     IValueFormatter getDefaultValueFormatter();
 
-    ChartData getData();
+    TData getData();
 
     int getMaxVisibleCount();
 }

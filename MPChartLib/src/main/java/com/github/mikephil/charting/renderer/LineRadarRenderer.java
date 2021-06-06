@@ -9,6 +9,9 @@ import android.os.Build;
 import androidx.annotation.ColorInt;
 
 import com.github.mikephil.charting.animation.ChartAnimator;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.interfaces.datasets.IDataSet;
+import com.github.mikephil.charting.interfaces.datasets.ILineRadarDataSet;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by Philipp Jahoda on 25/01/16.
  */
-public abstract class LineRadarRenderer extends LineScatterCandleRadarRenderer {
+public abstract class LineRadarRenderer<TDataSet extends ILineRadarDataSet<TEntry>, TEntry extends Entry> extends LineScatterCandleRadarRenderer<TDataSet, TEntry> {
     public LineRadarRenderer(
             @NotNull ChartAnimator animator,
             @NotNull ViewPortHandler viewPortHandler

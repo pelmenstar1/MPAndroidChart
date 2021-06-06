@@ -27,8 +27,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Philipp Jahoda
  */
-public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBase<? extends BarLineScatterCandleBubbleData<?
-        extends IBarLineScatterCandleBubbleDataSet<? extends Entry>>>> {
+public class BarLineChartTouchListener<TData extends BarLineScatterCandleBubbleData<TDataSet, TEntry>, TDataSet extends IBarLineScatterCandleBubbleDataSet<TEntry>, TEntry extends Entry> extends ChartTouchListener<BarLineChartBase<TData, TDataSet, TEntry>, TData, TDataSet, TEntry> {
     /**
      * the original touch-matrix from the chart
      */
@@ -53,7 +52,7 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
     private float mSavedYDist = 1f;
     private float mSavedDist = 1f;
 
-    private IDataSet mClosestDataSetToTouch;
+    private TDataSet mClosestDataSetToTouch;
 
     /**
      * used for tracking velocity of dragging
@@ -83,7 +82,7 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
      *                            to about 9 pixels on a 5.5" FHD screen)
      */
     public BarLineChartTouchListener(
-            @NotNull BarLineChartBase<? extends BarLineScatterCandleBubbleData<? extends IBarLineScatterCandleBubbleDataSet<? extends Entry>>> chart,
+            @NotNull BarLineChartBase<TData, TDataSet, TEntry> chart,
             @NotNull Matrix touchMatrix,
             float dragTriggerDistance) {
         super(chart);

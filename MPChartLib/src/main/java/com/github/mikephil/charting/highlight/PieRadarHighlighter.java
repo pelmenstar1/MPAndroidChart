@@ -2,6 +2,9 @@ package com.github.mikephil.charting.highlight;
 
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.charts.PieRadarChartBase;
+import com.github.mikephil.charting.data.ChartData;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.interfaces.datasets.IDataSet;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,12 +15,12 @@ import java.util.List;
 /**
  * Created by philipp on 12/06/16.
  */
-public abstract class PieRadarHighlighter<T extends PieRadarChartBase> implements IHighlighter {
-    protected T mChart;
+public abstract class PieRadarHighlighter<TChart extends PieRadarChartBase<TData, TDataSet, TEntry>, TData extends ChartData<TDataSet, TEntry>, TDataSet extends IDataSet<TEntry>, TEntry extends Entry> implements IHighlighter {
+    protected TChart mChart;
 
     protected List<Highlight> mHighlightBuffer = new ArrayList<>();
 
-    public PieRadarHighlighter(@NotNull T chart) {
+    public PieRadarHighlighter(@NotNull TChart chart) {
         this.mChart = chart;
     }
 

@@ -5,7 +5,9 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 import com.github.mikephil.charting.data.BubbleData;
+import com.github.mikephil.charting.data.BubbleEntry;
 import com.github.mikephil.charting.interfaces.dataprovider.BubbleDataProvider;
+import com.github.mikephil.charting.interfaces.datasets.IBubbleDataSet;
 import com.github.mikephil.charting.renderer.BubbleChartRenderer;
 
 /**
@@ -16,7 +18,7 @@ import com.github.mikephil.charting.renderer.BubbleChartRenderer;
  *
  * @author Philipp Jahoda
  */
-public class BubbleChart extends BarLineChartBase<BubbleData> implements BubbleDataProvider {
+public class BubbleChart extends BarLineChartBase<BubbleData, IBubbleDataSet, BubbleEntry> implements BubbleDataProvider {
 
     public BubbleChart(Context context) {
         super(context);

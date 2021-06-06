@@ -28,7 +28,7 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 
-public class LineChartRenderer extends LineRadarRenderer {
+public class LineChartRenderer extends LineRadarRenderer<ILineDataSet, Entry> {
     protected LineDataProvider mChart;
 
     /**

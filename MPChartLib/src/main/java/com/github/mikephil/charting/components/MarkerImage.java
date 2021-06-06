@@ -35,7 +35,7 @@ public class MarkerImage implements IMarker {
 
     private MPPointF mOffset = new MPPointF();
     private final MPPointF mOffset2 = new MPPointF();
-    private WeakReference<Chart> mWeakChart;
+    private WeakReference<Chart<?, ?, ?>> mWeakChart;
 
     private FSize mSize = new FSize();
     private final Rect mDrawableBoundsCache = new Rect();
@@ -78,12 +78,12 @@ public class MarkerImage implements IMarker {
         return mSize;
     }
 
-    public void setChartView(@Nullable Chart chart) {
+    public void setChartView(@Nullable Chart<?, ?, ?> chart) {
         mWeakChart = new WeakReference<>(chart);
     }
 
     @Nullable
-    public Chart getChartView() {
+    public Chart<?, ?, ?> getChartView() {
         return mWeakChart == null ? null : mWeakChart.get();
     }
 
@@ -93,7 +93,7 @@ public class MarkerImage implements IMarker {
         mOffset2.x = offset.x;
         mOffset2.y = offset.y;
 
-        Chart chart = getChartView();
+        Chart<?, ?, ?> chart = getChartView();
 
         float width = mSize.width;
         float height = mSize.height;

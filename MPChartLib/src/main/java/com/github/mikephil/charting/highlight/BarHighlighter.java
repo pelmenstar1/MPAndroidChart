@@ -1,6 +1,7 @@
 package com.github.mikephil.charting.highlight;
 
 import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.BarLineScatterCandleBubbleData;
 import com.github.mikephil.charting.interfaces.dataprovider.BarDataProvider;
@@ -13,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Created by Philipp Jahoda on 22/07/15.
  */
-public class BarHighlighter extends ChartHighlighter<BarDataProvider> {
+public class BarHighlighter extends ChartHighlighter<BarDataProvider, BarData, IBarDataSet, BarEntry> {
     public BarHighlighter(@NotNull BarDataProvider chart) {
         super(chart);
     }
@@ -112,11 +113,5 @@ public class BarHighlighter extends ChartHighlighter<BarDataProvider> {
     @Override
     protected float getDistance(float x1, float y1, float x2, float y2) {
         return Math.abs(x1 - x2);
-    }
-
-    @Override
-    @Nullable
-    protected BarLineScatterCandleBubbleData getData() {
-        return mChart.getBarData();
     }
 }

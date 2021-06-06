@@ -2,9 +2,11 @@ package com.github.mikephil.charting.highlight;
 
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarLineScatterCandleBubbleData;
+import com.github.mikephil.charting.data.ChartData;
 import com.github.mikephil.charting.data.DataSet;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.interfaces.dataprovider.BarLineScatterCandleBubbleDataProvider;
+import com.github.mikephil.charting.interfaces.datasets.IBarLineScatterCandleBubbleDataSet;
 import com.github.mikephil.charting.interfaces.datasets.IDataSet;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.github.mikephil.charting.utils.Transformer;
@@ -18,7 +20,7 @@ import java.util.List;
 /**
  * Created by Philipp Jahoda on 21/07/15.
  */
-public class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> implements IHighlighter {
+public class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider<TData, TDataSet, TEntry>, TData extends BarLineScatterCandleBubbleData<TDataSet, TEntry>, TDataSet extends IBarLineScatterCandleBubbleDataSet<TEntry>, TEntry extends Entry> implements IHighlighter {
     /**
      * instance of the data-provider
      */
@@ -114,13 +116,13 @@ public class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
     protected List<Highlight> getHighlightsAtXValue(float xVal, float x, float y) {
         mHighlightBuffer.clear();
 
-        BarLineScatterCandleBubbleData data = getData();
+        TData data = getData();
 
         if (data == null)
             return mHighlightBuffer;
 
         for (int i = 0, dataSetCount = data.getDataSetCount(); i < dataSetCount; i++) {
-            IDataSet dataSet = data.getDataSetByIndex(i);
+            TDataSet dataSet = data.getDataSetByIndex(i);
 
             // don't include DataSets that cannot be highlighted
             if (!dataSet.isHighlightEnabled())
@@ -136,21 +138,19 @@ public class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
      * An array of `Highlight` objects corresponding to the selected xValue and dataSetIndex.
      */
     protected List<Highlight> buildHighlights(
-            @NotNull IDataSet set,
+            @NotNull TDataSet set,
             int dataSetIndex,
             float xVal,
             @NotNull DataSet.Rounding rounding
     ) {
         ArrayList<Highlight> highlights = new ArrayList<>();
 
-        //noinspection unchecked
-        List<Entry> entries = set.getEntriesForXValue(xVal);
+        List<TEntry> entries = set.getEntriesForXValue(xVal);
         if (entries.isEmpty()) {
             // Try to find closest x-value and take all entries for that x-value
             final Entry closest = set.getEntryForXValue(xVal, Float.NaN, rounding);
             if (closest != null)
             {
-                //noinspection unchecked
                 entries = set.getEntriesForXValue(closest.getX());
             }
         }
@@ -160,7 +160,7 @@ public class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
 
         Transformer transformer = mChart.getTransformer(set.getAxisDependency());
 
-        for (Entry e : entries) {
+        for (TEntry e : entries) {
             MPPointF pixels = transformer.getPixelForValues(e.getX(), e.getY());
 
             highlights.add(new Highlight(
@@ -218,7 +218,7 @@ public class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
     }
 
     @Nullable
-    protected BarLineScatterCandleBubbleData getData() {
+    protected TData getData() {
         return mChart.getData();
     }
 }

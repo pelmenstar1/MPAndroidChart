@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.highlight.BarHighlighter;
 import com.github.mikephil.charting.highlight.Highlight;
@@ -19,7 +20,7 @@ import com.github.mikephil.charting.renderer.BarChartRenderer;
  *
  * @author Philipp Jahoda
  */
-public class BarChart extends BarLineChartBase<BarData> implements BarDataProvider {
+public class BarChart extends BarLineChartBase<BarData, IBarDataSet, BarEntry> implements BarDataProvider {
 
     /**
      * flag that indicates whether the highlight should be full-bar oriented, or single-value?

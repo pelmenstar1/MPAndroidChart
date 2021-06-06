@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class CandleData extends BarLineScatterCandleBubbleData<ICandleDataSet> {
+public class CandleData extends BarLineScatterCandleBubbleData<ICandleDataSet, CandleEntry> {
     public CandleData() {
         super();
     }

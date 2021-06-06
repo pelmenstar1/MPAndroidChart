@@ -5,7 +5,10 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 import com.github.mikephil.charting.data.CandleData;
+import com.github.mikephil.charting.data.CandleDataSet;
+import com.github.mikephil.charting.data.CandleEntry;
 import com.github.mikephil.charting.interfaces.dataprovider.CandleDataProvider;
+import com.github.mikephil.charting.interfaces.datasets.ICandleDataSet;
 import com.github.mikephil.charting.renderer.CandleStickChartRenderer;
 
 /**
@@ -13,7 +16,7 @@ import com.github.mikephil.charting.renderer.CandleStickChartRenderer;
  *
  * @author Philipp Jahoda
  */
-public class CandleStickChart extends BarLineChartBase<CandleData> implements CandleDataProvider {
+public class CandleStickChart extends BarLineChartBase<CandleData, ICandleDataSet, CandleEntry> implements CandleDataProvider {
 
     public CandleStickChart(Context context) {
         super(context);

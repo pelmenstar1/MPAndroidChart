@@ -79,12 +79,14 @@ public class ZoomJob extends ViewPortJob {
 
     @Override
     public void run() {
+        BarLineChartBase<?, ?, ?> chart = (BarLineChartBase<?, ?, ?>)view;
+
         Matrix save = mRunMatrixBuffer;
         mViewPortHandler.zoom(scaleX, scaleY, save);
         mViewPortHandler.refresh(save, view, false);
 
-        float yValsInView = ((BarLineChartBase) view).getAxis(axisDependency).mAxisRange / mViewPortHandler.getScaleY();
-        float xValsInView = ((BarLineChartBase) view).getXAxis().mAxisRange / mViewPortHandler.getScaleX();
+        float yValsInView = chart.getAxis(axisDependency).mAxisRange / mViewPortHandler.getScaleY();
+        float xValsInView = chart.getXAxis().mAxisRange / mViewPortHandler.getScaleX();
 
         pts[0] = xValue - xValsInView * 0.5f;
         pts[1] = yValue + yValsInView * 0.5f;
@@ -94,7 +96,7 @@ public class ZoomJob extends ViewPortJob {
         mViewPortHandler.translate(pts, save);
         mViewPortHandler.refresh(save, view, false);
 
-        ((BarLineChartBase) view).calculateOffsets();
+        chart.calculateOffsets();
         view.postInvalidate();
 
         recycleInstance(this);

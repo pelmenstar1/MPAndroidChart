@@ -28,7 +28,7 @@ import java.lang.ref.WeakReference;
 public class MarkerView extends RelativeLayout implements IMarker {
     private MPPointF mOffset = new MPPointF();
     private final MPPointF mOffset2 = new MPPointF();
-    private WeakReference<Chart> mWeakChart;
+    private WeakReference<Chart<?, ?, ?>> mWeakChart;
 
     /**
      * Constructor. Sets up the MarkerView with a custom layout resource.
@@ -78,12 +78,12 @@ public class MarkerView extends RelativeLayout implements IMarker {
         return mOffset;
     }
 
-    public void setChartView(@Nullable Chart chart) {
+    public void setChartView(@Nullable Chart<?, ?, ?> chart) {
         mWeakChart = new WeakReference<>(chart);
     }
 
     @Nullable
-    public Chart getChartView() {
+    public Chart<?, ?, ?> getChartView() {
         return mWeakChart == null ? null : mWeakChart.get();
     }
 
@@ -94,7 +94,7 @@ public class MarkerView extends RelativeLayout implements IMarker {
         mOffset2.x = offset.x;
         mOffset2.y = offset.y;
 
-        Chart chart = getChartView();
+        Chart<?, ?, ?> chart = getChartView();
 
         float width = getWidth();
         float height = getHeight();
