@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import androidx.annotation.IntDef;
 
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.utils.EmptyArray;
 import com.github.mikephil.charting.utils.FSize;
 import com.github.mikephil.charting.utils.Utils;
 import com.github.mikephil.charting.utils.ViewPortHandler;
@@ -82,7 +83,7 @@ public class Legend extends ComponentBase {
     /**
      * The legend entries array
      */
-    private LegendEntry[] mEntries = new LegendEntry[]{};
+    private LegendEntry[] mEntries = EmptyArray.LEGEND_ENTRY;
 
     /**
      * Entries that will be appended to the end of the auto calculated entries after calculating the legend.
@@ -175,7 +176,7 @@ public class Legend extends ComponentBase {
      * This method sets the automatically computed colors for the legend. Use setCustom(...) to set custom colors.
      */
     public void setEntries(@NotNull List<LegendEntry> entries) {
-        mEntries = entries.toArray(new LegendEntry[0]);
+        mEntries = entries.toArray(EmptyArray.LEGEND_ENTRY);
     }
 
     @NotNull
@@ -240,12 +241,12 @@ public class Legend extends ComponentBase {
     }
 
     public void setExtra(@NotNull List<LegendEntry> entries) {
-        mExtraEntries = entries.toArray(new LegendEntry[0]);
+        mExtraEntries = entries.toArray(EmptyArray.LEGEND_ENTRY);
     }
 
     public void setExtra(@Nullable LegendEntry[] entries) {
         if (entries == null)
-            entries = new LegendEntry[0];
+            entries = EmptyArray.LEGEND_ENTRY;
 
         mExtraEntries = entries;
     }
@@ -273,7 +274,7 @@ public class Legend extends ComponentBase {
             entries.add(entry);
         }
 
-        mExtraEntries = entries.toArray(new LegendEntry[0]);
+        mExtraEntries = entries.toArray(EmptyArray.LEGEND_ENTRY);
     }
 
     /**
@@ -298,7 +299,7 @@ public class Legend extends ComponentBase {
      *   notifyDataSetChanged() is needed to auto-calculate the legend again)
      */
     public void setCustom(@NotNull List<LegendEntry> entries) {
-        mEntries = entries.toArray(new LegendEntry[0]);
+        mEntries = entries.toArray(EmptyArray.LEGEND_ENTRY);
         mIsLegendCustom = true;
     }
 
