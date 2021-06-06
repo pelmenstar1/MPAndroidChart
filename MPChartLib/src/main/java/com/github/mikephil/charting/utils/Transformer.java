@@ -124,16 +124,10 @@ public class Transformer {
         float[] valuePoints = valuePointsForGenerateTransformedValuesBubble;
 
         for (int j = 0; j < count; j += 2) {
-
             Entry e = data.getEntryForIndex(j / 2 + from);
 
-            if (e != null) {
-                valuePoints[j] = e.getX();
-                valuePoints[j + 1] = e.getY() * phaseY;
-            } else {
-                valuePoints[j] = 0;
-                valuePoints[j + 1] = 0;
-            }
+            valuePoints[j] = e.getX();
+            valuePoints[j + 1] = e.getY() * phaseY;
         }
 
         getValueToPixelMatrix().mapPoints(valuePoints);
@@ -162,13 +156,8 @@ public class Transformer {
 
             Entry e = data.getEntryForIndex(j / 2 + min);
 
-            if (e != null) {
-                valuePoints[j] = e.getX();
-                valuePoints[j + 1] = e.getY() * phaseY;
-            } else {
-                valuePoints[j] = 0;
-                valuePoints[j + 1] = 0;
-            }
+            valuePoints[j] = e.getX();
+            valuePoints[j + 1] = e.getY() * phaseY;
         }
 
         getValueToPixelMatrix().mapPoints(valuePoints);
@@ -194,16 +183,10 @@ public class Transformer {
         float[] valuePoints = valuePointsForGenerateTransformedValuesCandle;
 
         for (int j = 0; j < count; j += 2) {
-
             CandleEntry e = data.getEntryForIndex(j / 2 + from);
 
-            if (e != null) {
-                valuePoints[j] = e.getX();
-                valuePoints[j + 1] = e.getHigh() * phaseY;
-            } else {
-                valuePoints[j] = 0;
-                valuePoints[j + 1] = 0;
-            }
+            valuePoints[j] = e.getX();
+            valuePoints[j + 1] = e.getHigh() * phaseY;
         }
 
         getValueToPixelMatrix().mapPoints(valuePoints);

@@ -48,15 +48,11 @@ public class BarBuffer extends AbstractBuffer<IBarDataSet> {
         for (int i = 0; i < size; i++) {
             BarEntry e = data.getEntryForIndex(i);
 
-            if(e == null)
-                continue;
-
             float x = e.getX();
             float y = e.getY();
             float[] vals = e.getYVals();
 
             if (!mContainsStacks || vals == null) {
-
                 float left = x - barWidthHalf;
                 float right = x + barWidthHalf;
                 float bottom, top;

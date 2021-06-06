@@ -19,15 +19,11 @@ public class HorizontalBarBuffer extends BarBuffer {
         for (int i = 0; i < size; i++) {
             BarEntry e = data.getEntryForIndex(i);
 
-            if(e == null)
-                continue;
-
             float x = e.getX();
             float y = e.getY();
             float[] vals = e.getYVals();
 
             if (!mContainsStacks || vals == null) {
-
                 float bottom = x - barWidthHalf;
                 float top = x + barWidthHalf;
                 float left, right;

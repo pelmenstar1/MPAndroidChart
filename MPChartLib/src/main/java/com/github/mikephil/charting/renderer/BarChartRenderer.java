@@ -143,7 +143,8 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
 
         trans.pointValuesToPixel(buffer.buffer);
 
-        final boolean isCustomFill = dataSet.getFills() != null && !dataSet.getFills().isEmpty();
+        dataSet.getFills();
+        final boolean isCustomFill = !dataSet.getFills().isEmpty();
         final boolean isSingleColor = dataSet.getColors().size() == 1;
         final boolean isInverted = mChart.isInverted(dataSet.getAxisDependency());
 
@@ -437,10 +438,14 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
 
             IBarDataSet set = barData.getDataSetByIndex(high.getDataSetIndex());
 
-            if (set == null || !set.isHighlightEnabled())
+            if (!set.isHighlightEnabled())
                 continue;
 
             BarEntry e = set.getEntryForXValue(high.getX(), high.getY());
+
+            if(e == null) {
+                continue;
+            }
 
             if (!isInBoundsX(e, set))
                 continue;
@@ -450,7 +455,7 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             mHighlightPaint.setColor(set.getHighLightColor());
             mHighlightPaint.setAlpha(set.getHighLightAlpha());
 
-            boolean isStack = (high.getStackIndex() >= 0  && e.isStacked()) ? true : false;
+            boolean isStack = high.getStackIndex() >= 0 && e.isStacked();
 
             final float y1;
             final float y2;
