@@ -110,16 +110,16 @@ public class LineChartRenderer extends LineRadarRenderer<ILineDataSet, Entry> {
 
         switch (dataSet.getMode()) {
             default:
-            case LINEAR:
-            case STEPPED:
+            case LineDataSet.MODE_LINEAR:
+            case LineDataSet.MODE_STEPPED:
                 drawLinear(c, dataSet);
                 break;
 
-            case CUBIC_BEZIER:
+            case LineDataSet.MODE_CUBIC_BEZIER:
                 drawCubicBezier(dataSet);
                 break;
 
-            case HORIZONTAL_BEZIER:
+            case LineDataSet.MODE_HORIZONTAL_BEZIER:
                 drawHorizontalBezier(dataSet);
                 break;
         }
@@ -461,7 +461,7 @@ public class LineChartRenderer extends LineRadarRenderer<ILineDataSet, Entry> {
     ) {
         float fillMin = dataSet.getFillFormatter().getFillLinePosition(dataSet, mChart);
         float phaseY = mAnimator.getPhaseY();
-        boolean isDrawSteppedEnabled = dataSet.getMode() == LineDataSet.Mode.STEPPED;
+        boolean isDrawSteppedEnabled = dataSet.getMode() == LineDataSet.MODE_STEPPED;
 
         outputPath.reset();
 

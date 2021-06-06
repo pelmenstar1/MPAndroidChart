@@ -8,6 +8,7 @@ import android.graphics.DashPathEffect;
 import android.util.Log;
 
 import androidx.annotation.ColorInt;
+import androidx.annotation.IntDef;
 
 import com.github.mikephil.charting.formatter.DefaultFillFormatter;
 import com.github.mikephil.charting.formatter.IFillFormatter;
@@ -18,6 +19,10 @@ import com.github.mikephil.charting.utils.Utils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,8 +30,8 @@ public class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
     /**
      * Drawing mode for this line dataset
      **/
-    @NotNull
-    private LineDataSet.Mode mMode = Mode.LINEAR;
+    @Mode
+    private int mMode = MODE_LINEAR;
 
     /**
      * List representing all colors that are used for the circles
@@ -110,15 +115,15 @@ public class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
      * Returns the drawing mode for this line dataset
      */
     @Override
-    @NotNull
-    public LineDataSet.Mode getMode() {
+    @Mode
+    public int getMode() {
         return mMode;
     }
 
     /**
      * Returns the drawing mode for this LineDataSet
      */
-    public void setMode(@NotNull LineDataSet.Mode mode) {
+    public void setMode(@LineDataSet.Mode int mode) {
         mMode = mode;
     }
 
@@ -242,13 +247,13 @@ public class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
     @Deprecated
     @Override
     public boolean isDrawCubicEnabled() {
-        return mMode == Mode.CUBIC_BEZIER;
+        return mMode == MODE_CUBIC_BEZIER;
     }
 
     @Deprecated
     @Override
     public boolean isDrawSteppedEnabled() {
-        return mMode == Mode.STEPPED;
+        return mMode == MODE_STEPPED;
     }
 
     // ALL CODE BELOW RELATED TO CIRCLE-COLORS
@@ -369,10 +374,14 @@ public class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
         return mFillFormatter;
     }
 
-    public enum Mode {
-        LINEAR,
-        STEPPED,
-        CUBIC_BEZIER,
-        HORIZONTAL_BEZIER
+    public static final int MODE_LINEAR = 0;
+    public static final int MODE_STEPPED = 1;
+    public static final int MODE_CUBIC_BEZIER = 2;
+    public static final int MODE_HORIZONTAL_BEZIER = 3;
+
+    @IntDef({ MODE_LINEAR, MODE_STEPPED, MODE_CUBIC_BEZIER, MODE_HORIZONTAL_BEZIER })
+    @Retention(RetentionPolicy.SOURCE)
+    @Target({ ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER })
+    public @interface Mode {
     }
 }
