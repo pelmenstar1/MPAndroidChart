@@ -6,10 +6,17 @@ import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 
+import androidx.annotation.IntDef;
+
 import com.github.mikephil.charting.utils.Utils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * The limit line is an additional feature for all Line-, Bar- and
@@ -38,11 +45,17 @@ public class LimitLine extends ComponentBase {
     private DashPathEffect mDashPathEffect = null;
 
     /** indicates the position of the LimitLine label */
-    private LimitLabelPosition mLabelPosition = LimitLabelPosition.RIGHT_TOP;
+    private int mLabelPosition = LABEL_POSITION_RIGHT_TOP;
 
-    /** enum that indicates the position of the LimitLine label */
-    public enum LimitLabelPosition {
-        LEFT_TOP, LEFT_BOTTOM, RIGHT_TOP, RIGHT_BOTTOM
+    public static final int LABEL_POSITION_LEFT_TOP = 0;
+    public static final int LABEL_POSITION_LEFT_BOTTOM = 1;
+    public static final int LABEL_POSITION_RIGHT_TOP = 2;
+    public static final int LABEL_POSITION_RIGHT_BOTTOM = 3;
+
+    @IntDef({ LABEL_POSITION_LEFT_TOP, LABEL_POSITION_LEFT_BOTTOM, LABEL_POSITION_RIGHT_TOP, LABEL_POSITION_RIGHT_BOTTOM })
+    @Retention(RetentionPolicy.SOURCE)
+    @Target({ ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER })
+    public @interface LimitLabelPosition {
     }
 
     /**
@@ -165,15 +178,15 @@ public class LimitLine extends ComponentBase {
      * Sets the position of the LimitLine value label (either on the right or on
      * the left edge of the chart). Not supported for RadarChart.
      */
-    public void setLabelPosition(@NotNull LimitLabelPosition pos) {
+    public void setLabelPosition(@LimitLabelPosition int pos) {
         mLabelPosition = pos;
     }
 
     /**
      * Returns the position of the LimitLine label (value).
      */
-    @NotNull
-    public LimitLabelPosition getLabelPosition() {
+    @LimitLabelPosition
+    public int getLabelPosition() {
         return mLabelPosition;
     }
 

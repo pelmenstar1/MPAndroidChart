@@ -384,10 +384,10 @@ public class XAxisRenderer extends AxisRenderer {
 
             float xOffset = limitLine.getLineWidth() + limitLine.getXOffset();
 
-            LimitLine.LimitLabelPosition labelPosition = limitLine.getLabelPosition();
+            int labelPosition = limitLine.getLabelPosition();
 
             switch (labelPosition) {
-                case RIGHT_TOP: {
+                case LimitLine.LABEL_POSITION_RIGHT_TOP: {
                     float labelLineHeight = Utils.calcTextHeight(mLimitLinePaint, label);
                     mLimitLinePaint.setTextAlign(Align.LEFT);
                     c.drawText(label,
@@ -398,7 +398,7 @@ public class XAxisRenderer extends AxisRenderer {
 
                     break;
                 }
-                case RIGHT_BOTTOM: {
+                case LimitLine.LABEL_POSITION_RIGHT_BOTTOM: {
                     mLimitLinePaint.setTextAlign(Align.LEFT);
                     c.drawText(
                             label,
@@ -409,7 +409,7 @@ public class XAxisRenderer extends AxisRenderer {
 
                     break;
                 }
-                case LEFT_TOP: {
+                case LimitLine.LABEL_POSITION_LEFT_TOP: {
                     mLimitLinePaint.setTextAlign(Align.RIGHT);
                     float labelLineHeight = Utils.calcTextHeight(mLimitLinePaint, label);
                     c.drawText(
@@ -421,7 +421,7 @@ public class XAxisRenderer extends AxisRenderer {
 
                     break;
                 }
-                default: {
+                case LimitLine.LABEL_POSITION_LEFT_BOTTOM: {
                     mLimitLinePaint.setTextAlign(Align.RIGHT);
                     c.drawText(
                             label,

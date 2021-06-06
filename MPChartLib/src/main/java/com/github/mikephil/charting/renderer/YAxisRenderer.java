@@ -308,10 +308,10 @@ public class YAxisRenderer extends AxisRenderer {
                 float xOffset = Utils.convertDpToPixel(4f) + l.getXOffset();
                 float yOffset = l.getLineWidth() + labelLineHeight + l.getYOffset();
 
-                LimitLine.LimitLabelPosition position = l.getLabelPosition();
+                int position = l.getLabelPosition();
 
                 switch (position) {
-                    case RIGHT_TOP: {
+                    case LimitLine.LABEL_POSITION_RIGHT_TOP: {
                         mLimitLinePaint.setTextAlign(Align.RIGHT);
                         c.drawText(label,
                                 mViewPortHandler.contentRight() - xOffset,
@@ -319,7 +319,7 @@ public class YAxisRenderer extends AxisRenderer {
 
                         break;
                     }
-                    case RIGHT_BOTTOM: {
+                    case LimitLine.LABEL_POSITION_RIGHT_BOTTOM: {
                         mLimitLinePaint.setTextAlign(Align.RIGHT);
                         c.drawText(label,
                                 mViewPortHandler.contentRight() - xOffset,
@@ -327,14 +327,14 @@ public class YAxisRenderer extends AxisRenderer {
 
                         break;
                     }
-                    case LEFT_TOP: {
+                    case LimitLine.LABEL_POSITION_LEFT_TOP: {
                         mLimitLinePaint.setTextAlign(Align.LEFT);
                         c.drawText(label,
                                 mViewPortHandler.contentLeft() + xOffset,
                                 y - yOffset + labelLineHeight, mLimitLinePaint);
                         break;
                     }
-                    default: {
+                    case LimitLine.LABEL_POSITION_LEFT_BOTTOM: {
                         mLimitLinePaint.setTextAlign(Align.LEFT);
                         c.drawText(label,
                                 mViewPortHandler.offsetLeft() + xOffset,
