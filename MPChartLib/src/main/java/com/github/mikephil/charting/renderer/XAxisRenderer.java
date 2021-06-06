@@ -117,33 +117,45 @@ public class XAxisRenderer extends AxisRenderer {
         mAxisLabelPaint.setColor(mXAxis.getTextColor());
 
         MPPointF pointF = MPPointF.getInstance();
-        if (mXAxis.getPosition() == XAxisPosition.TOP) {
-            pointF.x = 0.5f;
-            pointF.y = 1.0f;
-            drawLabels(c, mViewPortHandler.contentTop() - yOffset, pointF);
+        int pos = mXAxis.getPosition();
 
-        } else if (mXAxis.getPosition() == XAxisPosition.TOP_INSIDE) {
-            pointF.x = 0.5f;
-            pointF.y = 1.0f;
-            drawLabels(c, mViewPortHandler.contentTop() + yOffset + mXAxis.mLabelRotatedHeight, pointF);
+        switch (pos) {
+            case XAxis.POSITION_TOP: {
+                pointF.x = 0.5f;
+                pointF.y = 1.0f;
+                drawLabels(c, mViewPortHandler.contentTop() - yOffset, pointF);
 
-        } else if (mXAxis.getPosition() == XAxisPosition.BOTTOM) {
-            pointF.x = 0.5f;
-            pointF.y = 0.0f;
-            drawLabels(c, mViewPortHandler.contentBottom() + yOffset, pointF);
+                break;
+            }
+            case XAxis.POSITION_TOP_INSIDE: {
+                pointF.x = 0.5f;
+                pointF.y = 1.0f;
+                drawLabels(c, mViewPortHandler.contentTop() + yOffset + mXAxis.mLabelRotatedHeight, pointF);
 
-        } else if (mXAxis.getPosition() == XAxisPosition.BOTTOM_INSIDE) {
-            pointF.x = 0.5f;
-            pointF.y = 0.0f;
-            drawLabels(c, mViewPortHandler.contentBottom() - yOffset - mXAxis.mLabelRotatedHeight, pointF);
+                break;
+            }
+            case XAxis.POSITION_BOTTOM: {
+                pointF.x = 0.5f;
+                pointF.y = 0.0f;
+                drawLabels(c, mViewPortHandler.contentBottom() + yOffset, pointF);
 
-        } else { // BOTH SIDED
-            pointF.x = 0.5f;
-            pointF.y = 1.0f;
-            drawLabels(c, mViewPortHandler.contentTop() - yOffset, pointF);
-            pointF.x = 0.5f;
-            pointF.y = 0.0f;
-            drawLabels(c, mViewPortHandler.contentBottom() + yOffset, pointF);
+                break;
+            }
+            case XAxis.POSITION_BOTTOM_INSIDE: {
+                pointF.x = 0.5f;
+                pointF.y = 0.0f;
+                drawLabels(c, mViewPortHandler.contentBottom() - yOffset - mXAxis.mLabelRotatedHeight, pointF);
+
+                break;
+            }
+            case XAxis.POSITION_BOTH_SIDED: {
+                pointF.x = 0.5f;
+                pointF.y = 1.0f;
+                drawLabels(c, mViewPortHandler.contentTop() - yOffset, pointF);
+                pointF.x = 0.5f;
+                pointF.y = 0.0f;
+                drawLabels(c, mViewPortHandler.contentBottom() + yOffset, pointF);
+            }
         }
 
         MPPointF.recycleInstance(pointF);
@@ -158,17 +170,19 @@ public class XAxisRenderer extends AxisRenderer {
         mAxisLinePaint.setStrokeWidth(mXAxis.getAxisLineWidth());
         mAxisLinePaint.setPathEffect(mXAxis.getAxisLineDashPathEffect());
 
-        if (mXAxis.getPosition() == XAxisPosition.TOP
-                || mXAxis.getPosition() == XAxisPosition.TOP_INSIDE
-                || mXAxis.getPosition() == XAxisPosition.BOTH_SIDED) {
+        int pos = mXAxis.getPosition();
+
+        if (pos == XAxis.POSITION_TOP
+                || pos == XAxis.POSITION_TOP_INSIDE
+                || pos == XAxis.POSITION_BOTH_SIDED) {
             c.drawLine(mViewPortHandler.contentLeft(),
                     mViewPortHandler.contentTop(), mViewPortHandler.contentRight(),
                     mViewPortHandler.contentTop(), mAxisLinePaint);
         }
 
-        if (mXAxis.getPosition() == XAxisPosition.BOTTOM
-                || mXAxis.getPosition() == XAxisPosition.BOTTOM_INSIDE
-                || mXAxis.getPosition() == XAxisPosition.BOTH_SIDED) {
+        if (pos == XAxis.POSITION_BOTTOM
+                || pos == XAxis.POSITION_BOTTOM_INSIDE
+                || pos == XAxis.POSITION_BOTH_SIDED) {
             c.drawLine(mViewPortHandler.contentLeft(),
                     mViewPortHandler.contentBottom(), mViewPortHandler.contentRight(),
                     mViewPortHandler.contentBottom(), mAxisLinePaint);

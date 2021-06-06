@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.XAxis.XAxisPosition;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.components.YAxis.AxisDependency;
@@ -159,20 +160,21 @@ public class HorizontalBarChart extends BarChart {
         float xlabelwidth = mXAxis.mLabelRotatedWidth;
 
         if (mXAxis.isEnabled()) {
+            int pos = mXAxis.getPosition();
 
-            // offsets for x-labels
-            if (mXAxis.getPosition() == XAxisPosition.BOTTOM) {
-
-                offsetLeft += xlabelwidth;
-
-            } else if (mXAxis.getPosition() == XAxisPosition.TOP) {
-
-                offsetRight += xlabelwidth;
-
-            } else if (mXAxis.getPosition() == XAxisPosition.BOTH_SIDED) {
-
-                offsetLeft += xlabelwidth;
-                offsetRight += xlabelwidth;
+            switch (pos) {
+                case XAxis.POSITION_BOTTOM: {
+                    offsetLeft += xlabelwidth;
+                    break;
+                }
+                case XAxis.POSITION_TOP: {
+                    offsetRight += xlabelwidth;
+                    break;
+                }
+                case XAxis.POSITION_BOTH_SIDED: {
+                    offsetLeft += xlabelwidth;
+                    offsetRight += xlabelwidth;
+                }
             }
         }
 

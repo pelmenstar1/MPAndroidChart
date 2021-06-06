@@ -96,38 +96,38 @@ public class XAxisRendererHorizontalBarChart extends XAxisRenderer {
         mAxisLabelPaint.setColor(mXAxis.getTextColor());
 
         MPPointF pointF = MPPointF.getInstance();
-        XAxisPosition pos = mXAxis.getPosition();
+        int pos = mXAxis.getPosition();
 
         switch (pos) {
-            case TOP: {
+            case XAxis.POSITION_TOP: {
                 pointF.x = 0.0f;
                 pointF.y = 0.5f;
                 drawLabels(c, mViewPortHandler.contentRight() + xOffset, pointF);
 
                 break;
             }
-            case TOP_INSIDE: {
+            case XAxis.POSITION_TOP_INSIDE: {
                 pointF.x = 1.0f;
                 pointF.y = 0.5f;
                 drawLabels(c, mViewPortHandler.contentRight() - xOffset, pointF);
 
                 break;
             }
-            case BOTTOM: {
+            case XAxis.POSITION_BOTTOM: {
                 pointF.x = 1.0f;
                 pointF.y = 0.5f;
                 drawLabels(c, mViewPortHandler.contentLeft() - xOffset, pointF);
 
                 break;
             }
-            case BOTTOM_INSIDE: {
+            case XAxis.POSITION_BOTTOM_INSIDE: {
                 pointF.x = 1.0f;
                 pointF.y = 0.5f;
                 drawLabels(c, mViewPortHandler.contentLeft() + xOffset, pointF);
 
                 break;
             }
-            case BOTH_SIDED: {
+            case XAxis.POSITION_BOTH_SIDED: {
                 pointF.x = 0.0f;
                 pointF.y = 0.5f;
                 drawLabels(c, mViewPortHandler.contentRight() + xOffset, pointF);
@@ -207,19 +207,19 @@ public class XAxisRendererHorizontalBarChart extends XAxisRenderer {
         mAxisLinePaint.setColor(mXAxis.getAxisLineColor());
         mAxisLinePaint.setStrokeWidth(mXAxis.getAxisLineWidth());
 
-        XAxisPosition pos = mXAxis.getPosition();
+        int pos = mXAxis.getPosition();
 
-        if (pos == XAxisPosition.TOP
-                || pos == XAxisPosition.TOP_INSIDE
-                || pos == XAxisPosition.BOTH_SIDED) {
+        if (pos == XAxis.POSITION_TOP
+                || pos == XAxis.POSITION_TOP_INSIDE
+                || pos == XAxis.POSITION_BOTH_SIDED) {
             c.drawLine(mViewPortHandler.contentRight(),
                     mViewPortHandler.contentTop(), mViewPortHandler.contentRight(),
                     mViewPortHandler.contentBottom(), mAxisLinePaint);
         }
 
-        if (pos == XAxisPosition.BOTTOM
-                || pos == XAxisPosition.BOTTOM_INSIDE
-                || pos == XAxisPosition.BOTH_SIDED) {
+        if (pos == XAxis.POSITION_BOTTOM
+                || pos == XAxis.POSITION_BOTTOM_INSIDE
+                || pos == XAxis.POSITION_BOTH_SIDED) {
             c.drawLine(mViewPortHandler.contentLeft(),
                     mViewPortHandler.contentTop(), mViewPortHandler.contentLeft(),
                     mViewPortHandler.contentBottom(), mAxisLinePaint);

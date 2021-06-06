@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.XAxis.XAxisPosition;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.components.YAxis.AxisDependency;
@@ -488,22 +489,24 @@ public abstract class BarLineChartBase<TData extends BarLineScatterCandleBubbleD
             }
 
             if (mXAxis.isEnabled() && mXAxis.isDrawLabelsEnabled()) {
-
                 float xLabelHeight = mXAxis.mLabelRotatedHeight + mXAxis.getYOffset();
 
-                // offsets for x-labels
-                if (mXAxis.getPosition() == XAxisPosition.BOTTOM) {
+                int position = mXAxis.getPosition();
 
-                    offsetBottom += xLabelHeight;
+                switch (position) {
+                    case XAxis.POSITION_BOTTOM: {
+                        offsetBottom += xLabelHeight;
+                        break;
+                    }
+                    case XAxis.POSITION_TOP: {
+                        offsetTop += xLabelHeight;
 
-                } else if (mXAxis.getPosition() == XAxisPosition.TOP) {
-
-                    offsetTop += xLabelHeight;
-
-                } else if (mXAxis.getPosition() == XAxisPosition.BOTH_SIDED) {
-
-                    offsetBottom += xLabelHeight;
-                    offsetTop += xLabelHeight;
+                        break;
+                    }
+                    case XAxis.POSITION_BOTH_SIDED: {
+                        offsetBottom += xLabelHeight;
+                        offsetTop += xLabelHeight;
+                    }
                 }
             }
 

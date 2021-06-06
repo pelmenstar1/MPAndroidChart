@@ -1,9 +1,16 @@
 
 package com.github.mikephil.charting.components;
 
+import androidx.annotation.IntDef;
+
 import com.github.mikephil.charting.utils.Utils;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Class representing the x-axis labels settings. Only use the setter methods to
@@ -51,14 +58,19 @@ public class XAxis extends AxisBase {
     /**
      * the position of the x-labels relative to the chart
      */
-    @NotNull
-    private XAxisPosition mPosition = XAxisPosition.TOP;
+    @XAxisPosition
+    private int mPosition = POSITION_TOP;
 
-    /**
-     * enum for the position of the x-labels relative to the chart
-     */
-    public enum XAxisPosition {
-        TOP, BOTTOM, BOTH_SIDED, TOP_INSIDE, BOTTOM_INSIDE
+    public static final int POSITION_TOP = 0;
+    public static final int POSITION_BOTTOM = 1;
+    public static final int POSITION_BOTH_SIDED = 2;
+    public static final int POSITION_TOP_INSIDE = 3;
+    public static final int POSITION_BOTTOM_INSIDE = 4;
+
+    @IntDef({ POSITION_TOP, POSITION_BOTTOM, POSITION_BOTH_SIDED, POSITION_TOP_INSIDE, POSITION_BOTTOM_INSIDE })
+    @Retention(RetentionPolicy.SOURCE)
+    @Target({ ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER })
+    public @interface XAxisPosition {
     }
 
     public XAxis() {
@@ -70,15 +82,15 @@ public class XAxis extends AxisBase {
     /**
      * returns the position of the x-labels
      */
-    @NotNull
-    public XAxisPosition getPosition() {
+    @XAxisPosition
+    public int getPosition() {
         return mPosition;
     }
 
     /**
      * sets the position of the x-labels
      */
-    public void setPosition(@NotNull XAxisPosition pos) {
+    public void setPosition(@XAxisPosition int pos) {
         mPosition = pos;
     }
 
