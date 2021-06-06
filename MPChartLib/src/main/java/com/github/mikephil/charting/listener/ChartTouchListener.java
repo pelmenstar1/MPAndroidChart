@@ -4,6 +4,8 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
+import androidx.annotation.IntDef;
+
 import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.data.ChartData;
 import com.github.mikephil.charting.data.Entry;
@@ -17,23 +19,35 @@ import org.jetbrains.annotations.Nullable;
  * Created by philipp on 12/06/15.
  */
 public abstract class ChartTouchListener<TChart extends Chart<TData, TDataSet, TEntry>, TData extends ChartData<TDataSet, TEntry>, TDataSet extends IDataSet<TEntry>, TEntry extends Entry> extends GestureDetector.SimpleOnGestureListener implements View.OnTouchListener {
-    public enum ChartGesture {
-        NONE,
-        DRAG,
-        X_ZOOM,
-        Y_ZOOM,
-        PINCH_ZOOM,
-        ROTATE,
-        SINGLE_TAP,
-        DOUBLE_TAP,
-        LONG_PRESS,
-        FLING
+    public static final int GESTURE_NONE = 0;
+    public static final int GESTURE_DRAG = 1;
+    public static final int GESTURE_X_ZOOM = 2;
+    public static final int GESTURE_Y_ZOOM = 3;
+    public static final int GESTURE_PINCH_ZOOM = 4;
+    public static final int GESTURE_ROTATE = 5;
+    public static final int GESTURE_SINGLE_TAP = 6;
+    public static final int GESTURE_DOUBLE_TAP = 7;
+    public static final int GESTURE_LONG_PRESS = 8;
+    public static final int GESTURE_FLING = 9;
+
+    @IntDef(value = {
+            GESTURE_NONE,
+            GESTURE_DRAG,
+            GESTURE_X_ZOOM, GESTURE_Y_ZOOM,
+            GESTURE_PINCH_ZOOM,
+            GESTURE_ROTATE,
+            GESTURE_SINGLE_TAP, GESTURE_DOUBLE_TAP,
+            GESTURE_LONG_PRESS,
+            GESTURE_FLING
+    })
+    public @interface ChartGesture {
     }
 
     /**
      * the last touch gesture that has been performed
      **/
-    protected ChartGesture mLastGesture = ChartGesture.NONE;
+    @ChartGesture
+    protected int mLastGesture = GESTURE_NONE;
 
     // states
     protected static final int NONE = 0;
@@ -109,8 +123,8 @@ public abstract class ChartTouchListener<TChart extends Chart<TData, TDataSet, T
     /**
      * Returns the last gesture that has been performed on the chart.
      */
-    @NotNull
-    public ChartGesture getLastGesture() {
+    @ChartGesture
+    public int getLastGesture() {
         return mLastGesture;
     }
 

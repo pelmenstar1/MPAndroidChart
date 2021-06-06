@@ -194,12 +194,12 @@ public class BarLineChartTouchListener<TData extends BarLineScatterCandleBubbleD
                             if ((mChart.isDragXEnabled() || distanceY >= distanceX) &&
                                     (mChart.isDragYEnabled() || distanceY <= distanceX)) {
 
-                                mLastGesture = ChartGesture.DRAG;
+                                mLastGesture = GESTURE_DRAG;
                                 mTouchMode = DRAG;
                             }
                         } else {
                             if (mChart.isHighlightPerDragEnabled()) {
-                                mLastGesture = ChartGesture.DRAG;
+                                mLastGesture = GESTURE_DRAG;
 
                                 if (mChart.isHighlightPerDragEnabled())
                                     performHighlightDrag(event);
@@ -294,7 +294,7 @@ public class BarLineChartTouchListener<TData extends BarLineScatterCandleBubbleD
      * Performs all necessary operations needed for dragging.
      */
     private void performDrag(@NotNull MotionEvent event, float distX, float distY) {
-        mLastGesture = ChartGesture.DRAG;
+        mLastGesture = GESTURE_DRAG;
 
         mMatrix.set(mSavedMatrix);
 
@@ -343,7 +343,7 @@ public class BarLineChartTouchListener<TData extends BarLineScatterCandleBubbleD
 
                 // take actions depending on the activated touch mode
                 if (mTouchMode == PINCH_ZOOM) {
-                    mLastGesture = ChartGesture.PINCH_ZOOM;
+                    mLastGesture = GESTURE_PINCH_ZOOM;
 
                     float scale = totalDist / mSavedDist; // total scale
                     boolean isZoomingOut = (scale < 1);
@@ -369,7 +369,7 @@ public class BarLineChartTouchListener<TData extends BarLineScatterCandleBubbleD
                     }
 
                 } else if (mTouchMode == X_ZOOM && mChart.isScaleXEnabled()) {
-                    mLastGesture = ChartGesture.X_ZOOM;
+                    mLastGesture = GESTURE_X_ZOOM;
 
                     float scaleX = xDist / mSavedXDist; // x-axis scale
 
@@ -388,7 +388,7 @@ public class BarLineChartTouchListener<TData extends BarLineScatterCandleBubbleD
                     }
 
                 } else if (mTouchMode == Y_ZOOM && mChart.isScaleYEnabled()) {
-                    mLastGesture = ChartGesture.Y_ZOOM;
+                    mLastGesture = GESTURE_Y_ZOOM;
 
                     float scaleY = yDist / mSavedYDist; // y-axis scale
 
@@ -474,7 +474,7 @@ public class BarLineChartTouchListener<TData extends BarLineScatterCandleBubbleD
 
     @Override
     public boolean onDoubleTap(@NotNull MotionEvent e) {
-        mLastGesture = ChartGesture.DOUBLE_TAP;
+        mLastGesture = GESTURE_DOUBLE_TAP;
 
         OnChartGestureListener l = mChart.getOnChartGestureListener();
 
@@ -506,7 +506,7 @@ public class BarLineChartTouchListener<TData extends BarLineScatterCandleBubbleD
 
     @Override
     public void onLongPress(@NotNull MotionEvent e) {
-        mLastGesture = ChartGesture.LONG_PRESS;
+        mLastGesture = GESTURE_LONG_PRESS;
 
         OnChartGestureListener l = mChart.getOnChartGestureListener();
 
@@ -517,7 +517,7 @@ public class BarLineChartTouchListener<TData extends BarLineScatterCandleBubbleD
 
     @Override
     public boolean onSingleTapUp(@NotNull MotionEvent e) {
-        mLastGesture = ChartGesture.SINGLE_TAP;
+        mLastGesture = GESTURE_SINGLE_TAP;
 
         OnChartGestureListener l = mChart.getOnChartGestureListener();
 
@@ -537,7 +537,7 @@ public class BarLineChartTouchListener<TData extends BarLineScatterCandleBubbleD
 
     @Override
     public boolean onFling(@NotNull MotionEvent e1, @NotNull MotionEvent e2, float velocityX, float velocityY) {
-        mLastGesture = ChartGesture.FLING;
+        mLastGesture = GESTURE_FLING;
 
         OnChartGestureListener l = mChart.getOnChartGestureListener();
 

@@ -73,7 +73,7 @@ public class PieRadarChartTouchListener<TData extends ChartData<TDataSet, TEntry
                     float dist = distance(x, mTouchStartPoint.x, y, mTouchStartPoint.y);
 
                     if (mTouchMode == NONE && dist > Utils.convertDpToPixel(8f)) {
-                        mLastGesture = ChartGesture.ROTATE;
+                        mLastGesture = GESTURE_ROTATE;
                         mTouchMode = ROTATE;
                         mChart.disableScroll();
                     } else if (mTouchMode == ROTATE) {
@@ -112,8 +112,7 @@ public class PieRadarChartTouchListener<TData extends ChartData<TDataSet, TEntry
 
     @Override
     public void onLongPress(MotionEvent me) {
-
-        mLastGesture = ChartGesture.LONG_PRESS;
+        mLastGesture = GESTURE_LONG_PRESS;
 
         OnChartGestureListener l = mChart.getOnChartGestureListener();
 
@@ -129,7 +128,7 @@ public class PieRadarChartTouchListener<TData extends ChartData<TDataSet, TEntry
 
     @Override
     public boolean onSingleTapUp(MotionEvent e) {
-        mLastGesture = ChartGesture.SINGLE_TAP;
+        mLastGesture = GESTURE_SINGLE_TAP;
 
         OnChartGestureListener l = mChart.getOnChartGestureListener();
 
