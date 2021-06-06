@@ -73,7 +73,7 @@ public interface IDataSet<T extends Entry> {
      *                 if there is no Entry matching the provided x-value
      */
     @Nullable
-    T getEntryForXValue(float xValue, float closestToY, @NotNull DataSet.Rounding rounding);
+    T getEntryForXValue(float xValue, float closestToY, @DataSet.Rounding int rounding);
 
     /**
      * Returns the first Entry object found at the given x-value with binary
@@ -118,7 +118,7 @@ public interface IDataSet<T extends Entry> {
      * @param rounding determine whether to round up/down/closest
      *                 if there is no Entry matching the provided x-value
      */
-    int getEntryIndex(float xValue, float closestToY, @NotNull DataSet.Rounding rounding);
+    int getEntryIndex(float xValue, float closestToY, @DataSet.Rounding int rounding);
 
     /**
      * Returns the position of the provided entry in the DataSets Entry array.

@@ -1,6 +1,8 @@
 
 package com.github.mikephil.charting.data;
 
+import androidx.annotation.IntDef;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -78,8 +80,8 @@ public abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
         if (mEntries.isEmpty())
             return;
 
-        int indexFrom = getEntryIndex(fromX, Float.NaN, Rounding.DOWN);
-        int indexTo = getEntryIndex(toX, Float.NaN, Rounding.UP);
+        int indexFrom = getEntryIndex(fromX, Float.NaN, ROUNDING_DOWN);
+        int indexTo = getEntryIndex(toX, Float.NaN, ROUNDING_UP);
 
         if (indexTo < indexFrom) return;
 
@@ -209,7 +211,7 @@ public abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
         calcMinMax(e);
 
         if (mEntries.size() > 0 && mEntries.get(mEntries.size() - 1).getX() > e.getX()) {
-            int closestIndex = getEntryIndex(e.getX(), e.getY(), Rounding.UP);
+            int closestIndex = getEntryIndex(e.getX(), e.getY(), ROUNDING_UP);
             mEntries.add(closestIndex, e);
         } else {
             mEntries.add(e);
@@ -251,7 +253,7 @@ public abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
 
     @Override
     @Nullable
-    public T getEntryForXValue(float xValue, float closestToY, @NotNull Rounding rounding) {
+    public T getEntryForXValue(float xValue, float closestToY, @Rounding int rounding) {
         int index = getEntryIndex(xValue, closestToY, rounding);
 
         if (index > -1)
@@ -262,7 +264,7 @@ public abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
     @Override
     @Nullable
     public T getEntryForXValue(float xValue, float closestToY) {
-        return getEntryForXValue(xValue, closestToY, Rounding.CLOSEST);
+        return getEntryForXValue(xValue, closestToY, ROUNDING_CLOSEST);
     }
 
     @Override
@@ -272,7 +274,7 @@ public abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
     }
 
     @Override
-    public int getEntryIndex(float xValue, float closestToY, @NotNull Rounding rounding) {
+    public int getEntryIndex(float xValue, float closestToY, @Rounding int rounding) {
         if (mEntries.isEmpty())
             return -1;
 
@@ -312,12 +314,12 @@ public abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
 
         if (closest != -1) {
             float closestXValue = mEntries.get(closest).getX();
-            if (rounding == Rounding.UP) {
+            if (rounding == ROUNDING_UP) {
                 // If rounding up, and found x-value is lower than specified x, and we can go upper...
                 if (closestXValue < xValue && closest < mEntries.size() - 1) {
                     ++closest;
                 }
-            } else if (rounding == Rounding.DOWN) {
+            } else if (rounding == ROUNDING_DOWN) {
                 // If rounding down, and found x-value is upper than specified x, and we can go lower...
                 if (closestXValue > xValue && closest > 0) {
                     --closest;
@@ -396,14 +398,11 @@ public abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
         return entries;
     }
 
-    /**
-     * Determines how to round DataSet index values for
-     * {@link DataSet#getEntryIndex(float, float, Rounding)} DataSet.getEntryIndex()}
-     * when an exact x-index is not found.
-     */
-    public enum Rounding {
-        UP,
-        DOWN,
-        CLOSEST,
+    public static final int ROUNDING_UP = 0;
+    public static final int ROUNDING_DOWN = 1;
+    public static final int ROUNDING_CLOSEST = 2;
+
+    @IntDef(value = { ROUNDING_UP, ROUNDING_DOWN, ROUNDING_CLOSEST })
+    public @interface Rounding {
     }
 }

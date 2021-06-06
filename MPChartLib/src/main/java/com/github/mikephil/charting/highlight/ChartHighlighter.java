@@ -128,7 +128,7 @@ public class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider<T
             if (!dataSet.isHighlightEnabled())
                 continue;
 
-            mHighlightBuffer.addAll(buildHighlights(dataSet, i, xVal, DataSet.Rounding.CLOSEST));
+            mHighlightBuffer.addAll(buildHighlights(dataSet, i, xVal, DataSet.ROUNDING_CLOSEST));
         }
 
         return mHighlightBuffer;
@@ -141,7 +141,7 @@ public class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider<T
             @NotNull TDataSet set,
             int dataSetIndex,
             float xVal,
-            @NotNull DataSet.Rounding rounding
+            @DataSet.Rounding int rounding
     ) {
         ArrayList<Highlight> highlights = new ArrayList<>();
 
