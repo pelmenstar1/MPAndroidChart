@@ -43,7 +43,7 @@ public class BarBuffer extends AbstractBuffer<IBarDataSet> {
     @Override
     public void feed(@NotNull IBarDataSet data) {
         float size = data.getEntryCount() * phaseX;
-        float barWidthHalf = mBarWidth / 2f;
+        float barWidthHalf = mBarWidth * 0.5f;
 
         for (int i = 0; i < size; i++) {
             BarEntry e = data.getEntryForIndex(i);

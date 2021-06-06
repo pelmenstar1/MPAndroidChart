@@ -1094,7 +1094,7 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
      * @return
      */
     public MPPointF getCenter() {
-        return MPPointF.getInstance(getWidth() / 2f, getHeight() / 2f);
+        return MPPointF.getInstance(getWidth() * 0.5f, getHeight() * 0.5f);
     }
 
     /**

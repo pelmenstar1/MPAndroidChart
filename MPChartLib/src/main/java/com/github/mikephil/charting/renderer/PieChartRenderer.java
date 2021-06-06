@@ -495,7 +495,7 @@ public class PieChartRenderer extends DataRenderer {
                 float sliceSpaceMiddleAngle = sliceSpace / (Utils.FDEG2RAD * labelRadius);
 
                 // offset needed to center the drawn text in the slice
-                float angleOffset = (sliceAngle - sliceSpaceMiddleAngle / 2.f) / 2.f;
+                float angleOffset = (sliceAngle - sliceSpaceMiddleAngle * 0.5f) * 0.5f;
 
                 angle = angle + angleOffset;
 
@@ -603,9 +603,15 @@ public class PieChartRenderer extends DataRenderer {
                             drawEntryLabel(c, entryLabel, labelPtx, labelPty + lineHeight * 0.5f);
                         }
                     } else if (drawYOutside) {
-
-                        drawValue(c, formatter, value, entry, 0, labelPtx, labelPty + lineHeight / 2.f, dataSet
-                                .getValueTextColor(j));
+                        drawValue(
+                                c,
+                                formatter,
+                                value,
+                                entry,
+                                0,
+                                labelPtx,
+                                labelPty + lineHeight * 0.5f,
+                                dataSet.getValueTextColor(j));
                     }
                 }
 

@@ -364,7 +364,7 @@ public class HorizontalBarChartRenderer extends BarChartRenderer {
 
                                 float x = transformed[k]
                                         + (drawBelow ? negOffset : posOffset);
-                                float y = (buffer.buffer[bufferIndex + 1] + buffer.buffer[bufferIndex + 3]) / 2f;
+                                float y = (buffer.buffer[bufferIndex + 1] + buffer.buffer[bufferIndex + 3]) * 0.5f;
 
                                 if (!mViewPortHandler.isInBoundsTop(y))
                                     break;

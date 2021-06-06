@@ -232,8 +232,8 @@ public class HorizontalBarChart extends BarChart {
 
         float barWidth = mData.getBarWidth();
 
-        float top = x - barWidth / 2f;
-        float bottom = x + barWidth / 2f;
+        float top = x - barWidth * 0.5f;
+        float bottom = x + barWidth * 0.5f;
         float left = y >= 0 ? y : 0;
         float right = y <= 0 ? y : 0;
 

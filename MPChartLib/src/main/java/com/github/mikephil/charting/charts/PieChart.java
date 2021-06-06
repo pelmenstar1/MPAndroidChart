@@ -154,7 +154,7 @@ public class PieChart extends PieRadarChartBase<PieData> {
             return;
 
         float diameter = getDiameter();
-        float radius = diameter / 2f;
+        float radius = diameter * 0.5f;
 
         MPPointF c = getCenterOffsets();
 
@@ -184,7 +184,7 @@ public class PieChart extends PieRadarChartBase<PieData> {
         float off = r / 10f * 3.6f;
 
         if (isDrawHoleEnabled()) {
-            off = (r - (r / 100f * getHoleRadius())) / 2f;
+            off = (r - (r / 100f * getHoleRadius())) * 0.5f;
         }
 
         r -= off; // offset to keep things inside the chart
@@ -194,7 +194,7 @@ public class PieChart extends PieRadarChartBase<PieData> {
         int entryIndex = (int) highlight.getX();
 
         // offset needed to center the drawn text in the slice
-        float offset = mDrawAngles[entryIndex] / 2;
+        float offset = mDrawAngles[entryIndex] * 0.5f;
 
         // calculate the text position
         float x = (float) (r
@@ -495,7 +495,7 @@ public class PieChart extends PieRadarChartBase<PieData> {
         if (mCircleBox == null)
             return 0;
         else
-            return Math.min(mCircleBox.width() / 2f, mCircleBox.height() / 2f);
+            return Math.min(mCircleBox.width() * 0.5f, mCircleBox.height() * 0.5f);
     }
 
     /**
@@ -784,9 +784,8 @@ public class PieChart extends PieRadarChartBase<PieData> {
      * @param minAngle minimum 0, maximum is half of {@link #setMaxAngle(float)}
      */
     public void setMinAngleForSlices(float minAngle) {
-
-        if (minAngle > (mMaxAngle / 2f))
-            minAngle = mMaxAngle / 2f;
+        if (minAngle > (mMaxAngle * 0.5f))
+            minAngle = mMaxAngle * 0.5f;
         else if (minAngle < 0)
             minAngle = 0f;
 

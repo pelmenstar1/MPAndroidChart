@@ -66,7 +66,10 @@ public class BarChart extends BarLineChartBase<BarData> implements BarDataProvid
     protected void calcMinMax() {
 
         if (mFitBars) {
-            mXAxis.calculate(mData.getXMin() - mData.getBarWidth() / 2f, mData.getXMax() + mData.getBarWidth() / 2f);
+            mXAxis.calculate(
+                    mData.getXMin() - mData.getBarWidth() * 0.5f,
+                    mData.getXMax() + mData.getBarWidth() * 0.5f
+            );
         } else {
             mXAxis.calculate(mData.getXMin(), mData.getXMax());
         }
@@ -141,8 +144,8 @@ public class BarChart extends BarLineChartBase<BarData> implements BarDataProvid
 
         float barWidth = mData.getBarWidth();
 
-        float left = x - barWidth / 2f;
-        float right = x + barWidth / 2f;
+        float left = x - barWidth * 0.5f;
+        float right = x + barWidth * 0.5f;
         float top = y >= 0 ? y : 0;
         float bottom = y <= 0 ? y : 0;
 

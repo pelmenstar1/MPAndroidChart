@@ -98,7 +98,7 @@ public class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
             float px = pointBuffer[0];
             float py = pointBuffer[1];
 
-            float shapeHalf = getShapeSize(entry.getSize(), dataSet.getMaxSize(), referenceSize, normalizeSize) / 2f;
+            float shapeHalf = getShapeSize(entry.getSize(), dataSet.getMaxSize(), referenceSize, normalizeSize) * 0.5f;
 
             if (!mViewPortHandler.isInBoundsTop(py + shapeHalf)
                     || !mViewPortHandler.isInBoundsBottom(py - shapeHalf))

@@ -103,7 +103,7 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             BarData barData = mChart.getBarData();
 
             final float barWidth = barData.getBarWidth();
-            final float barWidthHalf = barWidth / 2.0f;
+            final float barWidthHalf = barWidth * 0.5f;
             float x;
 
             for (int i = 0, count = Math.min((int)(Math.ceil((float)(dataSet.getEntryCount()) * phaseX)), dataSet.getEntryCount());
@@ -250,7 +250,7 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
 
                     for (int j = 0; j < buffer.buffer.length * mAnimator.getPhaseX(); j += 4) {
 
-                        float x = (buffer.buffer[j] + buffer.buffer[j + 2]) / 2f;
+                        float x = (buffer.buffer[j] + buffer.buffer[j + 2]) * 0.5f;
 
                         if (!mViewPortHandler.isInBoundsRight(x))
                             break;
@@ -305,7 +305,7 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                         BarEntry entry = dataSet.getEntryForIndex(index);
 
                         float[] vals = entry.getYVals();
-                        float x = (buffer.buffer[bufferIndex] + buffer.buffer[bufferIndex + 2]) / 2f;
+                        float x = (buffer.buffer[bufferIndex] + buffer.buffer[bufferIndex + 2]) * 0.5f;
 
                         int color = dataSet.getValueTextColor(index);
 
@@ -480,7 +480,7 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                 y2 = 0.f;
             }
 
-            prepareBarHighlight(e.getX(), y1, y2, barData.getBarWidth() / 2f, trans);
+            prepareBarHighlight(e.getX(), y1, y2, barData.getBarWidth() * 0.5f, trans);
 
             setHighlightDrawPos(high, mBarRect);
 
