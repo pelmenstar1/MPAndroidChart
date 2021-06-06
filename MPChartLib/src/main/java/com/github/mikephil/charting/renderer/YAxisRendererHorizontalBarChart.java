@@ -10,8 +10,7 @@ import android.graphics.RectF;
 import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.components.YAxis.AxisDependency;
-import com.github.mikephil.charting.components.YAxis.YAxisLabelPosition;
-import com.github.mikephil.charting.utils.MPPointD;
+import com.github.mikephil.charting.utils.MPPointF;
 import com.github.mikephil.charting.utils.Transformer;
 import com.github.mikephil.charting.utils.Utils;
 import com.github.mikephil.charting.utils.ViewPortHandler;
@@ -44,21 +43,21 @@ public class YAxisRendererHorizontalBarChart extends YAxisRenderer {
         // zoom / content rect bounds)
 
         if (mViewPortHandler.contentHeight() > 10 && !mViewPortHandler.isFullyZoomedOutX()) {
-            MPPointD p1 = mTrans.getValuesByTouchPoint(mViewPortHandler.contentLeft(),
+            MPPointF p1 = mTrans.getValuesByTouchPoint(mViewPortHandler.contentLeft(),
                     mViewPortHandler.contentTop());
-            MPPointD p2 = mTrans.getValuesByTouchPoint(mViewPortHandler.contentRight(),
+            MPPointF p2 = mTrans.getValuesByTouchPoint(mViewPortHandler.contentRight(),
                     mViewPortHandler.contentTop());
 
             if (!inverted) {
-                yMin = (float) p1.x;
-                yMax = (float) p2.x;
+                yMin = p1.x;
+                yMax = p2.x;
             } else {
-                yMin = (float) p2.x;
-                yMax = (float) p1.x;
+                yMin = p2.x;
+                yMax = p1.x;
             }
 
-            MPPointD.recycleInstance(p1);
-            MPPointD.recycleInstance(p2);
+            MPPointF.recycleInstance(p1);
+            MPPointF.recycleInstance(p2);
         }
 
         computeAxisValues(yMin, yMax);
@@ -205,7 +204,7 @@ public class YAxisRendererHorizontalBarChart extends YAxisRenderer {
 
         // draw zero line
         //noinspection ConstantConditions
-        MPPointD pos = mTrans.getPixelForValues(0f, 0f);
+        MPPointF pos = mTrans.getPixelForValues(0f, 0f);
 
         mZeroLinePaint.setColor(mYAxis.getZeroLineColor());
         mZeroLinePaint.setStrokeWidth(mYAxis.getZeroLineWidth());
@@ -213,7 +212,7 @@ public class YAxisRendererHorizontalBarChart extends YAxisRenderer {
         Path zeroLinePath = mDrawZeroLinePathBuffer;
         zeroLinePath.reset();
 
-        float x = (float)pos.x - 1;
+        float x = pos.x - 1f;
 
         zeroLinePath.moveTo(x, mViewPortHandler.contentTop());
         zeroLinePath.lineTo(x, mViewPortHandler.contentBottom());

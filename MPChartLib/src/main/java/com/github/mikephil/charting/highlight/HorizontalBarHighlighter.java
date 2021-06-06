@@ -6,7 +6,8 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.interfaces.dataprovider.BarDataProvider;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.interfaces.datasets.IDataSet;
-import com.github.mikephil.charting.utils.MPPointD;
+import com.github.mikephil.charting.utils.MPPointF;
+import com.github.mikephil.charting.utils.Transformer;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -25,9 +26,9 @@ public class HorizontalBarHighlighter extends BarHighlighter {
 	public Highlight getHighlight(float x, float y) {
 		BarData barData = mChart.getBarData();
 
-		MPPointD pos = getValsForTouch(y, x);
+		MPPointF pos = getValsForTouch(y, x);
 
-		Highlight high = getHighlightForX((float) pos.y, y, x);
+		Highlight high = getHighlightForX(pos.y, y, x);
 		if (high == null) {
 			return null;
 		}
@@ -36,11 +37,12 @@ public class HorizontalBarHighlighter extends BarHighlighter {
 		if (set.isStacked()) {
 			return getStackedHighlight(high,
 					set,
-					(float) pos.y,
-					(float) pos.x);
+					pos.y,
+					pos.x
+			);
 		}
 
-		MPPointD.recycleInstance(pos);
+		MPPointF.recycleInstance(pos);
 
 		return high;
 	}
@@ -58,7 +60,7 @@ public class HorizontalBarHighlighter extends BarHighlighter {
 		List<Entry> entries = set.getEntriesForXValue(xVal);
 		if (entries.isEmpty()) {
 			// Try to find closest x-value and take all entries for that x-value
-			final Entry closest = set.getEntryForXValue(xVal, Float.NaN, rounding);
+			Entry closest = set.getEntryForXValue(xVal, Float.NaN, rounding);
 			if (closest != null) {
 				//noinspection unchecked
 				entries = set.getEntriesForXValue(closest.getX());
@@ -69,14 +71,17 @@ public class HorizontalBarHighlighter extends BarHighlighter {
 			return highlights;
 		}
 
+		Transformer transformer = mChart.getTransformer(set.getAxisDependency());
+
 		for (Entry e : entries) {
-			MPPointD pixels = mChart.getTransformer(
-					set.getAxisDependency()).getPixelForValues(e.getY(), e.getX());
+			MPPointF pixels = transformer.getPixelForValues(e.getY(), e.getX());
 
 			highlights.add(new Highlight(
 					e.getX(), e.getY(),
-					(float) pixels.x, (float) pixels.y,
-					dataSetIndex, set.getAxisDependency()));
+					pixels.x, pixels.y,
+					dataSetIndex,
+					set.getAxisDependency())
+			);
 		}
 
 		return highlights;

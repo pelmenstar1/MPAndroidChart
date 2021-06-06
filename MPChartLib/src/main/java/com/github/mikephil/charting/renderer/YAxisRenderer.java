@@ -11,7 +11,7 @@ import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.components.YAxis.AxisDependency;
 import com.github.mikephil.charting.components.YAxis.YAxisLabelPosition;
-import com.github.mikephil.charting.utils.MPPointD;
+import com.github.mikephil.charting.utils.MPPointF;
 import com.github.mikephil.charting.utils.Transformer;
 import com.github.mikephil.charting.utils.Utils;
 import com.github.mikephil.charting.utils.ViewPortHandler;
@@ -228,7 +228,7 @@ public class YAxisRenderer extends AxisRenderer {
             c.clipRect(mZeroLineClippingRect);
 
             // draw zero line
-            MPPointD pos = mTrans.getPixelForValues(0f, 0f);
+            MPPointF pos = mTrans.getPixelForValues(0f, 0f);
 
             mZeroLinePaint.setColor(mYAxis.getZeroLineColor());
             mZeroLinePaint.setStrokeWidth(mYAxis.getZeroLineWidth());
@@ -236,8 +236,8 @@ public class YAxisRenderer extends AxisRenderer {
             Path zeroLinePath = mDrawZeroLinePath;
             zeroLinePath.reset();
 
-            zeroLinePath.moveTo(mViewPortHandler.contentLeft(), (float) pos.y);
-            zeroLinePath.lineTo(mViewPortHandler.contentRight(), (float) pos.y);
+            zeroLinePath.moveTo(mViewPortHandler.contentLeft(), pos.y);
+            zeroLinePath.lineTo(mViewPortHandler.contentRight(), pos.y);
 
             // draw a path because lines don't support dashing on lower android versions
             c.drawPath(zeroLinePath, mZeroLinePaint);

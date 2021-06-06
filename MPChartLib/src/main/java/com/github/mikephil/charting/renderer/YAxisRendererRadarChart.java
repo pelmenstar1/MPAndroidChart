@@ -29,33 +29,33 @@ public class YAxisRendererRadarChart extends YAxisRenderer {
     @Override
     protected void computeAxisValues(float min, float max) {
         int labelCount = mAxis.getLabelCount();
-        double range = Math.abs(max - min);
+        float range = Math.abs(max - min);
 
-        if (labelCount == 0 || range <= 0 || Double.isInfinite(range)) {
-            mAxis.mEntries = new float[]{};
-            mAxis.mCenteredEntries = new float[]{};
+        if (labelCount == 0 || range <= 0 || Float.isInfinite(range)) {
+            mAxis.mEntries = new float[0];
+            mAxis.mCenteredEntries = new float[0];
             mAxis.mEntryCount = 0;
             return;
         }
 
         // Find out how much spacing (in y value space) between axis values
-        double rawInterval = range / labelCount;
-        double interval = Utils.roundToNextSignificant(rawInterval);
+        float rawInterval = range / labelCount;
+        float interval = Utils.roundToNextSignificant(rawInterval);
 
         // If granularity is enabled, then do not allow the interval to go below specified granularity.
         // This is used to avoid repeated values when rounding values for display.
         if (mAxis.isGranularityEnabled())
-            interval = interval < mAxis.getGranularity() ? mAxis.getGranularity() : interval;
+            interval = Math.max(interval, mAxis.getGranularity());
 
         // Normalize interval
-        double intervalMagnitude = Utils.roundToNextSignificant(Math.pow(10, (int) Math.log10(interval)));
+        float intervalMagnitude = Utils.roundToNextSignificant((float)Math.pow(10, (int) Math.log10(interval)));
         int intervalSigDigit = (int) (interval / intervalMagnitude);
         if (intervalSigDigit > 5) {
+            float magRaw = (float)Math.floor(10.0 * intervalMagnitude);
+
             // Use one order of magnitude higher, to avoid intervals like 0.9 or 90
             // if it's 0.0 after floor(), we use the old value
-            interval = Math.floor(10.0 * intervalMagnitude) == 0.0
-                    ? interval
-                    : Math.floor(10.0 * intervalMagnitude);
+            interval = magRaw == 0f ? interval : magRaw;
         }
 
         boolean centeringEnabled = mAxis.isCenterAxisLabelsEnabled();
@@ -63,8 +63,7 @@ public class YAxisRendererRadarChart extends YAxisRenderer {
 
         // force label count
         if (mAxis.isForceLabelsEnabled()) {
-
-            float step = (float) range / (float) (labelCount - 1);
+            float step = range / (float) (labelCount - 1);
             mAxis.mEntryCount = labelCount;
 
             if (mAxis.mEntries.length < labelCount) {
@@ -83,14 +82,14 @@ public class YAxisRendererRadarChart extends YAxisRenderer {
 
             // no forced count
         } else {
-            double first = interval == 0.0 ? 0.0 : Math.ceil(min / interval) * interval;
+            float first = interval == 0f ? 0f : (float)Math.ceil(min / interval) * interval;
             if (centeringEnabled) {
                 first -= interval;
             }
 
-            double last = interval == 0.0 ? 0.0 : Utils.nextUp(Math.floor(max / interval) * interval);
+            float last = interval == 0f ? 0f : Utils.nextUp((float)Math.floor(max / interval) * interval);
 
-            double f;
+            float f;
             int i;
 
             if (interval != 0.0) {
@@ -109,11 +108,10 @@ public class YAxisRendererRadarChart extends YAxisRenderer {
             }
 
             for (f = first, i = 0; i < n; f += interval, ++i) {
+                if (f == 0f) // Fix for negative zero case (Where value == -0.0, and 0.0 == -0.0)
+                    f = 0f;
 
-                if (f == 0.0) // Fix for negative zero case (Where value == -0.0, and 0.0 == -0.0)
-                    f = 0.0;
-
-                mAxis.mEntries[i] = (float) f;
+                mAxis.mEntries[i] = f;
             }
         }
 
@@ -129,7 +127,7 @@ public class YAxisRendererRadarChart extends YAxisRenderer {
                 mAxis.mCenteredEntries = new float[n];
             }
 
-            float offset = (mAxis.mEntries[1] - mAxis.mEntries[0]) / 2f;
+            float offset = (mAxis.mEntries[1] - mAxis.mEntries[0]) * 0.5f;
 
             for (int i = 0; i < n; i++) {
                 mAxis.mCenteredEntries[i] = mAxis.mEntries[i] + offset;

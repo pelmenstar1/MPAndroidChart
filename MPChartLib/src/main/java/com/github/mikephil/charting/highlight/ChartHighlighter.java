@@ -6,7 +6,8 @@ import com.github.mikephil.charting.data.DataSet;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.interfaces.dataprovider.BarLineScatterCandleBubbleDataProvider;
 import com.github.mikephil.charting.interfaces.datasets.IDataSet;
-import com.github.mikephil.charting.utils.MPPointD;
+import com.github.mikephil.charting.utils.MPPointF;
+import com.github.mikephil.charting.utils.Transformer;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -34,9 +35,9 @@ public class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
 
     @Override
     public Highlight getHighlight(float x, float y) {
-        MPPointD pos = getValsForTouch(x, y);
-        float xVal = (float) pos.x;
-        MPPointD.recycleInstance(pos);
+        MPPointF pos = getValsForTouch(x, y);
+        float xVal = pos.x;
+        MPPointF.recycleInstance(pos);
 
         return getHighlightForX(xVal, x, y);
     }
@@ -46,7 +47,7 @@ public class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
      * Returns the corresponding xPos for a given touch-position in pixels.
      */
     @NotNull
-    protected MPPointD getValsForTouch(float x, float y) {
+    protected MPPointF getValsForTouch(float x, float y) {
         // take any transformer to determine the x-axis value
         return mChart.getTransformer(YAxis.AxisDependency.LEFT).getValuesByTouchPoint(x, y);
     }
@@ -157,14 +158,17 @@ public class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
         if (entries.isEmpty())
             return highlights;
 
+        Transformer transformer = mChart.getTransformer(set.getAxisDependency());
+
         for (Entry e : entries) {
-            MPPointD pixels = mChart.getTransformer(
-                    set.getAxisDependency()).getPixelForValues(e.getX(), e.getY());
+            MPPointF pixels = transformer.getPixelForValues(e.getX(), e.getY());
 
             highlights.add(new Highlight(
                     e.getX(), e.getY(),
-                    (float) pixels.x, (float) pixels.y,
-                    dataSetIndex, set.getAxisDependency()));
+                    pixels.x, pixels.y,
+                    dataSetIndex,
+                    set.getAxisDependency())
+            );
         }
 
         return highlights;

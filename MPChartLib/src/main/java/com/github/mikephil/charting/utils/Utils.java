@@ -42,6 +42,8 @@ public abstract class Utils {
     private static int mMinimumFlingVelocity = 50;
     private static int mMaximumFlingVelocity = 8000;
     public final static double DEG2RAD = (Math.PI / 180.0);
+
+    public static final float RAD2DEG = (float)(180f / Math.PI);
     public final static float FDEG2RAD = ((float) Math.PI / 180.f);
 
     @SuppressWarnings("unused")
@@ -303,16 +305,16 @@ public abstract class Utils {
     /**
      * rounds the given number to the next significant number
      */
-    public static float roundToNextSignificant(double number) {
-        if (Double.isInfinite(number) || 
-            Double.isNaN(number) || 
-            number == 0.0)
+    public static float roundToNextSignificant(float number) {
+        if (Float.isInfinite(number) || Float.isNaN(number) || number == 0f) {
             return 0;
+        }
         
-        float d = (float) Math.ceil((float) Math.log10(number < 0 ? -number : number));
+        float d = (float) Math.ceil((float) Math.log10(Math.abs(number)));
         int pw = 1 - (int) d;
         float magnitude = (float) Math.pow(10, pw);
-        long shifted = Math.round(number * magnitude);
+        int shifted = Math.round(number * magnitude);
+
         return shifted / magnitude;
     }
 
@@ -321,7 +323,6 @@ public abstract class Utils {
      * number.
      */
     public static int getDecimals(float number) {
-
         float i = roundToNextSignificant(number);
         
         if (Float.isInfinite(i))
@@ -374,13 +375,13 @@ public abstract class Utils {
      * Replacement for the Math.nextUp(...) method that is only available in
      * HONEYCOMB and higher. Dat's some seeeeek sheeet.
      */
-    public static double nextUp(double d) {
-        if (d == Double.POSITIVE_INFINITY)
+    public static float nextUp(float d) {
+        if (d == Float.POSITIVE_INFINITY)
             return d;
         else {
             d += 0.0d;
-            return Double.longBitsToDouble(Double.doubleToRawLongBits(d) +
-                    ((d >= 0.0d) ? +1L : -1L));
+            return Float.intBitsToFloat(Float.floatToRawIntBits(d) +
+                    ((d >= 0f) ? +1 : -1));
         }
     }
 
@@ -405,8 +406,10 @@ public abstract class Utils {
             float angle,
             @NotNull MPPointF outputPoint
     ) {
-        outputPoint.x = (float) (center.x + dist * Math.cos(Math.toRadians(angle)));
-        outputPoint.y = (float) (center.y + dist * Math.sin(Math.toRadians(angle)));
+        double angleRad = Math.toRadians(angle);
+
+        outputPoint.x = center.x + dist * (float)Math.cos(angleRad);
+        outputPoint.y = center.y + dist * (float)Math.sin(angleRad);
     }
 
     public static void velocityTrackerPointerUpCleanUpIfNecessary(@NotNull MotionEvent ev,
@@ -705,11 +708,12 @@ public abstract class Utils {
             float rectangleHeight,
             float radians
     ) {
+        float sinRad = (float)Math.sin(radians);
+        float cosRad = (float)Math.cos(radians);
+
         return FSize.getInstance(
-                Math.abs(rectangleWidth * (float) Math.cos(radians)) + Math.abs(rectangleHeight *
-                        (float) Math.sin(radians)),
-                Math.abs(rectangleWidth * (float) Math.sin(radians)) + Math.abs(rectangleHeight *
-                        (float) Math.cos(radians))
+                Math.abs(rectangleWidth * cosRad) + Math.abs(rectangleHeight * sinRad),
+                Math.abs(rectangleWidth * sinRad) + Math.abs(rectangleHeight * cosRad)
         );
     }
 

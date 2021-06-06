@@ -259,14 +259,13 @@ public abstract class PieRadarChartBase<T extends ChartData<? extends IDataSet<?
      * @return
      */
     public float getAngleForPoint(float x, float y) {
-
         MPPointF c = getCenterOffsets();
 
-        double tx = x - c.x, ty = y - c.y;
-        double length = Math.sqrt(tx * tx + ty * ty);
-        double r = Math.acos(ty / length);
+        float tx = x - c.x, ty = y - c.y;
+        float length = (float)Math.sqrt(tx * tx + ty * ty);
+        float r = (float)Math.acos(ty / length);
 
-        float angle = (float) Math.toDegrees(r);
+        float angle = r * Utils.RAD2DEG;
 
         if (x > c.x)
             angle = 360f - angle;
@@ -301,8 +300,10 @@ public abstract class PieRadarChartBase<T extends ChartData<? extends IDataSet<?
     }
 
     public void getPosition(MPPointF center, float dist, float angle, MPPointF outputPoint) {
-        outputPoint.x = (float) (center.x + dist * Math.cos(Math.toRadians(angle)));
-        outputPoint.y = (float) (center.y + dist * Math.sin(Math.toRadians(angle)));
+        float angleRad = angle * Utils.FDEG2RAD;
+
+        outputPoint.x = (float) (center.x + dist * Math.cos(angleRad));
+        outputPoint.y = (float) (center.y + dist * Math.sin(angleRad));
     }
 
     /**
@@ -314,13 +315,12 @@ public abstract class PieRadarChartBase<T extends ChartData<? extends IDataSet<?
      * @return
      */
     public float distanceToCenter(float x, float y) {
-
         MPPointF c = getCenterOffsets();
 
-        float dist = 0f;
+        float dist;
 
-        float xDist = 0f;
-        float yDist = 0f;
+        float xDist;
+        float yDist;
 
         if (x > c.x) {
             xDist = x - c.x;
@@ -335,7 +335,7 @@ public abstract class PieRadarChartBase<T extends ChartData<? extends IDataSet<?
         }
 
         // pythagoras
-        dist = (float) Math.sqrt(Math.pow(xDist, 2.0) + Math.pow(yDist, 2.0));
+        dist = (float) Math.sqrt(xDist * xDist + yDist * yDist);
 
         MPPointF.recycleInstance(c);
 

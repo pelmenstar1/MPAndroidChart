@@ -12,7 +12,6 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.dataprovider.ScatterDataProvider;
 import com.github.mikephil.charting.interfaces.datasets.IScatterDataSet;
 import com.github.mikephil.charting.renderer.scatter.IShapeRenderer;
-import com.github.mikephil.charting.utils.MPPointD;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.github.mikephil.charting.utils.Transformer;
 import com.github.mikephil.charting.utils.Utils;
@@ -182,12 +181,12 @@ public class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
                 continue;
 
             Transformer trans = mChart.getTransformer(set.getAxisDependency());
-            MPPointD pix = trans.getPixelForValues(e.getX(), e.getY() * mAnimator.getPhaseY());
+            MPPointF pix = trans.getPixelForValues(e.getX(), e.getY() * mAnimator.getPhaseY());
 
-            high.setDraw((float) pix.x, (float) pix.y);
+            high.setDraw(pix.x, pix.y);
 
             // draw the lines
-            drawHighlightLines(c, (float) pix.x, (float) pix.y, set);
+            drawHighlightLines(c, pix.x, pix.y, set);
         }
     }
 }

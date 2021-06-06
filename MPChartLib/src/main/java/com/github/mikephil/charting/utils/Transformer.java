@@ -345,14 +345,14 @@ public class Transformer {
      * getPixelForValues(...).
      */
     @NotNull
-    public MPPointD getValuesByTouchPoint(float x, float y) {
-        MPPointD result = MPPointD.getInstance(0, 0);
+    public MPPointF getValuesByTouchPoint(float x, float y) {
+        MPPointF result = MPPointF.getInstance(0, 0);
         getValuesByTouchPoint(x, y, result);
 
         return result;
     }
 
-    public void getValuesByTouchPoint(float x, float y, @NotNull MPPointD outputPoint) {
+    public void getValuesByTouchPoint(float x, float y, @NotNull MPPointF outputPoint) {
         ptsBuffer[0] = x;
         ptsBuffer[1] = y;
 
@@ -367,16 +367,16 @@ public class Transformer {
      * Returns the x and y coordinates (pixels) for a given x and y value in the chart.
      */
     @NotNull
-    public MPPointD getPixelForValues(float x, float y) {
+    public MPPointF getPixelForValues(float x, float y) {
         ptsBuffer[0] = x;
         ptsBuffer[1] = y;
 
         pointValuesToPixel(ptsBuffer);
 
-        double xPx = ptsBuffer[0];
-        double yPx = ptsBuffer[1];
+        float xPx = ptsBuffer[0];
+        float yPx = ptsBuffer[1];
 
-        return MPPointD.getInstance(xPx, yPx);
+        return MPPointF.getInstance(xPx, yPx);
     }
 
     @NotNull

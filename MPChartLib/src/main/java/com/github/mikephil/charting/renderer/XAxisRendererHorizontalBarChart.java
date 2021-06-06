@@ -13,7 +13,6 @@ import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.XAxis.XAxisPosition;
 import com.github.mikephil.charting.utils.FSize;
 import com.github.mikephil.charting.utils.MPPointF;
-import com.github.mikephil.charting.utils.MPPointD;
 import com.github.mikephil.charting.utils.Transformer;
 import com.github.mikephil.charting.utils.Utils;
 import com.github.mikephil.charting.utils.ViewPortHandler;
@@ -40,20 +39,20 @@ public class XAxisRendererHorizontalBarChart extends XAxisRenderer {
         // calculate the starting and entry point of the y-labels (depending on
         // zoom / contentrect bounds)
         if (mViewPortHandler.contentWidth() > 10 && !mViewPortHandler.isFullyZoomedOutY()) {
-            MPPointD p1 = mTrans.getValuesByTouchPoint(mViewPortHandler.contentLeft(), mViewPortHandler.contentBottom());
-            MPPointD p2 = mTrans.getValuesByTouchPoint(mViewPortHandler.contentLeft(), mViewPortHandler.contentTop());
+            MPPointF p1 = mTrans.getValuesByTouchPoint(mViewPortHandler.contentLeft(), mViewPortHandler.contentBottom());
+            MPPointF p2 = mTrans.getValuesByTouchPoint(mViewPortHandler.contentLeft(), mViewPortHandler.contentTop());
 
             if (inverted) {
-                min = (float) p2.y;
-                max = (float) p1.y;
+                min = p2.y;
+                max = p1.y;
             } else {
 
-                min = (float) p1.y;
-                max = (float) p2.y;
+                min = p1.y;
+                max = p2.y;
             }
 
-            MPPointD.recycleInstance(p1);
-            MPPointD.recycleInstance(p2);
+            MPPointF.recycleInstance(p1);
+            MPPointF.recycleInstance(p2);
         }
 
         computeAxisValues(min, max);

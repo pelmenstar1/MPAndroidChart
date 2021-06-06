@@ -7,7 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 
 import com.github.mikephil.charting.components.AxisBase;
-import com.github.mikephil.charting.utils.MPPointD;
+import com.github.mikephil.charting.utils.MPPointF;
 import com.github.mikephil.charting.utils.Transformer;
 import com.github.mikephil.charting.utils.Utils;
 import com.github.mikephil.charting.utils.ViewPortHandler;
@@ -116,19 +116,19 @@ public abstract class AxisRenderer extends Renderer {
         // zoom / contentrect bounds)
         if(mTrans != null) {
             if (mViewPortHandler.contentWidth() > 10 && !mViewPortHandler.isFullyZoomedOutY()) {
-                MPPointD p1 = mTrans.getValuesByTouchPoint(mViewPortHandler.contentLeft(), mViewPortHandler.contentTop());
-                MPPointD p2 = mTrans.getValuesByTouchPoint(mViewPortHandler.contentLeft(), mViewPortHandler.contentBottom());
+                MPPointF p1 = mTrans.getValuesByTouchPoint(mViewPortHandler.contentLeft(), mViewPortHandler.contentTop());
+                MPPointF p2 = mTrans.getValuesByTouchPoint(mViewPortHandler.contentLeft(), mViewPortHandler.contentBottom());
 
                 if (!inverted) {
-                    min = (float) p2.y;
-                    max = (float) p1.y;
+                    min = p2.y;
+                    max = p1.y;
                 } else {
-                    min = (float) p1.y;
-                    max = (float) p2.y;
+                    min = p1.y;
+                    max = p2.y;
                 }
 
-                MPPointD.recycleInstance(p1);
-                MPPointD.recycleInstance(p2);
+                MPPointF.recycleInstance(p1);
+                MPPointF.recycleInstance(p2);
             }
 
             computeAxisValues(min, max);
@@ -141,42 +141,40 @@ public abstract class AxisRenderer extends Renderer {
     protected void computeAxisValues(float min, float max) {
         int labelCount = mAxis.getLabelCount();
 
-        double range = Math.abs(max - min);
+        float range = Math.abs(max - min);
 
-        if (labelCount == 0 || range <= 0 || Double.isInfinite(range)) {
-            mAxis.mEntries = new float[]{};
-            mAxis.mCenteredEntries = new float[]{};
+        if (labelCount == 0 || range <= 0 || Float.isInfinite(range)) {
+            mAxis.mEntries = new float[0];
+            mAxis.mCenteredEntries = new float[0];
             mAxis.mEntryCount = 0;
             return;
         }
 
         // Find out how much spacing (in y value space) between axis values
-        double rawInterval = range / labelCount;
-        double interval = Utils.roundToNextSignificant(rawInterval);
+        float rawInterval = range / labelCount;
+        float interval = Utils.roundToNextSignificant(rawInterval);
 
         // If granularity is enabled, then do not allow the interval to go below specified granularity.
         // This is used to avoid repeated values when rounding values for display.
         if (mAxis.isGranularityEnabled())
-            interval = interval < mAxis.getGranularity() ? mAxis.getGranularity() : interval;
+            interval = Math.max(interval, mAxis.getGranularity());
 
         // Normalize interval
-        double intervalMagnitude = Utils.roundToNextSignificant(Math.pow(10, (int) Math.log10(interval)));
+        float intervalMagnitude = Utils.roundToNextSignificant((float)Math.pow(10, (int) Math.log10(interval)));
         int intervalSigDigit = (int) (interval / intervalMagnitude);
         if (intervalSigDigit > 5) {
             // Use one order of magnitude higher, to avoid intervals like 0.9 or 90
             // if it's 0.0 after floor(), we use the old value
-            interval = Math.floor(10.0 * intervalMagnitude) == 0.0
-                    ? interval
-                    : Math.floor(10.0 * intervalMagnitude);
+            float intervalMagRaw = (float)Math.floor(10f * intervalMagnitude);
 
+            interval = intervalMagRaw == 0f ? interval : intervalMagRaw;
         }
 
         int n = mAxis.isCenterAxisLabelsEnabled() ? 1 : 0;
 
         // force label count
         if (mAxis.isForceLabelsEnabled()) {
-
-            interval = (float) range / (float) (labelCount - 1);
+            interval = range / (float) (labelCount - 1);
             mAxis.mEntryCount = labelCount;
 
             if (mAxis.mEntries.length < labelCount) {
@@ -195,23 +193,21 @@ public abstract class AxisRenderer extends Renderer {
 
             // no forced count
         } else {
-
-            double first = interval == 0.0 ? 0.0 : Math.ceil(min / interval) * interval;
+            float first = interval == 0f ? 0f : (float)Math.ceil(min / interval) * interval;
             if(mAxis.isCenterAxisLabelsEnabled()) {
                 first -= interval;
             }
 
-            double last = interval == 0.0 ? 0.0 : Utils.nextUp(Math.floor(max / interval) * interval);
+            float last = interval == 0f ? 0f : Utils.nextUp((float)Math.floor(max / interval) * interval);
 
-            double f;
+            float f;
             int i;
 
             if (interval != 0.0 && last != first) {
                 for (f = first; f <= last; f += interval) {
                     ++n;
                 }
-            }
-            else if (last == first && n == 0) {
+            } else if (last == first && n == 0) {
                 n = 1;
             }
 
@@ -223,10 +219,10 @@ public abstract class AxisRenderer extends Renderer {
             }
 
             for (f = first, i = 0; i < n; f += interval, ++i) {
-                if (f == 0.0) // Fix for negative zero case (Where value == -0.0, and 0.0 == -0.0)
-                    f = 0.0;
+                if (f == 0f) // Fix for negative zero case (Where value == -0.0, and 0.0 == -0.0)
+                    f = 0f;
 
-                mAxis.mEntries[i] = (float) f;
+                mAxis.mEntries[i] = f;
             }
         }
 
@@ -242,7 +238,7 @@ public abstract class AxisRenderer extends Renderer {
                 mAxis.mCenteredEntries = new float[n];
             }
 
-            float offset = (float)interval * 0.5f;
+            float offset = interval * 0.5f;
 
             for (int i = 0; i < n; i++) {
                 mAxis.mCenteredEntries[i] = mAxis.mEntries[i] + offset;

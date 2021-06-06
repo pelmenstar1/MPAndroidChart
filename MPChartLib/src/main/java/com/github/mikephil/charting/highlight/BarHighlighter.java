@@ -5,7 +5,7 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.BarLineScatterCandleBubbleData;
 import com.github.mikephil.charting.interfaces.dataprovider.BarDataProvider;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
-import com.github.mikephil.charting.utils.MPPointD;
+import com.github.mikephil.charting.utils.MPPointF;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,18 +26,18 @@ public class BarHighlighter extends ChartHighlighter<BarDataProvider> {
             return null;
         }
 
-        MPPointD pos = getValsForTouch(x, y);
+        MPPointF pos = getValsForTouch(x, y);
         BarData barData = mChart.getBarData();
         IBarDataSet set = barData.getDataSetByIndex(high.getDataSetIndex());
 
         if (set.isStacked()) {
             return getStackedHighlight(high,
                     set,
-                    (float) pos.x,
-                    (float) pos.y);
+                    pos.x,
+                    pos.y);
         }
 
-        MPPointD.recycleInstance(pos);
+        MPPointF.recycleInstance(pos);
 
         return high;
     }
@@ -68,19 +68,17 @@ public class BarHighlighter extends ChartHighlighter<BarDataProvider> {
             if (ranges.length > 0) {
                 int stackIndex = getClosestStackIndex(ranges, yVal);
 
-                MPPointD pixels = mChart.getTransformer(set.getAxisDependency()).getPixelForValues(high.getX(), ranges[stackIndex].to);
+                MPPointF pixels = mChart.getTransformer(set.getAxisDependency()).getPixelForValues(high.getX(), ranges[stackIndex].to);
 
                 Highlight stackedHigh = new Highlight(
-                        entry.getX(),
-                        entry.getY(),
-                        (float) pixels.x,
-                        (float) pixels.y,
+                        entry.getX(), entry.getY(),
+                        pixels.x, pixels.y,
                         high.getDataSetIndex(),
                         stackIndex,
                         high.getAxis()
                 );
 
-                MPPointD.recycleInstance(pixels);
+                MPPointF.recycleInstance(pixels);
 
                 return stackedHigh;
             }
