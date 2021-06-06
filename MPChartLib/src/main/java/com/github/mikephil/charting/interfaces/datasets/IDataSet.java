@@ -211,14 +211,14 @@ public interface IDataSet<T extends Entry> {
     /**
      * Returns the axis this DataSet should be plotted against.
      */
-    @NotNull
-    YAxis.AxisDependency getAxisDependency();
+    @YAxis.AxisDependency
+    int getAxisDependency();
 
     /**
      * Set the y-axis this DataSet should be plotted against (either LEFT or
      * RIGHT). Default: LEFT
      */
-    void setAxisDependency(@NotNull YAxis.AxisDependency dependency);
+    void setAxisDependency(@YAxis.AxisDependency int dependency);
 
     /**
      * returns all the colors that are set for this DataSet

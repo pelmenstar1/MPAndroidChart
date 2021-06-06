@@ -61,13 +61,13 @@ public class YAxisRenderer extends AxisRenderer {
         float xOffset = mYAxis.getXOffset();
         float yOffset = Utils.calcTextHeight(mAxisLabelPaint, "A") / 2.5f + mYAxis.getYOffset();
 
-        AxisDependency dependency = mYAxis.getAxisDependency();
-        YAxisLabelPosition labelPosition = mYAxis.getLabelPosition();
+        int dependency = mYAxis.getAxisDependency();
+        int labelPosition = mYAxis.getLabelPosition();
 
         float xPos;
 
-        if (dependency == AxisDependency.LEFT) {
-            if (labelPosition == YAxisLabelPosition.OUTSIDE_CHART) {
+        if (dependency == YAxis.DEPENDENCY_LEFT) {
+            if (labelPosition == YAxis.LABEL_POSITION_OUTSIDE_CHART) {
                 mAxisLabelPaint.setTextAlign(Align.RIGHT);
                 xPos = mViewPortHandler.offsetLeft() - xOffset;
             } else {
@@ -75,7 +75,7 @@ public class YAxisRenderer extends AxisRenderer {
                 xPos = mViewPortHandler.offsetLeft() + xOffset;
             }
         } else {
-            if (labelPosition == YAxisLabelPosition.OUTSIDE_CHART) {
+            if (labelPosition == YAxis.LABEL_POSITION_OUTSIDE_CHART) {
                 mAxisLabelPaint.setTextAlign(Align.LEFT);
                 xPos = mViewPortHandler.contentRight() + xOffset;
             } else {
@@ -95,7 +95,7 @@ public class YAxisRenderer extends AxisRenderer {
         mAxisLinePaint.setColor(mYAxis.getAxisLineColor());
         mAxisLinePaint.setStrokeWidth(mYAxis.getAxisLineWidth());
 
-        if (mYAxis.getAxisDependency() == AxisDependency.LEFT) {
+        if (mYAxis.getAxisDependency() == YAxis.DEPENDENCY_LEFT) {
             c.drawLine(mViewPortHandler.contentLeft(), mViewPortHandler.contentTop(), mViewPortHandler.contentLeft(),
                     mViewPortHandler.contentBottom(), mAxisLinePaint);
         } else {

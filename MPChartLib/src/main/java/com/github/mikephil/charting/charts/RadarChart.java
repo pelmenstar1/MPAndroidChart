@@ -86,7 +86,7 @@ public class RadarChart extends PieRadarChartBase<RadarData, IRadarDataSet, Rada
     protected void init() {
         super.init();
 
-        mYAxis = new YAxis(AxisDependency.LEFT);
+        mYAxis = new YAxis(YAxis.DEPENDENCY_LEFT);
         mYAxis.setLabelXOffset(10f);
 
         mWebLineWidth = Utils.convertDpToPixel(1.5f);
@@ -103,7 +103,7 @@ public class RadarChart extends PieRadarChartBase<RadarData, IRadarDataSet, Rada
     protected void calcMinMax() {
         super.calcMinMax();
 
-        mYAxis.calculate(mData.getYMin(AxisDependency.LEFT), mData.getYMax(AxisDependency.LEFT));
+        mYAxis.calculate(mData.getYMin(YAxis.DEPENDENCY_LEFT), mData.getYMax(YAxis.DEPENDENCY_LEFT));
         mXAxis.calculate(0, mData.getMaxEntryCountSet().getEntryCount());
     }
 

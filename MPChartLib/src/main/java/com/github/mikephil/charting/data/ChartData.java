@@ -6,6 +6,7 @@ import android.util.Log;
 
 import androidx.annotation.ColorInt;
 
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.components.YAxis.AxisDependency;
 import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
@@ -145,7 +146,7 @@ public abstract class ChartData<TDataSet extends IDataSet<TEntry>, TEntry extend
             mLeftAxisMin = firstLeft.getYMin();
 
             for (TDataSet dataSet : mDataSets) {
-                if (dataSet.getAxisDependency() == AxisDependency.LEFT) {
+                if (dataSet.getAxisDependency() == YAxis.DEPENDENCY_LEFT) {
                     if (dataSet.getYMin() < mLeftAxisMin)
                         mLeftAxisMin = dataSet.getYMin();
 
@@ -164,7 +165,7 @@ public abstract class ChartData<TDataSet extends IDataSet<TEntry>, TEntry extend
             mRightAxisMin = firstRight.getYMin();
 
             for (TDataSet dataSet : mDataSets) {
-                if (dataSet.getAxisDependency() == AxisDependency.RIGHT) {
+                if (dataSet.getAxisDependency() == YAxis.DEPENDENCY_RIGHT) {
                     if (dataSet.getYMin() < mRightAxisMin)
                         mRightAxisMin = dataSet.getYMin();
 
@@ -192,8 +193,8 @@ public abstract class ChartData<TDataSet extends IDataSet<TEntry>, TEntry extend
     /**
      * Returns the minimum y-value for the specified axis.
      */
-    public float getYMin(AxisDependency axis) {
-        if (axis == AxisDependency.LEFT) {
+    public float getYMin(@AxisDependency int axis) {
+        if (axis == YAxis.DEPENDENCY_LEFT) {
             if (mLeftAxisMin == Float.MAX_VALUE) {
                 return mRightAxisMin;
             } else
@@ -216,9 +217,8 @@ public abstract class ChartData<TDataSet extends IDataSet<TEntry>, TEntry extend
     /**
      * Returns the maximum y-value for the specified axis.
      */
-    public float getYMax(AxisDependency axis) {
-        if (axis == AxisDependency.LEFT) {
-
+    public float getYMax(@AxisDependency int axis) {
+        if (axis == YAxis.DEPENDENCY_LEFT) {
             if (mLeftAxisMax == -Float.MAX_VALUE) {
                 return mRightAxisMax;
             } else
@@ -381,7 +381,7 @@ public abstract class ChartData<TDataSet extends IDataSet<TEntry>, TEntry extend
     /**
      * Adjusts the current minimum and maximum values based on the provided Entry object.
      */
-    protected void calcMinMax(@NotNull TEntry e, @NotNull AxisDependency axis) {
+    protected void calcMinMax(@NotNull TEntry e, @AxisDependency int axis) {
         if (mYMax < e.getY())
             mYMax = e.getY();
         if (mYMin > e.getY())
@@ -392,7 +392,7 @@ public abstract class ChartData<TDataSet extends IDataSet<TEntry>, TEntry extend
         if (mXMin > e.getX())
             mXMin = e.getX();
 
-        if (axis == AxisDependency.LEFT) {
+        if (axis == YAxis.DEPENDENCY_LEFT) {
             if (mLeftAxisMax < e.getY())
                 mLeftAxisMax = e.getY();
             if (mLeftAxisMin > e.getY())
@@ -419,7 +419,7 @@ public abstract class ChartData<TDataSet extends IDataSet<TEntry>, TEntry extend
         if (mXMin > d.getXMin())
             mXMin = d.getXMin();
 
-        if (d.getAxisDependency() == AxisDependency.LEFT) {
+        if (d.getAxisDependency() == YAxis.DEPENDENCY_LEFT) {
             if (mLeftAxisMax < d.getYMax())
                 mLeftAxisMax = d.getYMax();
             if (mLeftAxisMin > d.getYMin())
@@ -531,7 +531,7 @@ public abstract class ChartData<TDataSet extends IDataSet<TEntry>, TEntry extend
     @Nullable
     protected TDataSet getFirstLeft(@NotNull List<TDataSet> sets) {
         for (TDataSet dataSet : sets) {
-            if (dataSet.getAxisDependency() == AxisDependency.LEFT)
+            if (dataSet.getAxisDependency() == YAxis.DEPENDENCY_LEFT)
                 return dataSet;
         }
         return null;
@@ -544,7 +544,7 @@ public abstract class ChartData<TDataSet extends IDataSet<TEntry>, TEntry extend
     @Nullable
     public TDataSet getFirstRight(@NotNull List<TDataSet> sets) {
         for (TDataSet dataSet : sets) {
-            if (dataSet.getAxisDependency() == AxisDependency.RIGHT)
+            if (dataSet.getAxisDependency() == YAxis.DEPENDENCY_RIGHT)
                 return dataSet;
         }
         return null;

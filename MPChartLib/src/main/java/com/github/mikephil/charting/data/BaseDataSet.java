@@ -49,8 +49,8 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     /**
      * this specifies which axis this DataSet should be plotted against
      */
-    @NotNull
-    protected YAxis.AxisDependency mAxisDependency = YAxis.AxisDependency.LEFT;
+    @YAxis.AxisDependency
+    protected int mAxisDependency = YAxis.DEPENDENCY_LEFT;
 
     /**
      * if true, value highlightning is enabled
@@ -412,13 +412,13 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     }
 
     @Override
-    @NotNull
-    public YAxis.AxisDependency getAxisDependency() {
+    @YAxis.AxisDependency
+    public int getAxisDependency() {
         return mAxisDependency;
     }
 
     @Override
-    public void setAxisDependency(@NotNull YAxis.AxisDependency dependency) {
+    public void setAxisDependency(@YAxis.AxisDependency int dependency) {
         mAxisDependency = dependency;
     }
 

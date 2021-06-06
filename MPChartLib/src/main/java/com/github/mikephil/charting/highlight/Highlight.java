@@ -50,7 +50,8 @@ public class Highlight {
     /**
      * the axis the highlighted value belongs to
      */
-    private YAxis.AxisDependency axis;
+    @YAxis.AxisDependency
+    private int axis;
 
     /**
      * the x-position (pixels) on which this highlight object was last drawn
@@ -88,7 +89,7 @@ public class Highlight {
      * @param y            the y-value of the highlighted value
      * @param dataSetIndex the index of the DataSet the highlighted value belongs to
      */
-    public Highlight(float x, float y, float xPx, float yPx, int dataSetIndex, @NotNull YAxis.AxisDependency axis) {
+    public Highlight(float x, float y, float xPx, float yPx, int dataSetIndex, @YAxis.AxisDependency int axis) {
         this.mX = x;
         this.mY = y;
         this.mXPx = xPx;
@@ -110,7 +111,7 @@ public class Highlight {
             float x, float y,
             float xPx, float yPx,
             int dataSetIndex, int stackIndex,
-            @NotNull YAxis.AxisDependency axis) {
+            @YAxis.AxisDependency int  axis) {
         this(x, y, xPx, yPx, dataSetIndex, axis);
         this.mStackIndex = stackIndex;
     }
@@ -177,7 +178,8 @@ public class Highlight {
      * Returns the axis the highlighted value belongs to.
      */
     @NotNull
-    public YAxis.AxisDependency getAxis() {
+    @YAxis.AxisDependency
+    public int getAxis() {
         return axis;
     }
 

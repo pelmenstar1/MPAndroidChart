@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis.XAxisPosition;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.components.YAxis.AxisDependency;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
@@ -249,8 +250,7 @@ public class HorizontalBarChart extends BarChart {
      * @return
      */
     @Override
-    public MPPointF getPosition(Entry e, AxisDependency axis) {
-
+    public MPPointF getPosition(Entry e, @AxisDependency int axis) {
         if (e == null)
             return null;
 
@@ -273,7 +273,6 @@ public class HorizontalBarChart extends BarChart {
      */
     @Override
     public Highlight getHighlightByTouchPoint(float x, float y) {
-
         if (mData == null) {
             if (mLogEnabled)
                 Log.e(LOG_TAG, "Can't select by touch. No data set.");
@@ -284,18 +283,18 @@ public class HorizontalBarChart extends BarChart {
 
     @Override
     public float getLowestVisibleX() {
-        getTransformer(AxisDependency.LEFT).getValuesByTouchPoint(mViewPortHandler.contentLeft(),
+        getTransformer(YAxis.DEPENDENCY_LEFT).getValuesByTouchPoint(mViewPortHandler.contentLeft(),
                 mViewPortHandler.contentBottom(), posForGetLowestVisibleX);
-        float result = (float) Math.max(mXAxis.mAxisMinimum, posForGetLowestVisibleX.y);
-        return result;
+
+        return Math.max(mXAxis.mAxisMinimum, posForGetLowestVisibleX.y);
     }
 
     @Override
     public float getHighestVisibleX() {
-        getTransformer(AxisDependency.LEFT).getValuesByTouchPoint(mViewPortHandler.contentLeft(),
+        getTransformer(YAxis.DEPENDENCY_LEFT).getValuesByTouchPoint(mViewPortHandler.contentLeft(),
                 mViewPortHandler.contentTop(), posForGetHighestVisibleX);
-        float result = (float) Math.min(mXAxis.mAxisMaximum, posForGetHighestVisibleX.y);
-        return result;
+
+        return Math.min(mXAxis.mAxisMaximum, posForGetHighestVisibleX.y);
     }
 
     /**
@@ -322,19 +321,19 @@ public class HorizontalBarChart extends BarChart {
     }
 
     @Override
-    public void setVisibleYRangeMaximum(float maxYRange, AxisDependency axis) {
+    public void setVisibleYRangeMaximum(float maxYRange, @AxisDependency int axis) {
         float yScale = getAxisRange(axis) / maxYRange;
         mViewPortHandler.setMinimumScaleX(yScale);
     }
 
     @Override
-    public void setVisibleYRangeMinimum(float minYRange, AxisDependency axis) {
+    public void setVisibleYRangeMinimum(float minYRange, @AxisDependency int axis) {
         float yScale = getAxisRange(axis) / minYRange;
         mViewPortHandler.setMaximumScaleX(yScale);
     }
 
     @Override
-    public void setVisibleYRange(float minYRange, float maxYRange, AxisDependency axis) {
+    public void setVisibleYRange(float minYRange, float maxYRange, @AxisDependency int axis) {
         float minScale = getAxisRange(axis) / minYRange;
         float maxScale = getAxisRange(axis) / maxYRange;
         mViewPortHandler.setMinMaxScaleX(minScale, maxScale);

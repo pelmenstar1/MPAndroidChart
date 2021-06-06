@@ -4,10 +4,16 @@ import android.graphics.Color;
 import android.graphics.Paint;
 
 import androidx.annotation.ColorInt;
+import androidx.annotation.IntDef;
 
 import com.github.mikephil.charting.utils.Utils;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Class representing the y-axis labels settings and its entries. Only use the setter methods to
@@ -69,8 +75,8 @@ public class YAxis extends AxisBase {
     /**
      * the position of the y-labels relative to the chart
      */
-    @NotNull
-    private YAxisLabelPosition mPosition = YAxisLabelPosition.OUTSIDE_CHART;
+    @YAxisLabelPosition
+    private int mPosition = LABEL_POSITION_OUTSIDE_CHART;
 
     /**
      * the horizontal offset of the y-label
@@ -78,17 +84,10 @@ public class YAxis extends AxisBase {
     private float mXLabelOffset = 0.0f;
 
     /**
-     * enum for the position of the y-labels relative to the chart
-     */
-    public enum YAxisLabelPosition {
-        OUTSIDE_CHART, INSIDE_CHART
-    }
-
-    /**
      * the side this axis object represents
      */
-    @NotNull
-    private final AxisDependency mAxisDependency;
+    @AxisDependency
+    private final int mAxisDependency;
 
     /**
      * the minimum width that the axis should take (in dp).
@@ -104,28 +103,37 @@ public class YAxis extends AxisBase {
      */
     protected float mMaxWidth = Float.POSITIVE_INFINITY;
 
-    /**
-     * Enum that specifies the axis a DataSet should be plotted against, either LEFT or RIGHT.
-     *
-     * @author Philipp Jahoda
-     */
-    public enum AxisDependency {
-        LEFT, RIGHT
+    public static final int LABEL_POSITION_OUTSIDE_CHART = 0;
+    public static final int LABEL_POSITION_INSIDE_CHART = 1;
+
+    @IntDef({ LABEL_POSITION_OUTSIDE_CHART, LABEL_POSITION_INSIDE_CHART })
+    @Retention(RetentionPolicy.SOURCE)
+    @Target({ ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER })
+    public @interface YAxisLabelPosition {
+    }
+
+    public static final int DEPENDENCY_LEFT = 0;
+    public static final int DEPENDENCY_RIGHT = 1;
+
+    @IntDef({ DEPENDENCY_LEFT, DEPENDENCY_RIGHT })
+    @Retention(RetentionPolicy.SOURCE)
+    @Target({ ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER })
+    public @interface AxisDependency {
     }
 
     public YAxis() {
         // default left
-        this.mAxisDependency = AxisDependency.LEFT;
+        this.mAxisDependency = DEPENDENCY_LEFT;
         this.mYOffset = 0f;
     }
 
-    public YAxis(@NotNull AxisDependency position) {
+    public YAxis(@AxisDependency int position) {
         this.mAxisDependency = position;
         this.mYOffset = 0f;
     }
 
-    @NotNull
-    public AxisDependency getAxisDependency() {
+    @AxisDependency
+    public int getAxisDependency() {
         return mAxisDependency;
     }
 
@@ -160,15 +168,15 @@ public class YAxis extends AxisBase {
     /**
      * returns the position of the y-labels
      */
-    @NotNull
-    public YAxisLabelPosition getLabelPosition() {
+    @YAxisLabelPosition
+    public int getLabelPosition() {
         return mPosition;
     }
 
     /**
      * sets the position of the y-labels
      */
-    public void setPosition(@NotNull YAxisLabelPosition pos) {
+    public void setPosition(@YAxisLabelPosition int pos) {
         mPosition = pos;
     }
 
@@ -337,7 +345,7 @@ public class YAxis extends AxisBase {
      * Returns true if this axis needs horizontal offset, false if no offset is needed.
      */
     public boolean needsOffset() {
-        return isEnabled() && isDrawLabelsEnabled() && mPosition == YAxisLabelPosition.OUTSIDE_CHART;
+        return isEnabled() && isDrawLabelsEnabled() && mPosition == LABEL_POSITION_OUTSIDE_CHART;
     }
 
     /**

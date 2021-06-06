@@ -11,8 +11,8 @@ import com.github.mikephil.charting.utils.Transformer;
 public interface BarLineScatterCandleBubbleDataProvider<TData extends BarLineScatterCandleBubbleData<TDataSet, TEntry>, TDataSet extends IBarLineScatterCandleBubbleDataSet<TEntry>, TEntry extends Entry>
         extends ChartInterface<TData, TDataSet, TEntry> {
 
-    Transformer getTransformer(AxisDependency axis);
-    boolean isInverted(AxisDependency axis);
+    Transformer getTransformer(@AxisDependency int axis);
+    boolean isInverted(@AxisDependency int axis);
     
     float getLowestVisibleX();
     float getHighestVisibleX();

@@ -81,11 +81,11 @@ public class YAxisRendererHorizontalBarChart extends YAxisRenderer {
         float baseYOffset = Utils.convertDpToPixel(2.5f);
         float textHeight = Utils.calcTextHeight(mAxisLabelPaint, "Q");
 
-        AxisDependency dependency = mYAxis.getAxisDependency();
+        int dependency = mYAxis.getAxisDependency();
 
         float yPos;
 
-        if (dependency == AxisDependency.LEFT) {
+        if (dependency == YAxis.DEPENDENCY_LEFT) {
             yPos = mViewPortHandler.contentTop() - baseYOffset;
         } else {
             yPos = mViewPortHandler.contentBottom() + textHeight + baseYOffset;
@@ -102,7 +102,7 @@ public class YAxisRendererHorizontalBarChart extends YAxisRenderer {
         mAxisLinePaint.setColor(mYAxis.getAxisLineColor());
         mAxisLinePaint.setStrokeWidth(mYAxis.getAxisLineWidth());
 
-        if (mYAxis.getAxisDependency() == AxisDependency.LEFT) {
+        if (mYAxis.getAxisDependency() == YAxis.DEPENDENCY_LEFT) {
             float contentTop = mViewPortHandler.contentTop();
 
             c.drawLine(

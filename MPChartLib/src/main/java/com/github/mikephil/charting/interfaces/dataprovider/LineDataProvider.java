@@ -8,5 +8,5 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 public interface LineDataProvider extends BarLineScatterCandleBubbleDataProvider<LineData, ILineDataSet, Entry> {
     LineData getLineData();
 
-    YAxis getAxis(YAxis.AxisDependency dependency);
+    YAxis getAxis(@YAxis.AxisDependency int dependency);
 }

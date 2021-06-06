@@ -26,14 +26,14 @@ public class ZoomJob extends ViewPortJob {
     protected float scaleX;
     protected float scaleY;
 
-    @NotNull
-    protected YAxis.AxisDependency axisDependency;
+    @YAxis.AxisDependency
+    protected int axisDependency;
 
     private ZoomJob() {
         //noinspection ConstantConditions
         super(null, 0, 0, null, null);
 
-        axisDependency = YAxis.AxisDependency.LEFT;
+        axisDependency = YAxis.DEPENDENCY_LEFT;
     }
 
     public ZoomJob(
@@ -41,7 +41,7 @@ public class ZoomJob extends ViewPortJob {
             float scaleX, float scaleY,
             float xValue, float yValue,
             @NotNull Transformer trans,
-            @NotNull YAxis.AxisDependency axis,
+            @YAxis.AxisDependency int axis,
             @NotNull View v) {
         super(viewPortHandler, xValue, yValue, trans, v);
 
@@ -56,7 +56,7 @@ public class ZoomJob extends ViewPortJob {
             float scaleX, float scaleY,
             float xValue, float yValue,
             @NotNull Transformer trans,
-            @NotNull YAxis.AxisDependency axis,
+            @YAxis.AxisDependency int axis,
             @NotNull View v) {
         ZoomJob result = pool.get();
         result.xValue = xValue;
