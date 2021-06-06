@@ -146,7 +146,7 @@ public class HorizontalBarChartRenderer extends BarChartRenderer {
                                 buffer.buffer[j + 1],
                                 buffer.buffer[j + 2],
                                 buffer.buffer[j + 3],
-                                isInverted ? Fill.Direction.LEFT : Fill.Direction.RIGHT);
+                                isInverted ? Fill.DIRECTION_LEFT : Fill.DIRECTION_RIGHT);
             } else {
                 c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
                         buffer.buffer[j + 3], mRenderPaint);

@@ -174,7 +174,7 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer<IBarDat
                                 buffer.buffer[j + 1],
                                 buffer.buffer[j + 2],
                                 buffer.buffer[j + 3],
-                                isInverted ? Fill.Direction.DOWN : Fill.Direction.UP);
+                                isInverted ? Fill.DIRECTION_DOWN : Fill.DIRECTION_UP);
             }
             else {
                 c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],

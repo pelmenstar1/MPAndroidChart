@@ -9,20 +9,31 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 
 import androidx.annotation.ColorInt;
+import androidx.annotation.IntDef;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class Fill {
-    public enum Type {
-        EMPTY, COLOR, LINEAR_GRADIENT, DRAWABLE
+    public static final int TYPE_EMPTY = 0;
+    public static final int TYPE_COLOR = 1;
+    public static final int TYPE_LINEAR_GRADIENT = 2;
+    public static final int TYPE_DRAWABLE = 3;
+
+    @IntDef({ TYPE_EMPTY, TYPE_COLOR, TYPE_LINEAR_GRADIENT, TYPE_DRAWABLE })
+    public @interface Type {
     }
 
-    public enum Direction {
-        DOWN, UP, RIGHT, LEFT
+    public static final int DIRECTION_DOWN = 0;
+    public static final int DIRECTION_UP = 1;
+    public static final int DIRECTION_RIGHT = 2;
+    public static final int DIRECTION_LEFT = 3;
+
+    @IntDef({ DIRECTION_DOWN, DIRECTION_UP, DIRECTION_RIGHT, DIRECTION_LEFT })
+    public @interface Direction {
     }
 
-    private Type mType = Type.EMPTY;
+    private int mType = TYPE_EMPTY;
 
     @Nullable
     private Integer mColor = null;
@@ -44,40 +55,40 @@ public class Fill {
     }
 
     public Fill(@ColorInt int color) {
-        mType = Type.COLOR;
+        mType = TYPE_COLOR;
         mColor = color;
         calculateFinalColor();
     }
 
     public Fill(int startColor, int endColor) {
-        this.mType = Type.LINEAR_GRADIENT;
+        this.mType = TYPE_LINEAR_GRADIENT;
         this.mGradientColors = new int[]{startColor, endColor};
     }
 
     public Fill(@NotNull int[] gradientColors) {
-        this.mType = Type.LINEAR_GRADIENT;
+        this.mType = TYPE_LINEAR_GRADIENT;
         this.mGradientColors = gradientColors;
     }
 
     public Fill(@NotNull int[] gradientColors, @NotNull float[] gradientPositions) {
-        this.mType = Type.LINEAR_GRADIENT;
+        this.mType = TYPE_LINEAR_GRADIENT;
         this.mGradientColors = gradientColors;
         this.mGradientPositions = gradientPositions;
     }
 
     public Fill(@NotNull Drawable drawable)
     {
-        this.mType = Type.DRAWABLE;
+        this.mType = TYPE_DRAWABLE;
         this.mDrawable = drawable;
     }
 
-    @NotNull
-    public Type getType()
+    @Type
+    public int getType()
     {
         return mType;
     }
 
-    public void setType(@NotNull Type type)
+    public void setType(@Type int type)
     {
         this.mType = type;
     }
@@ -138,12 +149,12 @@ public class Fill {
 
     public void fillRect(@NotNull Canvas c, @NotNull Paint paint,
                          float left, float top, float right, float bottom,
-                         @NotNull Direction gradientDirection) {
+                         @Direction int gradientDirection) {
         switch (mType) {
-            case EMPTY:
+            case TYPE_EMPTY:
                 return;
 
-            case COLOR: {
+            case TYPE_COLOR: {
                 if (mFinalColor == null) return;
 
                 if (isClipPathSupported()) {
@@ -171,28 +182,28 @@ public class Fill {
             }
             break;
 
-            case LINEAR_GRADIENT: {
+            case TYPE_LINEAR_GRADIENT: {
                 if (mGradientColors == null) return;
 
                 LinearGradient gradient = new LinearGradient(
-                        (int) (gradientDirection == Direction.RIGHT
+                        (int) (gradientDirection == DIRECTION_RIGHT
                                 ? right
-                                : gradientDirection == Direction.LEFT
+                                : gradientDirection == DIRECTION_LEFT
                                 ? left
                                 : left),
-                        (int) (gradientDirection == Direction.UP
+                        (int) (gradientDirection == DIRECTION_UP
                                 ? bottom
-                                : gradientDirection == Direction.DOWN
+                                : gradientDirection == DIRECTION_DOWN
                                 ? top
                                 : top),
-                        (int) (gradientDirection == Direction.RIGHT
+                        (int) (gradientDirection == DIRECTION_RIGHT
                                 ? left
-                                : gradientDirection == Direction.LEFT
+                                : gradientDirection == DIRECTION_LEFT
                                 ? right
                                 : left),
-                        (int) (gradientDirection == Direction.UP
+                        (int) (gradientDirection == DIRECTION_UP
                                 ? top
-                                : gradientDirection == Direction.DOWN
+                                : gradientDirection == DIRECTION_DOWN
                                 ? bottom
                                 : top),
                         mGradientColors,
@@ -205,7 +216,7 @@ public class Fill {
             }
             break;
 
-            case DRAWABLE: {
+            case TYPE_DRAWABLE: {
                 if (mDrawable == null) return;
 
                 mDrawable.setBounds((int) left, (int) top, (int) right, (int) bottom);
@@ -218,10 +229,10 @@ public class Fill {
     public void fillPath(@NotNull Canvas c, @NotNull Path path, @NotNull Paint paint,
                          @Nullable RectF clipRect) {
         switch (mType) {
-            case EMPTY:
+            case TYPE_EMPTY:
                 return;
 
-            case COLOR: {
+            case TYPE_COLOR: {
                 if (mFinalColor == null) return;
 
                 if (clipRect != null && isClipPathSupported()) {
@@ -249,7 +260,7 @@ public class Fill {
             }
             break;
 
-            case LINEAR_GRADIENT: {
+            case TYPE_LINEAR_GRADIENT: {
                 if (mGradientColors == null) return;
 
                 LinearGradient gradient = new LinearGradient(
@@ -267,7 +278,7 @@ public class Fill {
             }
             break;
 
-            case DRAWABLE: {
+            case TYPE_DRAWABLE: {
                 if (mDrawable == null) return;
 
                 ensureClipPathSupported();
