@@ -30,11 +30,11 @@ public interface IPieDataSet extends IDataSet<PieEntry> {
      */
     float getSelectionShift();
 
-    @NotNull
-    PieDataSet.ValuePosition getXValuePosition();
+    @PieDataSet.ValuePosition
+    int getXValuePosition();
 
-    @NotNull
-    PieDataSet.ValuePosition getYValuePosition();
+    @PieDataSet.ValuePosition
+    int getYValuePosition();
 
     /**
      * When valuePosition is OutsideSlice, indicates line color

@@ -459,8 +459,8 @@ public class PieChartRenderer extends DataRenderer {
             if (!drawValues && !drawEntryLabels)
                 continue;
 
-            PieDataSet.ValuePosition xValuePosition = dataSet.getXValuePosition();
-            PieDataSet.ValuePosition yValuePosition = dataSet.getYValuePosition();
+            int xValuePosition = dataSet.getXValuePosition();
+            int yValuePosition = dataSet.getYValuePosition();
 
             // apply the text-styling defined by the DataSet
             applyValueTextStyle(dataSet);
@@ -511,13 +511,13 @@ public class PieChartRenderer extends DataRenderer {
                 float sliceYBase = (float) Math.sin(transformedAngleRad);
 
                 boolean drawXOutside = drawEntryLabels &&
-                        xValuePosition == PieDataSet.ValuePosition.OUTSIDE_SLICE;
+                        xValuePosition == PieDataSet.VALUE_POSITION_OUTSIDE_SLICE;
                 boolean drawYOutside = drawValues &&
-                        yValuePosition == PieDataSet.ValuePosition.OUTSIDE_SLICE;
+                        yValuePosition == PieDataSet.VALUE_POSITION_OUTSIDE_SLICE;
                 boolean drawXInside = drawEntryLabels &&
-                        xValuePosition == PieDataSet.ValuePosition.INSIDE_SLICE;
+                        xValuePosition == PieDataSet.VALUE_POSITION_INSIDE_SLICE;
                 boolean drawYInside = drawValues &&
-                        yValuePosition == PieDataSet.ValuePosition.INSIDE_SLICE;
+                        yValuePosition == PieDataSet.VALUE_POSITION_INSIDE_SLICE;
 
                 if (drawXOutside || drawYOutside) {
                     float valueLineLength1 = dataSet.getValueLinePart1Length();

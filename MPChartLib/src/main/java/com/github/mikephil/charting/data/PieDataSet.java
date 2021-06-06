@@ -1,12 +1,18 @@
 
 package com.github.mikephil.charting.data;
 
+import androidx.annotation.IntDef;
+
 import com.github.mikephil.charting.interfaces.datasets.IPieDataSet;
 import com.github.mikephil.charting.utils.Utils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,11 +28,11 @@ public class PieDataSet extends DataSet<PieEntry> implements IPieDataSet {
      */
     private float mShift = 18f;
 
-    @NotNull
-    private ValuePosition mXValuePosition = ValuePosition.INSIDE_SLICE;
+    @ValuePosition
+    private int mXValuePosition = VALUE_POSITION_INSIDE_SLICE;
 
-    @NotNull
-    private ValuePosition mYValuePosition = ValuePosition.INSIDE_SLICE;
+    @ValuePosition
+    private int mYValuePosition = VALUE_POSITION_INSIDE_SLICE;
     private int mValueLineColor = 0xff000000;
     private boolean mUseValueColorForLine = false;
     private float mValueLineWidth = 1.0f;
@@ -115,22 +121,22 @@ public class PieDataSet extends DataSet<PieEntry> implements IPieDataSet {
     }
 
     @Override
-    @NotNull
-    public ValuePosition getXValuePosition() {
+    @ValuePosition
+    public int getXValuePosition() {
         return mXValuePosition;
     }
 
-    public void setXValuePosition(@NotNull ValuePosition xValuePosition) {
+    public void setXValuePosition(@ValuePosition int xValuePosition) {
         this.mXValuePosition = xValuePosition;
     }
 
     @Override
-    @NotNull
-    public ValuePosition getYValuePosition() {
+    @ValuePosition
+    public int getYValuePosition() {
         return mYValuePosition;
     }
 
-    public void setYValuePosition(@NotNull ValuePosition yValuePosition) {
+    public void setYValuePosition(@ValuePosition int yValuePosition) {
         this.mYValuePosition = yValuePosition;
     }
 
@@ -249,9 +255,12 @@ public class PieDataSet extends DataSet<PieEntry> implements IPieDataSet {
         this.mHighlightColor = color;
     }
 
+    public static final int VALUE_POSITION_INSIDE_SLICE = 0;
+    public static final int VALUE_POSITION_OUTSIDE_SLICE = 1;
 
-    public enum ValuePosition {
-        INSIDE_SLICE,
-        OUTSIDE_SLICE
+    @IntDef({ VALUE_POSITION_INSIDE_SLICE, VALUE_POSITION_OUTSIDE_SLICE })
+    @Retention(RetentionPolicy.SOURCE)
+    @Target({ ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER })
+    public @interface ValuePosition {
     }
 }
