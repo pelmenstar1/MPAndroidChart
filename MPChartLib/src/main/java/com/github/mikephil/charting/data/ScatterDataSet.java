@@ -88,7 +88,7 @@ public class ScatterDataSet extends LineScatterCandleRadarDataSet<Entry> impleme
      * Sets the ScatterShape this DataSet should be drawn with. This will search for an available IShapeRenderer and set this
      * renderer for the DataSet.
      */
-    public void setScatterShape(@NotNull ScatterChart.ScatterShape shape) {
+    public void setScatterShape(@ScatterChart.ScatterShape int shape) {
         mShapeRenderer = getRendererForShape(shape);
     }
 
@@ -133,21 +133,21 @@ public class ScatterDataSet extends LineScatterCandleRadarDataSet<Entry> impleme
     }
 
     @NotNull
-    public static IShapeRenderer getRendererForShape(@NotNull ScatterChart.ScatterShape shape) {
+    public static IShapeRenderer getRendererForShape(@ScatterChart.ScatterShape int shape) {
         switch (shape) {
-            case SQUARE:
+            case ScatterChart.SHAPE_SQUARE:
                 return new SquareShapeRenderer();
-            case CIRCLE:
+            case ScatterChart.SHAPE_CIRCLE:
                 return new CircleShapeRenderer();
-            case TRIANGLE:
+            case ScatterChart.SHAPE_TRIANGLE:
                 return new TriangleShapeRenderer();
-            case CROSS:
+            case ScatterChart.SHAPE_CROSS:
                 return new CrossShapeRenderer();
-            case X:
+            case ScatterChart.SHAPE_X:
                 return new XShapeRenderer();
-            case CHEVRON_UP:
+            case ScatterChart.SHAPE_CHEVRON_UP:
                 return new ChevronUpShapeRenderer();
-            case CHEVRON_DOWN:
+            case ScatterChart.SHAPE_CHEVRON_DOWN:
                 return new ChevronDownShapeRenderer();
             default:
                 throw new IllegalArgumentException("shape");
