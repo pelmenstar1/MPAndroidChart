@@ -17,6 +17,7 @@ import com.github.mikephil.charting.interfaces.datasets.IDataSet;
 import com.github.mikephil.charting.interfaces.datasets.IPieDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.FSize;
+import com.github.mikephil.charting.utils.IntList;
 import com.github.mikephil.charting.utils.Utils;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
@@ -84,7 +85,7 @@ public class LegendRenderer extends Renderer {
             for (int i = 0; i < data.getDataSetCount(); i++) {
                 IDataSet<?> dataSet = data.getDataSetByIndex(i);
 
-                List<Integer> clrs = dataSet.getColors();
+                IntList clrs = dataSet.getColors();
                 int entryCount = dataSet.getEntryCount();
 
                 // if we have a barchart with stacked bars

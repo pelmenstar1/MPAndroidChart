@@ -11,6 +11,7 @@ import com.github.mikephil.charting.components.YAxis.AxisDependency;
 import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IDataSet;
+import com.github.mikephil.charting.utils.IntList;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -507,11 +508,9 @@ public abstract class ChartData<TDataSet extends IDataSet<TEntry>, TEntry extend
         int index = 0;
 
         for (int i = 0; i < mDataSets.size(); i++) {
-            List<Integer> clrs = mDataSets.get(i).getColors();
+            IntList dataSetColors = mDataSets.get(i).getColors();
 
-            for (Integer clr : clrs) {
-                colors[index++] = clr;
-            }
+            dataSetColors.copyTo(colors, index);
         }
 
         return colors;
@@ -574,7 +573,7 @@ public abstract class ChartData<TDataSet extends IDataSet<TEntry>, TEntry extend
      * Sets the same list of value-colors for all DataSets this
      * data object contains.
      */
-    public void setValueTextColors(@NotNull List<Integer> colors) {
+    public void setValueTextColors(@NotNull IntList colors) {
         for (TDataSet set : mDataSets) {
             set.setValueTextColors(colors);
         }

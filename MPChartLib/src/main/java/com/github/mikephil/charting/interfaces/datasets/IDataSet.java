@@ -11,6 +11,7 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.DataSet;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.IValueFormatter;
+import com.github.mikephil.charting.utils.IntList;
 import com.github.mikephil.charting.utils.MPPointF;
 
 import org.jetbrains.annotations.NotNull;
@@ -224,7 +225,7 @@ public interface IDataSet<T extends Entry> {
      * returns all the colors that are set for this DataSet
      */
     @NotNull
-    List<Integer> getColors();
+    IntList getColors();
 
     /**
      * Returns the first color (index 0) of the colors-array this DataSet
@@ -279,7 +280,7 @@ public interface IDataSet<T extends Entry> {
     /**
      * Sets a list of colors to be used as the colors for the drawn values.
      */
-    void setValueTextColors(@NotNull List<Integer> colors);
+    void setValueTextColors(@NotNull IntList colors);
 
     /**
      * Sets a Typeface for the value-labels of this DataSet.

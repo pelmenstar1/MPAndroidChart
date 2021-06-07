@@ -13,6 +13,7 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.utils.IntList;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.github.mikephil.charting.utils.Utils;
 
@@ -32,13 +33,13 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
      * List representing all colors that are used for this DataSet
      */
     @NotNull
-    protected List<Integer> mColors;
+    protected IntList mColors;
 
     /**
      * List representing all colors that are used for drawing the actual values for this DataSet
      */
     @NotNull
-    protected List<Integer> mValueColors;
+    protected IntList mValueColors;
 
     /**
      * label that describes the DataSet or the data the DataSet represents
@@ -107,8 +108,8 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
      * Default constructor.
      */
     public BaseDataSet() {
-        mColors = new ArrayList<>();
-        mValueColors = new ArrayList<>();
+        mColors = new IntList(1);
+        mValueColors = new IntList(1);
 
         // default color
         mColors.add(Color.rgb(140, 234, 255));
@@ -136,12 +137,12 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
 
     @Override
     @NotNull
-    public List<Integer> getColors() {
+    public IntList getColors() {
         return mColors;
     }
 
     @NotNull
-    public List<Integer> getValueColors() {
+    public IntList getValueColors() {
         return mValueColors;
     }
 
@@ -154,7 +155,7 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     @Override
     @ColorInt
     public int getColor(int index) {
-        return mColors.get(index % mColors.size());
+        return mColors.get(index);
     }
 
      // ###### ###### COLOR SETTING RELATED METHODS ##### ######
@@ -165,9 +166,8 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
      * the size of the colors array. If you are using colors from the resources,
      * make sure that the colors are already prepared (by calling
      * getResources().getColor(...)) before adding them to the DataSet.
-
      */
-    public void setColors(@NotNull List<Integer> colors) {
+    public void setColors(@NotNull IntList colors) {
         this.mColors = colors;
     }
 
@@ -179,7 +179,7 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
      * getResources().getColor(...)) before adding them to the DataSet.
      */
     public void setColors(@NotNull int... colors) {
-        this.mColors = ColorTemplate.createColors(colors);
+        this.mColors = IntList.ofArrayCopy(colors);
     }
 
     /**
@@ -294,7 +294,7 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     }
 
     @Override
-    public void setValueTextColors(@NotNull List<Integer> colors) {
+    public void setValueTextColors(@NotNull IntList colors) {
         mValueColors = colors;
     }
 
