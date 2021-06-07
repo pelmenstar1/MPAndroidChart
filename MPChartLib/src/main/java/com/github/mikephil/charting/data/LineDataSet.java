@@ -14,6 +14,7 @@ import com.github.mikephil.charting.formatter.DefaultFillFormatter;
 import com.github.mikephil.charting.formatter.IFillFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.utils.IntList;
 import com.github.mikephil.charting.utils.Utils;
 
 import org.jetbrains.annotations.NotNull;
@@ -37,7 +38,7 @@ public class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
      * List representing all colors that are used for the circles
      */
     @NotNull
-    private List<Integer> mCircleColors = new ArrayList<>();
+    private IntList mCircleColors = new IntList();
 
     /**
      * the color of the inner circles
@@ -262,7 +263,7 @@ public class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
      * returns all colors specified for the circles
      */
     @NotNull
-    public List<Integer> getCircleColors() {
+    public IntList getCircleColors() {
         return mCircleColors;
     }
 
@@ -283,7 +284,7 @@ public class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
      * are already prepared (by calling getResources().getColor(...)) before
      * adding them to the DataSet.
      */
-    public void setCircleColors(@NotNull List<Integer> colors) {
+    public void setCircleColors(@NotNull IntList colors) {
         mCircleColors = colors;
     }
 
@@ -295,7 +296,7 @@ public class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
      * adding them to the DataSet.
      */
     public void setCircleColors(@NotNull int... colors) {
-        this.mCircleColors = ColorTemplate.createColors(colors);
+        this.mCircleColors = IntList.ofArrayCopy(colors);
     }
 
     /**
@@ -307,16 +308,13 @@ public class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
      * getResources().getColor(...)
      */
     public void setCircleColors(@NotNull int[] colors, @NotNull Context c) {
-        List<Integer> clrs = mCircleColors;
-        clrs.clear();
+        mCircleColors.clear();
 
         Resources res = c.getResources();
 
         for (int color : colors) {
-            clrs.add(res.getColor(color));
+            mCircleColors.add(res.getColor(color));
         }
-
-        mCircleColors = clrs;
     }
 
     /**
